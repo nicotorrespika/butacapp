@@ -50,3 +50,8 @@ use the editor.
 - Existing cultural entries update only changed fields and immediately refresh their query cache. Why: consecutive actions must not overwrite ratings, favorites or reviews.
 - Movie research verifies source URLs against returned web results, derives aggregate ratings from explicit source labels, and caches public summaries separately from movie details. Why: independent review failures must not break cinema or fabricate scores.
 - Music platform buttons use clearly labeled title/artist searches unless a catalog link has been verified. Why: search URLs must never masquerade as direct album or track IDs.
+
+- Betty result screens use saved history IDs, with per-screen React Query and session storage state; view scroll uses router restoration. Why: returning from details must not rerun recommendations or discard refinements.
+- Event images resolve private community photos with signed URLs and use a category/title plate on missing or broken images. Why: image failures must not leave blank agenda cards.
+- Cinema venue records drive official-link discovery and scheduled event research; commercial listings reuse persisted Argentine TMDB releases. Why: viewing the agenda must not trigger research or invent showtimes.
+- Private messages are participant-readable and only recipients can change read timestamps, enforced by a trigger. Why: client edits must never alter another person’s message or recipients.

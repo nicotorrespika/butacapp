@@ -1,3 +1,4 @@
+import {SendToFriend} from "@/components/SendToFriend";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -112,7 +113,7 @@ function MoviePage() {
       <div className="mt-10 space-y-10">
         {m.trailerKey && <MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} />}
         <MovieListActivity key={m.routeId} movie={m} listId={list} />
-        <section className="px-4"><MovieActions key={m.routeId} result={m.result}/></section>
+        <section className="px-4"><SendToFriend title={m.title}/><MovieActions key={m.routeId} result={m.result}/></section>
         <section className="px-4"><h2 className="mb-4 font-display text-2xl">Dónde verla en Argentina</h2>{m.watchProviders?.names.length?<><p className="mb-3 text-sm text-muted-foreground">{m.watchProviders.names.join(" · ")}</p><ExtLink href={m.watchProviders.link}>Ver opciones</ExtLink><p className="mt-3 text-xs text-muted-foreground">Disponibilidad: JustWatch vía TMDB.</p></>:<p className="text-sm text-muted-foreground">No hay opciones registradas acá todavía, che.</p>}</section>
         <div className="space-y-6 px-4">
           <Scores scores={m.scores} />
