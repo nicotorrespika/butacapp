@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getMovie } from "@/lib/movies.functions";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { ArrowUpRight, Check, ExternalLink, Loader2, Send, Trash2 } from "lucide-react";
@@ -36,6 +38,8 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
   const [sending, setSending] = useState(false);
   const [reviewDraft, setReviewDraft] = useState<string | null>(null);
   const [savingReview, setSavingReview] = useState(false);
+  const movieCall=useServerFn(getMovie);
+  const metadata=useQuery({queryKey:["movie", "sheet",item?.external_id],enabled:!!item&&!inline&&hasMoviePage(item.source,item.media_type as MediaType),queryFn:()=>movieCall({data:{id:movieRouteId(item?.external_id ?? "")}})});
 
   if (!item) return <Drawer open={false} onOpenChange={onOpenChange} />;
 
@@ -139,7 +143,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 ) : item.title}
               </DrawerTitle>
               <DrawerDescription className="mt-1.5 text-sm">
-                {[item.creator, item.year].filter(Boolean).join(" · ") || "—"}
+                {[metadata.data?.ok?metadata.data.data.directors.map(d=>d.name).join(" · ")||item.creator:item.creator, item.year].filter(Boolean).join(" · ") || "—"}
               </DrawerDescription>
               <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                 <UserAvatar name={name(item.added_by)} url={profiles[item.added_by]?.avatar_url} className="size-6 text-xs" />
