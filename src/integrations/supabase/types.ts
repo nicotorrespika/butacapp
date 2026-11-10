@@ -360,6 +360,41 @@ export type Database = {
         }
         Relationships: []
       }
+      movie_comments: {
+        Row: {
+          body: string
+          created_at: string
+          external_id: string
+          id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          external_id: string
+          id?: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          external_id?: string
+          id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movie_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       movie_entries: {
         Row: {
           external_id: string
