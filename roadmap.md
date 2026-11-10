@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Unified Compartir panel on details, feeds, lists, reviews, profiles, Betty and discovery; multi-friend cards, WhatsApp/copy/native, undo and permission checks
+- [ ] Public stable share pages with server-rendered metadata and cover previews, invitation attribution and share counts; verify the five requested sharing checks
 - [x] Social navigation: four tabs, Avisos/Mensajes/Amigos, private friend messaging, sharing and count
 - [ ] Social completion: message requests, reactions/typing, grouped content notifications, block/mute/report, QR and mutual-friend suggestions; remaining implementation not verified
 - [x] Saved Betty result routes and history; cached/session screen state; app/browser Back verified
