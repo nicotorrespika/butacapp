@@ -17,6 +17,8 @@ export const Route = createFileRoute("/_authenticated/person/$personId")({
   validateSearch: z.object({ list: z.string().uuid().optional() }),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Filmografía — Butaca" },
       { name: "description", content: "Filmografía completa de directores y actores, lista para sumar a tus listas." },
       { property: "og:title", content: "Filmografía — Butaca" },
