@@ -45,6 +45,7 @@ export interface MovieDetail {
   overview: string | null;
   posterUrl: string | null;
   backdropUrl: string | null;
+  trailerKey: string | null;
   directors: CreditPerson[];
   cast: CreditPerson[];
   scores: CriticScore[];

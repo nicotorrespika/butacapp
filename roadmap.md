@@ -1,5 +1,6 @@
 # Roadmap
 
+- [ ] Complete movie detail: official YouTube trailer, Spanish/English synopsis, 8 cast members, direct list entry and inline list activity
 - [x] Simplify the visual style: quieter dark surfaces, unframed list covers, discreet navigation and minimal search controls
 - [x] Refine the interface toward an indie/cult film festival aesthetic inspired by Letterboxd
 

@@ -12,7 +12,7 @@ import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
-import { DONE_LABEL, LIST_KIND_LABEL, type MediaType } from "@/lib/media";
+import { DONE_LABEL, LIST_KIND_LABEL, hasMoviePage, movieRouteId, type MediaType } from "@/lib/media";
 import { averageScore, ratingScore } from "@/lib/ratings";
 import {
   commentsQuery,
@@ -283,7 +283,11 @@ function ListPage() {
                   item={i}
                   stat={stats[i.id]}
                   adderName={d?.profiles[i.added_by]?.display_name}
-                  onOpen={() => setOpenId(i.id)}
+                  onOpen={() => {
+                    if (hasMoviePage(i.source, i.media_type as MediaType)) {
+                      void navigate({ to: "/movie/$movieId", params: { movieId: movieRouteId(i.external_id) }, search: { list: listId } });
+                    } else setOpenId(i.id);
+                  }}
                 />
               </li>
             ))}

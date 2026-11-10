@@ -34,6 +34,7 @@ use the editor.
 - Data reads/writes go from the browser client straight to the database; access control lives in RLS via `is_list_member`/`is_list_owner` security-definer helpers. Why: keeps the MVP simple while every list stays private to its members.
 - External media search runs only in `src/lib/search.functions.ts` (auth-required server fn) with providers in `src/server/search-providers.ts`; each provider fails independently. Why: keeps API keys server-side and one slow API never breaks search.
 - Movie and person details use authenticated functions with server-only provider helpers; list additions share one hook. Why: preserves secret boundaries and consistent add behavior.
+- Movie details append credits and videos in one localized TMDB request; official YouTube trailers load only on demand, and inline list activity reuses ItemDrawer. Why: avoids extra initial requests and keeps rating/comment behavior consistent.
 - Ratings use score_10 as the canonical score and review as the per-user critique; the old score is trigger-maintained for compatibility. Why: preserves existing ratings while moving to a ten-point scale.
 - Live collaboration uses Postgres realtime on `list_items`, `ratings`, `comments`, `list_members` filtered by `list_id`, invalidating React Query caches. Why: instant updates without custom sockets.
 - `ratings` and `comments` carry a denormalized `list_id` set by trigger from the item. Why: enables RLS and realtime filtering per list.
