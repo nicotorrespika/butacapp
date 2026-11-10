@@ -1,0 +1,15 @@
+CREATE TABLE public.betty_history(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,thread_id uuid NOT NULL DEFAULT gen_random_uuid(),prompt text NOT NULL CHECK(length(prompt) BETWEEN 1 AND 2000),movies jsonb NOT NULL DEFAULT '[]',created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT,INSERT,DELETE ON public.betty_history TO authenticated;
+GRANT ALL ON public.betty_history TO service_role;
+ALTER TABLE public.betty_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY betty_history_read ON public.betty_history FOR SELECT TO authenticated USING(user_id=auth.uid());
+CREATE POLICY betty_history_write ON public.betty_history FOR INSERT TO authenticated WITH CHECK(user_id=auth.uid());
+CREATE POLICY betty_history_delete ON public.betty_history FOR DELETE TO authenticated USING(user_id=auth.uid());
+CREATE INDEX betty_history_user ON public.betty_history(user_id,created_at DESC);
+CREATE TABLE public.betty_feedback(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,history_id uuid NOT NULL REFERENCES public.betty_history(id) ON DELETE CASCADE,external_id text NOT NULL,created_at timestamptz NOT NULL DEFAULT now(),UNIQUE(user_id,history_id,external_id));
+GRANT SELECT,INSERT,DELETE ON public.betty_feedback TO authenticated;
+GRANT ALL ON public.betty_feedback TO service_role;
+ALTER TABLE public.betty_feedback ENABLE ROW LEVEL SECURITY;
+CREATE POLICY betty_feedback_read ON public.betty_feedback FOR SELECT TO authenticated USING(user_id=auth.uid());
+CREATE POLICY betty_feedback_insert ON public.betty_feedback FOR INSERT TO authenticated WITH CHECK(user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.betty_history h WHERE h.id=history_id AND h.user_id=auth.uid()));
+CREATE POLICY betty_feedback_delete ON public.betty_feedback FOR DELETE TO authenticated USING(user_id=auth.uid());

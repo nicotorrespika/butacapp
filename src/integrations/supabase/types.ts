@@ -114,6 +114,80 @@ export type Database = {
           },
         ]
       }
+      betty_feedback: {
+        Row: {
+          created_at: string
+          external_id: string
+          history_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          external_id: string
+          history_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          external_id?: string
+          history_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "betty_feedback_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "betty_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "betty_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      betty_history: {
+        Row: {
+          created_at: string
+          id: string
+          movies: Json
+          prompt: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          movies?: Json
+          prompt: string
+          thread_id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          movies?: Json
+          prompt?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "betty_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           body: string
