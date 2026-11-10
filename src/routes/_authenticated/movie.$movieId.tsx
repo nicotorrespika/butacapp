@@ -42,8 +42,16 @@ function MoviePage() {
   const cardProps = useCardProps(adder, list);
 
   if (q.isLoading) return <MovieSkeleton />;
-  if (q.isError || !q.data) return <FetchProblem reason="provider" onRetry={() => q.refetch()} />;
-  if (!q.data.ok) return <FetchProblem reason={q.data.reason} onRetry={() => q.refetch()} />;
+  if (q.isError || !q.data || !q.data.ok) return (
+    <div>
+      <FetchProblem reason={q.data && !q.data.ok ? q.data.reason : "provider"} onRetry={() => q.refetch()} />
+      <div className="flex justify-center px-4">
+        <Button asChild variant="outline">
+          <a href={/^tt\d+$/.test(movieId) ? `https://www.imdb.com/title/${movieId}/` : "https://www.imdb.com/"} target="_blank" rel="noreferrer"><ExternalLink /> Abrir IMDb</a>
+        </Button>
+      </div>
+    </div>
+  );
 
   const m = q.data.data;
   const added = adder.isAdded(m.result);
