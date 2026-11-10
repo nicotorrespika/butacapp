@@ -4,23 +4,26 @@ import { Disc3, Film, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { takePendingRedirect, useAuth } from "@/hooks/use-auth";
 import hero from "@/assets/hero-theater.jpg";
+import { HomeExperience } from "@/components/HomeExperience";
+import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Butaca — listas compartidas de cine, música y arte" },
+      { title: "BUTACAPP — listas compartidas de cine, música y arte" },
       {
         name: "description",
         content: "Armá watchlists colaborativas: buscá películas, discos y obras, marcalas, puntualas y comentalas en grupo.",
       },
-      { property: "og:title", content: "Butaca — listas compartidas de cine, música y arte" },
+      { property: "og:title", content: "BUTACAPP — listas compartidas de cine, música y arte" },
       { property: "og:description", content: "Watchlists colaborativas para ver, escuchar y visitar en grupo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Landing,
+  component: Home,
 });
+function Home(){return <div className="mx-auto max-w-5xl pb-nav"><HomeExperience/><BottomNav/></div>;}
 
 /** Public landing. Signed-in visitors (incl. OAuth returns) go straight to their lists. */
 function Landing() {

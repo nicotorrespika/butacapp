@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
 import { keys, myListsQuery, useMyProfile } from "@/lib/queries";
+import { ProfileView } from "@/components/ProfileView";
+import { BackButton } from "@/components/BackButton";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -21,8 +23,9 @@ export const Route = createFileRoute("/_authenticated/profile")({
       { property: "og:description", content: "Tu perfil en Butaca." },
     ],
   }),
-  component: ProfilePage,
+  component: NewProfile,
 });
+function NewProfile(){const {user}=useAuth();const qc=useQueryClient();const navigate=useNavigate();return <div className="px-4 py-6"><BackButton/>{user&&<div className="mt-8"><ProfileView userId={user.id}/></div>}<Button variant="ghost" className="mt-10" onClick={async()=>{await qc.cancelQueries();qc.clear();await supabase.auth.signOut();navigate({to:"/auth",replace:true});}}><LogOut/>Cerrar sesión</Button></div>;}
 
 function ProfilePage() {
   const { user } = useAuth();

@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { UserAvatar } from "@/components/UserAvatar";
 import { keys, type ListDetail } from "@/lib/queries";
+import { useQuery } from "@tanstack/react-query";
+import { friendsQuery } from "@/lib/social";
 
 /**
  * Invite collaborators:
@@ -27,6 +29,7 @@ export function InviteDrawer({
   userId: string;
 }) {
   const qc = useQueryClient();
+  const friends=useQuery(friendsQuery(userId));
   const { list, members } = detail;
   const isOwner = list.owner_id === userId;
   const [link, setLink] = useState<string | null>(null);
@@ -109,6 +112,7 @@ export function InviteDrawer({
           <DrawerDescription>Los colaboradores pueden agregar, marcar, puntuar y comentar.</DrawerDescription>
         </DrawerHeader>
         <div className="space-y-6 overflow-y-auto px-4 pb-8">
+          <section><h3 className="mb-3 font-display text-2xl">Tus amigos</h3>{friends.data?.filter(f=>f.status==="accepted").map(f=><div key={f.id} className="flex items-center justify-between gap-2 py-2"><span className="text-sm">{f.profile?.username ?? f.profile?.display_name}</span><Button variant="outline" disabled={members.some(m=>m.user_id===f.profile?.id)} onClick={async()=>{if(!f.profile)return;const r=await supabase.rpc("invite_friend",{lid:list.id,friend_id:f.profile.id});if(r.error)toast.error("No se pudo invitar");else{toast.success("Amigo agregado a la lista");qc.invalidateQueries({queryKey:keys.list(list.id)});}}}>Invitar</Button></div>)}</section>
           <section>
             <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <Link2 className="size-3.5" /> Por link

@@ -11,9 +11,9 @@ export const Route = createFileRoute("/reset-password")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Nueva contraseña — Butaca" },
-      { name: "description", content: "Elegí una nueva contraseña para tu cuenta de Butaca." },
-      { property: "og:title", content: "Nueva contraseña — Butaca" },
+      { title: "Nueva contraseña — BUTACAPP" },
+      { name: "description", content: "Elegí una nueva contraseña para tu cuenta de BUTACAPP." },
+      { property: "og:title", content: "Nueva contraseña — BUTACAPP" },
       { property: "og:description", content: "Elegí una nueva contraseña para tu cuenta." },
     ],
   }),

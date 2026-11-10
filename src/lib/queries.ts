@@ -42,10 +42,15 @@ function unwrap<T>(res: { data: T | null; error: { message: string } | null }): 
 export const myListsQuery = queryOptions({
   queryKey: keys.myLists,
   queryFn: async (): Promise<ListSummary[]> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+    const memberships = unwrap(await supabase.from("list_members").select("list_id").eq("user_id",user.id));
+    if (!memberships.length) return [];
     const rows = unwrap(
       await supabase
         .from("lists")
         .select("*, members:list_members(count), items:list_items(count)")
+        .in("id",memberships.map(m=>m.list_id))
         .order("updated_at", { ascending: false }),
     ) as (ListRow & { members: { count: number }[]; items: { count: number }[] })[];
 

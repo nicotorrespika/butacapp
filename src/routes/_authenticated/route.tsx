@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomNav } from "@/components/BottomNav";
@@ -33,6 +33,7 @@ function AppShell() {
 
   return (
     <div className="relative min-h-dvh">
+      <div className="mx-auto flex min-h-14 max-w-5xl items-center px-4"><Link to="/" className="py-3 font-display text-xl">BUTACAPP</Link></div>
       <main className="mx-auto w-full max-w-5xl pb-nav">
         <Outlet />
       </main>

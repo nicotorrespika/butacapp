@@ -13,12 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedInviteTokenRouteImport } from './routes/_authenticated/invite.$token'
 import { Route as AuthenticatedListsIndexRouteImport } from './routes/_authenticated/lists.index'
 import { Route as AuthenticatedListsListIdRouteImport } from './routes/_authenticated/lists.$listId'
 import { Route as AuthenticatedMovieMovieIdRouteImport } from './routes/_authenticated/movie.$movieId'
+import { Route as AuthenticatedPeopleUserIdRouteImport } from './routes/_authenticated/people.$userId'
 import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -39,6 +41,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
+  id: '/friends',
+  path: '/friends',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
@@ -73,6 +80,12 @@ const AuthenticatedMovieMovieIdRoute =
     path: '/movie/$movieId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPeopleUserIdRoute =
+  AuthenticatedPeopleUserIdRouteImport.update({
+    id: '/people/$userId',
+    path: '/people/$userId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPersonPersonIdRoute =
   AuthenticatedPersonPersonIdRouteImport.update({
     id: '/person/$personId',
@@ -84,11 +97,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/friends': typeof AuthenticatedFriendsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/lists/$listId': typeof AuthenticatedListsListIdRoute
   '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
+  '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
 }
@@ -96,11 +111,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/friends': typeof AuthenticatedFriendsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/lists/$listId': typeof AuthenticatedListsListIdRoute
   '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
+  '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
 }
@@ -110,11 +127,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/_authenticated/lists/$listId': typeof AuthenticatedListsListIdRoute
   '/_authenticated/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
+  '/_authenticated/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
 }
@@ -124,11 +143,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/friends'
     | '/profile'
     | '/search'
     | '/invite/$token'
     | '/lists/$listId'
     | '/movie/$movieId'
+    | '/people/$userId'
     | '/person/$personId'
     | '/lists/'
   fileRoutesByTo: FileRoutesByTo
@@ -136,11 +157,13 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/friends'
     | '/profile'
     | '/search'
     | '/invite/$token'
     | '/lists/$listId'
     | '/movie/$movieId'
+    | '/people/$userId'
     | '/person/$personId'
     | '/lists'
   id:
@@ -149,11 +172,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/reset-password'
+    | '/_authenticated/friends'
     | '/_authenticated/profile'
     | '/_authenticated/search'
     | '/_authenticated/invite/$token'
     | '/_authenticated/lists/$listId'
     | '/_authenticated/movie/$movieId'
+    | '/_authenticated/people/$userId'
     | '/_authenticated/person/$personId'
     | '/_authenticated/lists/'
   fileRoutesById: FileRoutesById
@@ -194,6 +219,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/friends': {
+      id: '/_authenticated/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof AuthenticatedFriendsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
@@ -237,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMovieMovieIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/people/$userId': {
+      id: '/_authenticated/people/$userId'
+      path: '/people/$userId'
+      fullPath: '/people/$userId'
+      preLoaderRoute: typeof AuthenticatedPeopleUserIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/person/$personId': {
       id: '/_authenticated/person/$personId'
       path: '/person/$personId'
@@ -248,21 +287,25 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedInviteTokenRoute: typeof AuthenticatedInviteTokenRoute
   AuthenticatedListsListIdRoute: typeof AuthenticatedListsListIdRoute
   AuthenticatedMovieMovieIdRoute: typeof AuthenticatedMovieMovieIdRoute
+  AuthenticatedPeopleUserIdRoute: typeof AuthenticatedPeopleUserIdRoute
   AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedInviteTokenRoute: AuthenticatedInviteTokenRoute,
   AuthenticatedListsListIdRoute: AuthenticatedListsListIdRoute,
   AuthenticatedMovieMovieIdRoute: AuthenticatedMovieMovieIdRoute,
+  AuthenticatedPeopleUserIdRoute: AuthenticatedPeopleUserIdRoute,
   AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
 }

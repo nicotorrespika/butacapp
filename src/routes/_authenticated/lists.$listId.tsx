@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { InviteDrawer } from "@/components/InviteDrawer";
 import { ItemDrawer } from "@/components/ItemDrawer";
+import { SocialComments } from "@/components/SocialComments";
 import { ListRecommendations } from "@/components/ListRecommendations";
 import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
@@ -31,9 +32,9 @@ export const Route = createFileRoute("/_authenticated/lists/$listId")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Lista — Butaca" },
+      { title: "Lista — BUTACAPP" },
       { name: "description", content: "Lista compartida: marcá, puntuá y comentá en grupo." },
-      { property: "og:title", content: "Lista compartida — Butaca" },
+      { property: "og:title", content: "Lista compartida — BUTACAPP" },
       { property: "og:description", content: "Marcá, puntuá y comentá en grupo." },
     ],
   }),
@@ -105,6 +106,7 @@ function ListPage() {
 
   const d = detail.data;
   const isOwner = d?.list.owner_id === userId;
+  const isMember = d?.members.some(m=>m.user_id===userId) ?? false;
   const openItem = (items.data ?? []).find((i) => i.id === openId) ?? null;
   const doneCount = (items.data ?? []).filter((i) => i.done).length;
   const total = items.data?.length ?? 0;
@@ -139,7 +141,7 @@ function ListPage() {
                 <ArrowLeft className="size-5" />
               </Link>
             </Button>
-            {d && (
+            {d && isMember && (
               <div className="flex items-center gap-2">
                 <Button variant="glass" size="sm" onClick={() => setInviting(true)}>
                   <UserPlus /> Invitar
@@ -301,18 +303,6 @@ function ListPage() {
         )}
       </div>
 
-      {/* Floating "+" always within thumb reach, just above the bottom nav. */}
-      {d && total > 0 && (
-        <Link
-          to="/search"
-          search={searchToAdd}
-          aria-label={`Agregar a «${d.list.name}»`}
-          className="fixed bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom)+1rem)] right-[max(1rem,calc((100vw-64rem)/2+1rem))] z-30 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform duration-200 ease-cine active:scale-90"
-        >
-          <Plus className="size-7" strokeWidth={2.5} />
-        </Link>
-      )}
-
       {d && (
         <>
           <ItemDrawer
@@ -325,7 +315,8 @@ function ListPage() {
             userId={userId}
             isOwner={isOwner}
           />
-          <InviteDrawer open={inviting} onOpenChange={setInviting} detail={d} userId={userId} />
+          {isMember && <InviteDrawer open={inviting} onOpenChange={setInviting} detail={d} userId={userId} />}
+          <section className="mt-8 px-4"><h2 className="mb-4 font-display text-2xl">En esta lista</h2><SocialComments listId={listId} canComment={isMember}/></section>
         </>
       )}
     </div>

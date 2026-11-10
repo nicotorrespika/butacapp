@@ -1,0 +1,41 @@
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { ArrowDown, ArrowUp, Check, Film, Plus, Save, Search, UserPlus, X } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { profileQuery, profileListsQuery, watchedQuery, topFive, viewingStats, friendsQuery } from "@/lib/social";
+import { movieRouteId, type SearchResult } from "@/lib/media";
+import { useAuth } from "@/hooks/use-auth";
+import { Poster } from "./Poster";
+import { Button } from "./ui/button";
+import { UserAvatar } from "./UserAvatar";
+import { CreateListDrawer } from "./CreateListDrawer";
+import { SocialComments } from "./SocialComments";
+import { FriendsPanel } from "./FriendsPanel";
+import { ErrorState } from "./States";
+
+export function ProfileView({userId}:{userId:string}){
+ const {user}=useAuth();const own=user?.id===userId;const qc=useQueryClient();const p=useQuery(profileQuery(userId));const watches=useQuery(watchedQuery(userId));const lists=useQuery(profileListsQuery(userId));const relations=useQuery({...friendsQuery(user?.id ?? ""),enabled:!!user});
+ const [tab,setTab]=useState("Listas");const [editing,setEditing]=useState(false);const [name,setName]=useState("");const [username,setUsername]=useState("");const [bio,setBio]=useState("");const [avatar,setAvatar]=useState("");const [creating,setCreating]=useState(false);const [saving,setSaving]=useState(false);
+ useEffect(()=>{if(p.data){setName(p.data.display_name);setUsername(p.data.username ?? "");setBio(p.data.bio);setAvatar(p.data.avatar_url ?? "");}},[p.data]);
+ const refresh=()=>qc.invalidateQueries({queryKey:["social"]});
+ async function save(e:React.FormEvent){e.preventDefault();setSaving(true);const r=await supabase.from("profiles").update({display_name:name.trim(),username:username.trim().toLowerCase(),bio,avatar_url:avatar||null}).eq("id",userId);setSaving(false);if(r.error)return void toast.error("No se pudo guardar. Usá un usuario único de 3 a 24 letras, números o guiones bajos.");setEditing(false);refresh();qc.invalidateQueries({queryKey:["profile"]});toast.success("Perfil actualizado");}
+ async function saveTop(top:SearchResult[]){const r=await supabase.from("profiles").update({top_five:JSON.parse(JSON.stringify(top))}).eq("id",userId);if(r.error)toast.error("No se pudo guardar tu Top 5");else{refresh();toast.success("Top 5 actualizado");}}
+ if(p.isError)return <ErrorState onRetry={()=>p.refetch()}/>;if(!p.data)return <p className="py-12 text-muted-foreground">Cargando…</p>;
+ const top=topFive(p.data.top_five);const stats=viewingStats(watches.data ?? []);const friend=relations.data?.some(f=>f.status==="accepted"&&(f.sender_id===userId||f.receiver_id===userId));
+ return <div className="space-y-8">
+  <header className="flex flex-wrap items-center gap-4"><UserAvatar name={p.data.display_name} url={p.data.avatar_url} className="size-20 text-3xl"/><div className="min-w-0"><h1 className="break-words font-display text-3xl">{p.data.display_name}</h1><p className="text-sm text-muted-foreground">@{p.data.username ?? "sin_usuario"}</p></div>{own&&<Button variant="outline" onClick={()=>setEditing(!editing)}><Save/>Editar perfil</Button>}</header>
+  {p.data.bio&&<p className="max-w-xl whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{p.data.bio}</p>}
+  {own&&(!p.data.username||editing)&&<form onSubmit={save} className="space-y-3"><label className="block text-sm">Nombre de usuario<input aria-label="Nombre de usuario" required pattern="[a-zA-Z0-9_]{3,24}" value={username} onChange={e=>setUsername(e.target.value)} className="mt-2 h-11 w-full rounded-sm border border-input bg-card px-3"/></label>{editing&&<><label className="block text-sm">Nombre<input value={name} onChange={e=>setName(e.target.value)} className="mt-2 h-11 w-full rounded-sm border border-input bg-card px-3"/></label><label className="block text-sm">Bio<textarea value={bio} onChange={e=>setBio(e.target.value)} maxLength={280} className="mt-2 w-full rounded-sm border border-input bg-card p-3"/></label><label className="block text-sm">Foto (dirección de imagen)<input type="url" value={avatar} onChange={e=>setAvatar(e.target.value)} className="mt-2 h-11 w-full rounded-sm border border-input bg-card px-3"/></label></>}<Button type="submit" disabled={saving}><Check/>Guardar</Button></form>}
+  <section><h2 className="mb-4 text-[11px] uppercase tracking-widest text-muted-foreground">Top 5 películas</h2><div className="grid grid-cols-5 gap-2">{top.map((m,i)=><div key={`${m.externalId}-${i}`}><Link to="/movie/$movieId" params={{movieId:movieRouteId(m.externalId)}}><Poster src={m.imageUrl} alt={m.title} media="movie"/></Link>{own&&<div className="mt-2 flex flex-col"><Button variant="ghost" className="px-0 text-[10px]" disabled={i===0} onClick={()=>{const next=[...top];const current=next[i];const previous=next[i-1];if(!current||!previous)return;next[i-1]=current;next[i]=previous;saveTop(next);}}><ArrowUp/>Subir</Button><Button variant="ghost" className="px-0 text-[10px]" onClick={()=>saveTop(top.filter((_,n)=>n!==i))}><X/>Quitar</Button></div>}</div>)}</div>{own&&top.length<5&&<Button asChild variant="outline" className="mt-4"><Link to="/search" search={{f:"movie",top:true}}><Plus/>{top.length?"Sumar al Top 5":"Elegir Top 5"}</Link></Button>}</section>
+  <dl className="flex flex-wrap gap-8">{[["Vistas",stats.watched],["Promedio",stats.average ?? "—"]].map(([label,value])=><div key={label}><dd className="font-display text-3xl">{value}</dd><dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</dt></div>)}{stats.genres.length>0&&<div><dd className="text-sm">{stats.genres.join(" · ")}</dd><dt className="text-[11px] uppercase text-muted-foreground">Géneros más vistos</dt></div>}</dl>
+  <div role="tablist" className="flex overflow-x-auto scrollbar-none">{["Listas","Favoritas","Reseñas","Vistas","Amigos"].map(t=><Button role="tab" aria-selected={tab===t} variant="ghost" key={t} onClick={()=>setTab(t)} className={`shrink-0 rounded-none border-b px-3 ${tab===t?"border-primary":"border-transparent text-muted-foreground"}`}>{t}</Button>)}</div>
+  {tab==="Listas"&&<section className="space-y-4">{own&&<Button onClick={()=>setCreating(true)}><Plus/>Nueva lista</Button>}{lists.data?.map(l=><Link key={l.id} to="/lists/$listId" params={{listId:l.id}} className="block py-3"><h2 className="font-display text-2xl">{l.name}</h2><p className="text-xs text-muted-foreground">{l.description}</p></Link>)}{!lists.data?.length&&<p className="text-sm text-muted-foreground">Nada guardado todavía.</p>}</section>}
+  {tab==="Favoritas"&&<div className="grid grid-cols-3 gap-3">{top.map(m=><Link key={m.externalId} to="/movie/$movieId" params={{movieId:movieRouteId(m.externalId)}}><Poster src={m.imageUrl} alt={m.title} media="movie"/><h3 className="mt-2 font-display text-lg">{m.title}</h3></Link>)}</div>}
+  {(tab==="Vistas"||tab==="Reseñas")&&<section className="space-y-6">{watches.data?.filter(w=>tab==="Vistas"||w.review).map(w=><article key={w.id}><Link to="/movie/$movieId" params={{movieId:movieRouteId(w.external_id)}} className="flex items-start gap-3"><Poster src={w.image_url} alt={w.title} media="movie" className="w-16 shrink-0"/><div><h2 className="font-display text-xl">{w.title}</h2><p className="text-sm text-primary">{w.score_10?`${w.score_10}/10 ★`:""}</p><p className="mt-2 text-sm text-muted-foreground">{w.review}</p></div></Link></article>)}{!watches.data?.length&&<p className="text-sm text-muted-foreground">Todavía no hay películas acá.</p>}</section>}
+  {tab==="Amigos"&&(own?<FriendsPanel/>:<p className="text-sm text-muted-foreground">{friend?"Son amigos. Lo que viene, compartido.":"Buscá a esta persona desde Amigos para enviarle una solicitud."}</p>)}
+  {!own&&friend&&<section><h2 className="mb-4 font-display text-2xl">En su butaca</h2><SocialComments profileId={userId}/></section>}
+  <CreateListDrawer open={creating} onOpenChange={setCreating} onCreated={()=>{setCreating(false);refresh();}}/>
+ </div>;
+}

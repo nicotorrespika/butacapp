@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Library, Search, User } from "lucide-react";
+import { Home, Search, User } from "lucide-react";
 
 const TABS = [
+  { to: "/", label: "Inicio", icon: Home },
   { to: "/search", label: "Buscar", icon: Search },
-  { to: "/lists", label: "Mis listas", icon: Library },
   { to: "/profile", label: "Perfil", icon: User },
 ] as const;
 
@@ -19,6 +19,7 @@ export function BottomNav() {
           <li key={to} className="flex-1">
             <Link
               to={to}
+              activeOptions={{exact:true}}
               className="group flex h-full min-h-11 flex-col items-center justify-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors data-[status=active]:text-foreground"
             >
               <Icon strokeWidth={1.5} className="size-5 transition-colors group-data-[status=active]:text-primary" />
