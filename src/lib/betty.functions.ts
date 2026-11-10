@@ -5,6 +5,11 @@ import {requireSupabaseAuth} from "@/integrations/supabase/auth-middleware";
 import {askBetty} from "@/server/betty";
 import {recommendationError} from "@/server/recommendations";
 import type {BettyResponse} from "./betty-types";
+import {tmdbFetcher,mapTmdb,type TmdbItem} from "@/server/search-providers";
+export const discoverMovies=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).handler(async()=>{
+ const key=process.env["TMDB_API_KEY"];if(!key)return [];
+ const data=await tmdbFetcher(key)<{results:TmdbItem[]}>("/discover/movie",{sort_by:"popularity.desc","vote_count.gte":100});return data.results.map(m=>mapTmdb(m,"movie"));
+});
 export const getBetty=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({prompt:z.string().trim().min(1).max(2000),threadId:z.string().uuid().optional()}).parse(input)).handler(async({data,context}):Promise<BettyResponse>=>{
  const db=context.supabase;const key=process.env["LOVABLE_API_KEY"];const tmdb=process.env["TMDB_API_KEY"];
  if(!key||!tmdb)return {ok:false,message:"Uy, me mandé una bettiada. Falta configurar mi videoteca.",retryable:false};

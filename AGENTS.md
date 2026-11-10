@@ -42,3 +42,4 @@ use the editor.
 - Invites: token links via `get_invite`/`accept_invite` RPCs; email invites are rows auto-claimed by `claim_email_invites` on sign-in. Why: no outbound email service required.
 - Social views share browser-safe query helpers and use database-enforced visibility; the feed paginates by timestamp plus ID. Why: keeps privacy centralized and pagination stable when activities share a timestamp.
 - Personal movie state lives in movie_entries, independent of list ratings; list sheet selection lives in validated URL search state. Why: favorites need not be watched and browser Back restores the selected list panel.
+- Betty uses authenticated structured-output server functions, verifies exact title/year matches in TMDB and stores user-owned thread history and feedback. Why: unverified catalog entries never reach recommendations and personal tastes remain private.

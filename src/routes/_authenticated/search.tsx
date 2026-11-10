@@ -26,6 +26,7 @@ import { topFive } from "@/lib/social";
 import { toast } from "sonner";
 import { BackButton } from "@/components/BackButton";
 import { BettySearch } from "@/components/BettySearch";
+import {discoverMovies} from "@/lib/betty.functions";
 
 export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: z.object({
@@ -61,6 +62,8 @@ const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", 
 function SearchPage() {
   const params = Route.useSearch();
   const mode=params.mode ?? "search";
+  const discover=useServerFn(discoverMovies);
+  const discovery=useQuery({queryKey:["discover","movies"],queryFn:()=>discover(),enabled:mode==="discover"});
   const navigate = Route.useNavigate();
   const [text, setText] = useState(params.q ?? "");
   const filter: SearchFilter = params.f ?? "all";
@@ -125,7 +128,7 @@ function SearchPage() {
   return (
     <div>
       <div className="flex gap-2 px-4 py-4" role="tablist" aria-label="Modo de búsqueda">{([["search","Buscar"],["discover","Descubrir"],["betty","Betty"]] as const).map(([id,label])=><Button key={id} variant="ghost" role="tab" aria-selected={mode===id} onClick={()=>navigate({search:s=>({...s,mode:id}),replace:true})}>{label}</Button>)}</div>
-      {mode==="betty"?<BettySearch listId={params.list}/>:<>
+      {mode==="betty"?<BettySearch listId={params.list}/>:mode==="discover"?<section className="px-4 pb-8"><h1 className="mb-6 font-display text-4xl">Descubrir</h1>{discovery.isError?<ErrorState onRetry={()=>discovery.refetch()}/>:!discovery.data?<PosterGridSkeleton/>:<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">{discovery.data.map(r=><ResultCard key={r.externalId} {...cardProps(r)}/>)}</div>}{adder.sheet}</section>:<>
       {/* Sticky search header */}
       <header className="sticky top-0 z-30 bg-background px-4 pb-3 pt-[max(env(safe-area-inset-top),2rem)]">
         {targetList ? (
