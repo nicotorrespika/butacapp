@@ -29,6 +29,7 @@ import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authe
 import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_authenticated/recibido.$searchId'
 import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
+import { Route as ApiPublicJobsSoundtracksRouteImport } from './routes/api/public/jobs/soundtracks'
 import { Route as ApiPublicPortadaKindIdRouteImport } from './routes/api/public/portada.$kind.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -139,6 +140,12 @@ const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
   path: '/api/public/jobs/culture',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicJobsSoundtracksRoute =
+  ApiPublicJobsSoundtracksRouteImport.update({
+    id: '/api/public/jobs/soundtracks',
+    path: '/api/public/jobs/soundtracks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPortadaKindIdRoute = ApiPublicPortadaKindIdRouteImport.update({
   id: '/api/public/portada/$kind/$id',
   path: '/api/public/portada/$kind/$id',
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
   '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
 export interface FileRoutesByTo {
@@ -187,6 +195,7 @@ export interface FileRoutesByTo {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
   '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
 export interface FileRoutesById {
@@ -211,6 +220,7 @@ export interface FileRoutesById {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
   '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
 export interface FileRouteTypes {
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/lists/'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/soundtracks'
     | '/api/public/portada/$kind/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/lists'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/soundtracks'
     | '/api/public/portada/$kind/$id'
   id:
     | '__root__'
@@ -280,6 +292,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/soundtracks'
     | '/api/public/portada/$kind/$id'
   fileRoutesById: FileRoutesById
 }
@@ -290,6 +303,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   CompartirKindIdRoute: typeof CompartirKindIdRoute
   ApiPublicJobsCultureRoute: typeof ApiPublicJobsCultureRoute
+  ApiPublicJobsSoundtracksRoute: typeof ApiPublicJobsSoundtracksRoute
   ApiPublicPortadaKindIdRoute: typeof ApiPublicPortadaKindIdRoute
 }
 
@@ -435,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicJobsCultureRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/jobs/soundtracks': {
+      id: '/api/public/jobs/soundtracks'
+      path: '/api/public/jobs/soundtracks'
+      fullPath: '/api/public/jobs/soundtracks'
+      preLoaderRoute: typeof ApiPublicJobsSoundtracksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/portada/$kind/$id': {
       id: '/api/public/portada/$kind/$id'
       path: '/api/public/portada/$kind/$id'
@@ -489,6 +510,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   CompartirKindIdRoute: CompartirKindIdRoute,
   ApiPublicJobsCultureRoute: ApiPublicJobsCultureRoute,
+  ApiPublicJobsSoundtracksRoute: ApiPublicJobsSoundtracksRoute,
   ApiPublicPortadaKindIdRoute: ApiPublicPortadaKindIdRoute,
 }
 export const routeTree = rootRouteImport
