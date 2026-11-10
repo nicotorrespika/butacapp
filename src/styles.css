@@ -18,7 +18,9 @@
  */
 
 @theme inline {
-  --font-display: "Newsreader", "Times New Roman", serif;
+  --font-display: "Instrument Serif", "Times New Roman", serif;
+  --font-heading: "Big Shoulders Display", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -35,6 +37,9 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-seat: var(--seat);
+  --color-paper: var(--paper);
+  --color-paper-foreground: var(--paper-foreground);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-glow: var(--primary-glow);
   --color-secondary: var(--secondary);
@@ -80,7 +85,10 @@
   --popover: var(--card);
   --popover-foreground: var(--foreground);
   /* Projector amber */
-  --primary: oklch(0.76 0.085 78);
+  --primary: oklch(0.72 0.095 48);
+  --seat: #b3202a;
+  --paper: #efe6d2;
+  --paper-foreground: #14181c;
   --primary-glow: var(--primary);
   --primary-foreground: oklch(0.17 0.02 60);
   --secondary: oklch(0.323 0.024 257);
@@ -94,7 +102,7 @@
   --success: var(--primary);
   --border: oklch(0.94 0.012 80 / 9%);
   --input: oklch(0.94 0.012 80 / 12%);
-  --ring: oklch(0.76 0.085 78 / 60%);
+  --ring: var(--primary);
   --overlay: oklch(0.08 0.004 60);
 
   --chart-1: oklch(0.79 0.15 72);
@@ -144,8 +152,9 @@
   }
 
   h1, h2, h3 {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--primary);
     letter-spacing: 0;
   }
 
@@ -175,7 +184,27 @@
 
 @utility font-display {
   font-family: var(--font-display);
+  font-style: italic;
 }
+
+@utility cinema-heading {
+  font-family: var(--font-heading);
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+@utility cinema-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.review-ticket { background: var(--paper); color: var(--paper-foreground); border-block: 2px dashed var(--background); padding: 1.25rem; }
+.review-ticket h2, .review-ticket p { color: inherit; }
+.review-ticket .ticket-stamp { color: var(--seat); border: 2px solid var(--seat); transform: rotate(-6deg); }
 
 @utility text-gradient-amber {
   background: var(--gradient-amber);

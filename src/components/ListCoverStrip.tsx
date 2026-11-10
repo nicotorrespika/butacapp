@@ -1,0 +1,2 @@
+import {Poster} from "./Poster";
+export function ListCoverStrip({covers,name}:{covers:string[];name:string}){return covers.length?<div className="mt-3 flex gap-2" aria-label={`Películas de ${name}`}>{covers.slice(0,4).map((url,i)=><Poster key={`${url}-${i}`} src={url} alt={`Póster ${i+1} de ${name}`} media="movie" className="w-16 shrink-0"/>)}</div>:null;}

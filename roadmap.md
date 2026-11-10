@@ -1,8 +1,20 @@
 # Roadmap
 
+- [x] Replace Betty introduction with user's literal greeting ending “negri.”
+
+- [x] Soften the overly bright orange to a restrained muted copper accent
+
+- [x] Show first movie posters below list names on home and profile (home shows three real posters)
+
+- [x] Public/private list owner controls saved and reloaded; existing collaborator invitations retained
+- [ ] Verify invitation read/collaborate end-to-end with a second account; blocker: no second authorized test session
+- [ ] Verify friends' additions and ratings end-to-end; implementation and realtime configured, blocker: requesting account has no accepted friends
+
+- [x] Apply author-cinema typography, softened copper, numbered Top 5 and paper review tickets; mobile home and list verified
+
 - [x] Betty inside existing lists uses their movies, ratings and critiques; live recommendation verified
 - [ ] Enrich Betty and movie pages with cited criticism, verified ratings, Criterion confirmation and related books; cache movie research for several days, tolerate independent source failures, verify suggested titles with TMDB
-- [ ] Configure valid OMDb credentials and backend web-search source; explain how to obtain OMDb key
+- [ ] Configure valid OMDb credentials and backend web-search source; blocked: web-search connection declined and OMDb update stopped; key instructions delivered
 
 - [x] Argentine localization: es-AR/AR TMDB, Argentine cinema priority and home collection, viewing providers in Argentina
 - [x] Add Sorprendeme on Inicio and swipe/button discovery with filters, watched/queued/passed exclusions and undo (pointer handlers verified; native touch swipe remains unverified)

@@ -44,3 +44,4 @@ use the editor.
 - Personal movie state lives in movie_entries, independent of list ratings; list sheet selection lives in validated URL search state. Why: favorites need not be watched and browser Back restores the selected list panel.
 - Betty uses authenticated structured-output server functions, verifies exact title/year matches in TMDB and stores user-owned thread history and feedback. Why: unverified catalog entries never reach recommendations and personal tastes remain private.
 - Discovery stores queued/dismissed/watched choices in personal entries and normalizes catalog IDs before exclusion; UI offers gestures plus explicit buttons. Why: cross-surface choices stay consistent without requiring gestures.
+- List covers reuse a shared poster strip; friends' added-item activities resolve the author's current list rating and subscribe to RLS-filtered realtime. Why: previews and activity stay consistent without duplicating stored scores.

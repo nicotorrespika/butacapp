@@ -65,16 +65,16 @@ export function ResultCard({
       </div>
       <div className="mt-2 px-0.5">
         {result.kindLabel==="Cine argentino"&&<p className="mb-1 text-[10px] uppercase text-primary">Cine argentino</p>}
-        <h3 className="line-clamp-2 font-display text-lg leading-snug text-foreground">
+        <h3 className="line-clamp-2 font-display text-xl leading-snug text-primary">
           {onOpen ? (
-            <Button variant="ghost" type="button" onClick={() => onOpen(result)} className="h-auto min-h-11 justify-start whitespace-normal rounded-none p-0 text-left font-display text-lg font-normal hover:bg-transparent">
+            <Button variant="ghost" type="button" onClick={() => onOpen(result)} className="h-auto min-h-11 justify-start whitespace-normal rounded-none p-0 text-left font-display text-xl font-normal text-primary hover:bg-transparent">
               {result.title}
             </Button>
           ) : (
             result.title
           )}
         </h3>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+        <p className="cinema-meta mt-0.5 truncate text-muted-foreground">
           {[result.creator, result.year].filter(Boolean).join(" · ") || result.kindLabel}
         </p>
       </div>
