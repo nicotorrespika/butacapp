@@ -132,8 +132,8 @@ function SearchPage() {
   return (
     <div>
       <div className="flex gap-2 px-4 py-4" role="tablist" aria-label="Modo de búsqueda">{([["search","Buscar"],["discover","Descubrir"],["betty","Betty"]] as const).map(([id,label])=><Button key={id} variant="ghost" role="tab" aria-selected={mode===id} onClick={()=>navigate({search:s=>({...s,mode:id}),replace:true})}>{label}</Button>)}</div>
-      {mode!=="search"&&<div role="tablist" aria-label="Categoría" className="flex gap-2 overflow-x-auto px-4 pb-4">{CHIPS.filter(c=>c.id!=="all").map(c=><Button variant="ghost" role="tab" aria-selected={filter===c.id} key={c.id} onClick={()=>setFilter(c.id)}>{c.label}</Button>)}</div>}
-      {mode==="betty"?(isCulture(filter==="all"?"movie":filter)?<CultureBetty key={filter} type={filter==="book"?"book":"music"} {...(params.list?{listId:params.list}:{})}/>:<BettySearch listId={params.list}/>):mode==="discover"?(filter==="book"||filter==="music"?<CultureDiscovery key={filter} type={filter}/>:<DiscoveryDeck/>):<>
+      {mode!=="search"&&<div role="tablist" aria-label="Categoría" className="flex gap-2 overflow-x-auto px-4 pb-4">{CHIPS.filter(c=>mode==="betty"||c.id!=="all").map(c=><Button variant="ghost" role="tab" aria-selected={filter===c.id} key={c.id} onClick={()=>setFilter(c.id)}>{c.label}</Button>)}</div>}
+      {mode==="betty"?(filter==="all"?<CultureBetty type="all"/>:isCulture(filter==="all"?"movie":filter)?<CultureBetty key={filter} type={filter==="book"?"book":"music"} {...(params.list?{listId:params.list}:{})}/>:<BettySearch listId={params.list}/>):mode==="discover"?(filter==="book"||filter==="music"?<CultureDiscovery key={filter} type={filter}/>:<DiscoveryDeck/>):<>
       {/* Sticky search header */}
       <header className="sticky top-0 z-30 bg-background px-4 pb-3 pt-[max(env(safe-area-inset-top),2rem)]">
         {targetList ? (
