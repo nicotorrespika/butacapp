@@ -1,0 +1,28 @@
+import { describe, expect, it } from "vitest";
+import { parseQuery } from "./search-query";
+import { averageScore } from "./ratings";
+
+describe("parseQuery", () => {
+  it("splits author + year", () => {
+    expect(parseQuery("Tarkovsky 1979")).toEqual({ text: "Tarkovsky", year: 1979 });
+  });
+  it("treats a bare year as a year-only search", () => {
+    expect(parseQuery("1994")).toEqual({ text: "", year: 1994 });
+  });
+  it("keeps band + album as plain text", () => {
+    expect(parseQuery("Radiohead OK Computer")).toEqual({ text: "Radiohead OK Computer", year: null });
+  });
+  it("does not treat non-year numbers as years", () => {
+    expect(parseQuery("Blade Runner 2049")).toEqual({ text: "Blade Runner", year: 2049 > new Date().getFullYear() + 2 ? null : 2049 });
+    expect(parseQuery("Ocean's 11").year).toBeNull();
+  });
+});
+
+describe("averageScore", () => {
+  it("averages 1–5 star scores to one decimal", () => {
+    expect(averageScore([5, 4, 4])).toBe(4.3);
+  });
+  it("is null when nobody rated", () => {
+    expect(averageScore([])).toBeNull();
+  });
+});

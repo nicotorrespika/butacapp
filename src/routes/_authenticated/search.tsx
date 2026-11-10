@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -55,10 +55,11 @@ function SearchPage() {
   function setFilter(f: SearchFilter) {
     navigate({ search: (s) => ({ ...s, f: f === "all" ? undefined : f }), replace: true });
   }
-  function setQ(v: string) {
-    setText(v);
-    navigate({ search: (s) => ({ ...s, q: v || undefined }), replace: true });
-  }
+  const setQ = setText;
+  useEffect(() => {
+    if ((params.q ?? "") !== q) navigate({ search: (s) => ({ ...s, q: q || undefined }), replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q]);
 
   const data = query.data;
   const total = data ? data.movie.length + data.music.length + data.art.length : 0;
