@@ -25,6 +25,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { topFive } from "@/lib/social";
 import { toast } from "sonner";
 import { BackButton } from "@/components/BackButton";
+import { BettySearch } from "@/components/BettySearch";
 
 export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: z.object({
@@ -33,6 +34,7 @@ export const Route = createFileRoute("/_authenticated/search")({
     /** When set, "+" adds straight into this list (opened from a list's "Agregar" button). */
     list: z.string().uuid().optional(),
     top: z.boolean().optional(),
+    mode:z.enum(["search","discover","betty"]).optional(),
   }),
   head: () => ({
     meta: [
@@ -58,6 +60,7 @@ const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", 
 
 function SearchPage() {
   const params = Route.useSearch();
+  const mode=params.mode ?? "search";
   const navigate = Route.useNavigate();
   const [text, setText] = useState(params.q ?? "");
   const filter: SearchFilter = params.f ?? "all";
@@ -99,7 +102,7 @@ function SearchPage() {
   const query = useQuery({
     queryKey: ["search", q, filter],
     queryFn: () => search({ data: { q, filter } }),
-    enabled: q.length >= 2,
+    enabled: q.length >= 2 && mode!=="betty",
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
   });
@@ -121,6 +124,8 @@ function SearchPage() {
 
   return (
     <div>
+      <div className="flex gap-2 px-4 py-4" role="tablist" aria-label="Modo de búsqueda">{([["search","Buscar"],["discover","Descubrir"],["betty","Betty"]] as const).map(([id,label])=><Button key={id} variant="ghost" role="tab" aria-selected={mode===id} onClick={()=>navigate({search:s=>({...s,mode:id}),replace:true})}>{label}</Button>)}</div>
+      {mode==="betty"?<BettySearch listId={params.list}/>:<>
       {/* Sticky search header */}
       <header className="sticky top-0 z-30 bg-background px-4 pb-3 pt-[max(env(safe-area-inset-top),2rem)]">
         {targetList ? (
@@ -278,6 +283,7 @@ function SearchPage() {
       </div>
 
       {adder.sheet}
+      </>}
     </div>
   );
 }
