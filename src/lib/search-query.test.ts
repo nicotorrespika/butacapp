@@ -13,7 +13,8 @@ describe("parseQuery", () => {
     expect(parseQuery("Radiohead OK Computer")).toEqual({ text: "Radiohead OK Computer", year: null });
   });
   it("does not treat non-year numbers as years", () => {
-    expect(parseQuery("Blade Runner 2049")).toEqual({ text: "Blade Runner", year: 2049 > new Date().getFullYear() + 2 ? null : 2049 });
+    // 2049 is in the future → part of the title, not a year filter.
+    expect(parseQuery("Blade Runner 2049")).toEqual({ text: "Blade Runner 2049", year: null });
     expect(parseQuery("Ocean's 11").year).toBeNull();
   });
 });
