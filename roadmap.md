@@ -1,6 +1,9 @@
 # Roadmap
 
 ## Cultural expansion requested November 10, 2026
+- [ ] New home header and category search: Inicio / Cine / Música / Libros / Eventos with user's exact questions and contextual Betty
+- [ ] Category mini feeds with saved items, likes/comments/sharing; scheduled collection only, persisted daily news/releases/recommendations and six-hour events with daily expiry cleanup
+- [ ] Show actual update time; retain prior data on source failure; never fetch external feed sources on screen open
 - [ ] Replace standalone Arte with Eventos; preserve legacy art items without exposing art creation/search/discovery/Top 5
 - [ ] Eventos: official Buenos Aires agenda first, city preference and location consent, date/interest/free-paid filters, list/calendar, verified details and directions
 - [ ] Eventos: community submissions/reports, Voy / Me interesa, personal agenda, friend activity/invitations and verified Betty suggestions
