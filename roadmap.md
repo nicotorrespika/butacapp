@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Read and fix navigation upload requirements
 - [ ] Read and implement event images and content upload requirements
 - [x] Spotify: user chose title/artist search links instead of direct catalog/Odesli integration; stage two stays unimplemented pending confirmation
 - [ ] Movie criticism: real IMDb/Rotten Tomatoes/Metacritic links and Argentine media short cited summaries; Betty recounts them as chisme
