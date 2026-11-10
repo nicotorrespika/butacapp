@@ -88,7 +88,7 @@ function ListCard({ list }: { list: ListSummary }) {
     <Link
       to="/lists/$listId"
       params={{ listId: list.id }}
-      className="group relative block h-44 overflow-hidden rounded-2xl border border-border bg-card transition-transform duration-300 ease-cine active:scale-[0.98]"
+      className="group relative block h-44 overflow-hidden rounded-md border border-border bg-card transition-transform duration-300 ease-cine active:scale-[0.98]"
     >
       {/* Cover collage */}
       <div className="absolute inset-y-0 right-0 flex w-3/5 items-center justify-end pr-3">
@@ -104,17 +104,16 @@ function ListCard({ list }: { list: ListSummary }) {
               alt=""
               loading="lazy"
               className={cn(
-                "h-32 w-[5.5rem] rounded-lg object-cover shadow-poster ring-1 ring-border",
-                i > 0 && "-ml-12",
+                "h-32 w-[5.5rem] rounded-sm object-cover ring-1 ring-border",
+                i > 0 && "-ml-6",
               )}
-              style={{ transform: `rotate(${(i - 1) * 6}deg) translateY(${i === 1 ? -4 : 6}px)`, zIndex: 3 - i }}
             />
           ))
         )}
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-card via-card/90 to-transparent" />
       <div className="relative flex h-full max-w-[62%] flex-col p-4">
-        <span className="w-fit rounded-full bg-primary/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
+        <span className="w-fit text-[10px] font-bold uppercase tracking-wider text-primary">
           {LIST_KIND_LABEL[list.kind]}
         </span>
         <h2 className="mt-2 line-clamp-2 font-display text-2xl leading-tight">{list.name}</h2>
