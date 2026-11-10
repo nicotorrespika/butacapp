@@ -471,11 +471,13 @@ export type Database = {
       }
       movie_entries: {
         Row: {
+          dismissed: boolean
           external_id: string
           favorite: boolean
           genres: string[]
           id: string
           image_url: string | null
+          queued: boolean
           review: string
           score_10: number | null
           source: string
@@ -486,11 +488,13 @@ export type Database = {
           year: number | null
         }
         Insert: {
+          dismissed?: boolean
           external_id: string
           favorite?: boolean
           genres?: string[]
           id?: string
           image_url?: string | null
+          queued?: boolean
           review?: string
           score_10?: number | null
           source: string
@@ -501,11 +505,13 @@ export type Database = {
           year?: number | null
         }
         Update: {
+          dismissed?: boolean
           external_id?: string
           favorite?: boolean
           genres?: string[]
           id?: string
           image_url?: string | null
+          queued?: boolean
           review?: string
           score_10?: number | null
           source?: string
@@ -532,6 +538,7 @@ export type Database = {
           created_at: string
           display_name: string
           id: string
+          rating_style: string
           top_five: Json
           updated_at: string
           username: string | null
@@ -542,6 +549,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id: string
+          rating_style?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
@@ -552,6 +560,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id?: string
+          rating_style?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
