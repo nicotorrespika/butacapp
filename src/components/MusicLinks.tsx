@@ -1,0 +1,6 @@
+import {Headphones,ExternalLink,ChevronDown,Share2} from "lucide-react";
+import {musicSearchLinks} from "@/lib/music-links";
+import {Button} from "./ui/button";
+import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem} from "./ui/dropdown-menu";
+import {toast} from "sonner";
+export function MusicLinks({title,artist}:{title:string;artist:string|null}){const links=musicSearchLinks(title,artist);return <div className="flex flex-wrap gap-3"><Button asChild><a href={links.spotify} target="_blank" rel="noreferrer"><Headphones/>Buscar en Spotify</a></Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline"><ExternalLink/>Abrir en…<ChevronDown/></Button></DropdownMenuTrigger><DropdownMenuContent>{[["Apple Music",links.apple],["YouTube Music",links.youtube],["Deezer",links.deezer]].map(([name,url])=><DropdownMenuItem asChild key={name}><a href={url} target="_blank" rel="noreferrer" className="min-h-11">{name}</a></DropdownMenuItem>)}</DropdownMenuContent></DropdownMenu><Button variant="ghost" onClick={async()=>{try{if(navigator.share)await navigator.share({title:`${title} · ${artist ?? ""}`,url:links.spotify});else{await navigator.clipboard.writeText(links.spotify);toast.success("Link de escucha copiado");}}catch{/* canceled */}}><Share2/>Compartir</Button></div>;}
