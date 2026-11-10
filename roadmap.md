@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Review uploaded TMDB Daily ID Exports documentation: ID-only exports do not replace API credentials or full movie details
+
 - [ ] Guide the user to obtain a valid TMDB key and replace the rejected key securely; verify real movie/filmography calls after replacement
 - [ ] Expand to BUTACAPP: only Inicio/Buscar/Perfil fixed navigation; lists and friends inside home/profile; poster-mosaic home
 - [ ] Build “En qué andan” friends feed: newest-first infinite loading, pull-to-refresh, likes, replies, activity filter and clear friend-search empty state
