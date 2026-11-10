@@ -243,21 +243,27 @@ export type Database = {
         Row: {
           item_id: string
           list_id: string
+          review: string
           score: number
+          score_10: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
           item_id: string
           list_id: string
+          review?: string
           score: number
+          score_10?: number | null
           updated_at?: string
           user_id?: string
         }
         Update: {
           item_id?: string
           list_id?: string
+          review?: string
           score?: number
+          score_10?: number | null
           updated_at?: string
           user_id?: string
         }
