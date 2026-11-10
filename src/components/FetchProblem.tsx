@@ -1,4 +1,4 @@
-import { Film, KeyRound, SearchX } from "lucide-react";
+import { KeyRound, SearchX } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { EmptyState, ErrorState } from "@/components/States";
@@ -29,5 +29,3 @@ export function FetchProblem({ reason, onRetry }: { reason: "no_key" | "not_foun
     />
   );
 }
-
-export { Film };
