@@ -425,6 +425,146 @@ export type Database = {
         }
         Relationships: []
       }
+      culture_feed: {
+        Row: {
+          category: string
+          event_id: string | null
+          id: string
+          image_url: string | null
+          kind: string
+          published_at: string
+          result: Json | null
+          source_name: string
+          source_url: string
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          event_id?: string | null
+          id?: string
+          image_url?: string | null
+          kind: string
+          published_at?: string
+          result?: Json | null
+          source_name: string
+          source_url: string
+          summary?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          event_id?: string | null
+          id?: string
+          image_url?: string | null
+          kind?: string
+          published_at?: string
+          result?: Json | null
+          source_name?: string
+          source_url?: string
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "culture_feed_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "cultural_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      culture_feed_comments: {
+        Row: {
+          body: string
+          created_at: string
+          feed_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          feed_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          feed_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "culture_feed_comments_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "culture_feed"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "culture_feed_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      culture_feed_likes: {
+        Row: {
+          feed_id: string
+          user_id: string
+        }
+        Insert: {
+          feed_id: string
+          user_id: string
+        }
+        Update: {
+          feed_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "culture_feed_likes_feed_id_fkey"
+            columns: ["feed_id"]
+            isOneToOne: false
+            referencedRelation: "culture_feed"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "culture_feed_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      culture_updates: {
+        Row: {
+          key: string
+          message: string | null
+          updated_at: string
+        }
+        Insert: {
+          key: string
+          message?: string | null
+          updated_at?: string
+        }
+        Update: {
+          key?: string
+          message?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_attendance: {
         Row: {
           event_id: string

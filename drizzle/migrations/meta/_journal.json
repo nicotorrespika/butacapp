@@ -64,6 +64,13 @@
       "when": 1794328844974,
       "tag": "0008_culture_books_events",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1794329230198,
+      "tag": "0009_culture_home_feeds",
+      "breakpoints": true
     }
   ]
 }
