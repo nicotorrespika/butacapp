@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Read and implement social redesign upload requirements
 - [ ] Read and fix navigation upload requirements
 - [ ] Read and implement event images and content upload requirements
 - [x] Spotify: user chose title/artist search links instead of direct catalog/Odesli integration; stage two stays unimplemented pending confirmation
