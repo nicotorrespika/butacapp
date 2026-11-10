@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Refine the interface toward an indie/cult film festival aesthetic inspired by Letterboxd
+
 - [ ] Movie catalogue via TMDB (full catalogue, director/actor search → full filmography)
 - [ ] Movie page: synopsis, critic scores (TMDB / IMDb / Rotten Tomatoes / Metacritic via OMDb), Letterboxd link, similar suggestions (director, theme, genre)
 - [ ] Open the movie page from its title inside a list item, then navigate to director/actor filmographies and suggestions

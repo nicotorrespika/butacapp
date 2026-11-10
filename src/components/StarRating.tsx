@@ -47,7 +47,7 @@ export function StarRating({ value, onChange, size = "lg", label = "Tu nota" }: 
             <Star
               className={cn(
                 "size-7 transition-all duration-200",
-                active ? "fill-primary text-primary drop-shadow-[0_0_8px_var(--primary)]" : "text-muted-foreground/50",
+                active ? "fill-primary text-primary" : "text-muted-foreground/50",
               )}
             />
           </button>
