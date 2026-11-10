@@ -266,6 +266,33 @@ export type Database = {
           },
         ]
       }
+      content_shares: {
+        Row: {
+          channel: string
+          content_id: string
+          created_at: string
+          id: string
+          kind: string
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          content_id: string
+          created_at?: string
+          id?: string
+          kind: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          content_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       cultural_comments: {
         Row: {
           body: string
@@ -636,6 +663,7 @@ export type Database = {
           read_at: string | null
           recipient_id: string
           sender_id: string
+          shared_card: Json | null
           shared_title: string | null
           shared_url: string | null
         }
@@ -646,6 +674,7 @@ export type Database = {
           read_at?: string | null
           recipient_id: string
           sender_id: string
+          shared_card?: Json | null
           shared_title?: string | null
           shared_url?: string | null
         }
@@ -656,6 +685,7 @@ export type Database = {
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
+          shared_card?: Json | null
           shared_title?: string | null
           shared_url?: string | null
         }
@@ -1064,6 +1094,7 @@ export type Database = {
           event_interests: string[]
           id: string
           rating_style: string
+          share_visibility: string
           top_five: Json
           updated_at: string
           username: string | null
@@ -1079,6 +1110,7 @@ export type Database = {
           event_interests?: string[]
           id: string
           rating_style?: string
+          share_visibility?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
@@ -1094,6 +1126,7 @@ export type Database = {
           event_interests?: string[]
           id?: string
           rating_style?: string
+          share_visibility?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
@@ -1144,6 +1177,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      share_referrals: {
+        Row: {
+          created_at: string
+          invited_by: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          invited_by: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          invited_by?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       social_comments: {
         Row: {
@@ -1353,6 +1404,12 @@ export type Database = {
         Args: { _list_id: string; _user_id: string }
         Returns: boolean
       }
+      public_share_summary: { Args: { cid: string; k: string }; Returns: Json }
+      share_access: {
+        Args: { cid: string; k: string; viewer: string }
+        Returns: boolean
+      }
+      shared_betty_results: { Args: { hid: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never
