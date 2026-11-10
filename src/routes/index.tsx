@@ -10,13 +10,13 @@ import { BottomNav } from "@/components/BottomNav";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BUTACAPP — listas compartidas de cine, música y arte" },
+      { title: "BUTACAPP — listas compartidas de cine, música, libros y eventos" },
       {
         name: "description",
-        content: "Armá watchlists colaborativas: buscá películas, discos y obras, marcalas, puntualas y comentalas en grupo.",
+        content: "Armá watchlists colaborativas: buscá películas, discos y libros, marcalas, puntualas y comentalas en grupo.",
       },
-      { property: "og:title", content: "BUTACAPP — listas compartidas de cine, música y arte" },
-      { property: "og:description", content: "Watchlists colaborativas para ver, escuchar y visitar en grupo." },
+      { property: "og:title", content: "BUTACAPP — listas compartidas de cine, música, libros y eventos" },
+      { property: "og:description", content: "Watchlists colaborativas para ver, escuchar, leer y salir en grupo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

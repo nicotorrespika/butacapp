@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { InviteDrawer } from "@/components/InviteDrawer";
 import { ItemDrawer } from "@/components/ItemDrawer";
 import { SocialComments } from "@/components/SocialComments";
+import { CultureBetty } from "@/components/CultureBetty";
 import { ListRecommendations } from "@/components/ListRecommendations";
 import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
@@ -200,6 +201,7 @@ function ListPage() {
       </header>
       {d && (d.list.kind === "movies" || d.list.kind === "mixed") && <ListRecommendations listId={listId} />}
 
+      {d&&(d.list.kind==="books"||d.list.kind==="music")&&<CultureBetty type={d.list.kind==="books"?"book":"music"} listId={listId}/>}
       {/* Filters + sort */}
       <div className="sticky top-0 z-20 mt-6 space-y-2 bg-background px-4 py-2">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 scrollbar-none">

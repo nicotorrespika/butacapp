@@ -1,0 +1,42 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+import { rssNews } from "./culture-research";
+import { searchBooks } from "./culture-providers";
+import { mapTmdb,searchMusic,tmdbFetcher,type TmdbItem } from "./search-providers";
+import { parseQuery } from "@/lib/search-query";
+import { eventSchema,normalizeTitle } from "@/lib/culture";
+import type { SearchResult } from "@/lib/media";
+type DB=SupabaseClient<Database>;
+const gateway="https://connector-gateway.lovable.dev/parallel";
+export async function collectCulture(db:DB,kind:"daily"|"events",keys:{ai?:string|undefined;parallel?:string|undefined;tmdb?:string|undefined}) {
+ const tasks=kind==="daily"?["movie","music","book"]:["events"];
+ for(const task of tasks){const lock=await db.rpc("acquire_culture_job",{job_key:task});if(!lock.data)continue;
+ try{if(task==="events")await collectEvents(db,keys);else await collectCategory(db,task as "movie"|"music"|"book",keys.tmdb);await db.from("culture_jobs").update({lease_until:new Date(0).toISOString(),last_completed_at:new Date().toISOString()}).eq("key",task);}catch(e){console.error("culture collector",task,e);await db.from("culture_jobs").update({lease_until:new Date(0).toISOString()}).eq("key",task);await db.from("culture_updates").upsert({key:task,message:"Uy, fue una bettiada. Conservamos lo que ya encontramos."});}}
+}
+async function collectCategory(db:DB,category:"movie"|"music"|"book",tmdbKey?:string) {
+ const now=new Date().toISOString();const news=await rssNews(category);
+ if(news.length){const r=await db.from("culture_feed").upsert(news.map(n=>({category,kind:"news",title:n.title,summary:n.summary,source_name:n.source,source_url:n.url,published_at:n.date&&!Number.isNaN(Date.parse(n.date))?new Date(n.date).toISOString():now,updated_at:now})),{onConflict:"category,kind,source_url"});if(r.error)throw r.error;}
+ let catalog:SearchResult[]=[];
+ if(category==="movie"&&tmdbKey){const fetch=tmdbFetcher(tmdbKey);for(const path of ["/movie/now_playing","/movie/upcoming"]){try{const data=await fetch<{results:TmdbItem[]}>(path);const values=data.results.slice(0,10).map(m=>mapTmdb(m,"movie"));catalog.push(...values);if(values.length)await db.from("culture_feed").upsert(values.map(m=>({category,kind:"release",title:m.title,summary:path.includes("upcoming")?"Próximos estrenos en Argentina según TMDB.":"Cartelera en Argentina según TMDB.",image_url:m.imageUrl,source_name:"TMDB",source_url:m.externalUrl ?? "",result:JSON.parse(JSON.stringify(m)),published_at:now,updated_at:now})),{onConflict:"category,kind,source_url"});}catch(e){console.error("cinema releases",e);}}try{const ar=await fetch<{results:TmdbItem[]}>("/discover/movie",{with_origin_country:"AR",sort_by:"popularity.desc","vote_count.gte":30});await db.from("culture_cache").upsert({key:"argentine-movies",payload:JSON.parse(JSON.stringify(ar.results.map(m=>({...mapTmdb(m,"movie"),kindLabel:"Cine argentino"})))),expires_at:new Date(Date.now()+86400000).toISOString()});}catch(e){console.error("argentine collection",e);}}
+ if(category==="music")catalog=await searchMusic(parseQuery("rock nacional"));
+ if(category==="book")catalog=await searchBooks("argentina fiction");
+ if(catalog.length){const day=Math.floor(Date.now()/86400000);const item=catalog[day%catalog.length];if(item)await db.from("culture_feed").upsert({category,kind:"recommendation",title:item.title,summary:category==="book"?"Un libro para descubrir hoy.":category==="music"?"Un disco para escuchar hoy.":"Una película para descubrir hoy.",image_url:item.imageUrl,source_name:category==="book"?"Open Library":category==="music"?"iTunes":"TMDB",source_url:item.externalUrl ?? "",result:JSON.parse(JSON.stringify(item)),published_at:now,updated_at:now},{onConflict:"category,kind,source_url"});}
+ if(news.length||catalog.length)await db.from("culture_updates").upsert({key:category,updated_at:now,message:null});
+}
+async function collectEvents(db:DB,keys:{ai?:string|undefined;parallel?:string|undefined}) {
+ if(!keys.ai||!keys.parallel)throw new Error("Research connection unavailable");
+ const headers={Authorization:`Bearer ${keys.ai}`,"X-Connection-Api-Key":keys.parallel,"Content-Type":"application/json"};
+ const job=await db.from("culture_jobs").select("run_id").eq("key","events").single();
+ if(job.data?.run_id){const r=await fetch(`${gateway}/v1/tasks/runs/${job.data.run_id}/result?timeout=1`,{headers,signal:AbortSignal.timeout(4000)});if(r.status===408)return;if(!r.ok){const text=await r.text();await pauseOnDenial(db,"events",r.status,text);throw new Error(`Research failed ${r.status}`);}const value=await r.json() as {output?:{content?:{events?:unknown[]};basis?:unknown[]}};
+ const now=Date.now();const candidates=(value.output?.content?.events ?? []).flatMap(v=>{const p=eventSchema.safeParse(v);return p.success&&Date.parse(p.data.starts_at)>now?[p.data]:[];});
+ const existing=await db.from("cultural_events").select("title,starts_at,venue").eq("city","Ciudad de Buenos Aires").gte("starts_at",new Date().toISOString());const seen=new Set((existing.data ?? []).map(e=>`${normalizeTitle(e.title)}|${e.starts_at}|${normalizeTitle(e.venue)}`));
+ const events=candidates.filter(e=>{const key=`${normalizeTitle(e.title)}|${new Date(e.starts_at).toISOString()}|${normalizeTitle(e.venue)}`;if(seen.has(key))return false;seen.add(key);return true;});
+ if(events.length){const saved=await db.from("cultural_events").upsert(events.map(e=>({...e,city:"Ciudad de Buenos Aires",community:false,verified:true})),{onConflict:"city,source_url,starts_at"}).select("*");if(saved.error)throw saved.error;for(const e of saved.data)await db.from("culture_feed").upsert({category:"event",kind:"event",title:e.title,summary:e.description,image_url:e.image_url,source_name:e.source_name,source_url:e.source_url,event_id:e.id,published_at:e.starts_at,updated_at:new Date().toISOString()},{onConflict:"category,kind,source_url"});}
+ await db.from("culture_jobs").update({run_id:null}).eq("key","events");await db.from("culture_updates").upsert({key:"event",updated_at:new Date().toISOString(),message:events.length?null:"No encontré nuevos eventos comprobados."});
+ }
+ const until=new Date(Date.now()+30*86400000).toISOString();
+ const schema={type:"object",additionalProperties:false,required:["events"],properties:{events:{type:"array",items:{type:"object",additionalProperties:false,required:["title","description","starts_at","ends_at","venue","address","neighborhood","interest","price","source_name","source_url","image_url"],properties:{title:{type:"string"},description:{type:"string"},starts_at:{type:["string","null"]},ends_at:{type:["string","null"]},venue:{type:["string","null"]},address:{type:["string","null"]},neighborhood:{type:["string","null"]},interest:{type:"string",enum:["music","movie","art","theater","book","festival"]},price:{type:["number","null"]},source_name:{type:"string"},source_url:{type:"string"},image_url:{type:["string","null"]}}}}}};
+ const r=await fetch(`${gateway}/v1/tasks/runs`,{method:"POST",headers,body:JSON.stringify({processor:"base",input:`Encontrá hasta 8 eventos culturales en Ciudad de Buenos Aires entre ${new Date().toISOString()} y ${until}. Priorizar agenda oficial buenosaires.gob.ar y fuentes oficiales de cines, teatros y centros culturales. SOLO eventos con fecha, hora y lugar exactos confirmados en la URL oficial. Incluir ciclos de cine y eventos gratis. 0 SOLO si la fuente dice gratis, null para precio desconocido. No inventar horarios, imágenes ni eventos. starts_at ISO8601 con zona -03:00; una oración propia en español para descripción. Omitir agendas genéricas y eventos sin fecha/hora verificable.`,task_spec:{output_schema:{type:"json",json_schema:schema}}}),signal:AbortSignal.timeout(4000)});
+ if(!r.ok){const text=await r.text();await pauseOnDenial(db,"events",r.status,text);throw new Error(`Research failed ${r.status}`);}const run=await r.json() as {run_id:string};await db.from("culture_jobs").update({run_id:run.run_id}).eq("key","events");
+}
+async function pauseOnDenial(db:DB,key:string,status:number,message:string){if([401,402,403,404,429].includes(status)){await db.from("culture_jobs").update({paused_reason:`${status}: ${message.slice(0,400)}`}).eq("key",key);await db.from("culture_updates").upsert({key:key==="events"?"event":key,message:"La actualización está pausada: revisá la conexión o el límite de uso."});}}

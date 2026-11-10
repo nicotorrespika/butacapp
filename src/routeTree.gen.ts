@@ -24,6 +24,7 @@ import { Route as AuthenticatedListsListIdRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMovieMovieIdRouteImport } from './routes/_authenticated/movie.$movieId'
 import { Route as AuthenticatedPeopleUserIdRouteImport } from './routes/_authenticated/people.$userId'
 import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
+import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -106,6 +107,11 @@ const AuthenticatedPersonPersonIdRoute =
     path: '/person/$personId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
+  id: '/api/public/jobs/culture',
+  path: '/api/public/jobs/culture',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
+  '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
+  '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
+  '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/people/$userId'
     | '/person/$personId'
     | '/lists/'
+    | '/api/public/jobs/culture'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/people/$userId'
     | '/person/$personId'
     | '/lists'
+    | '/api/public/jobs/culture'
   id:
     | '__root__'
     | '/'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/_authenticated/people/$userId'
     | '/_authenticated/person/$personId'
     | '/_authenticated/lists/'
+    | '/api/public/jobs/culture'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicJobsCultureRoute: typeof ApiPublicJobsCultureRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -323,6 +336,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonPersonIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/culture': {
+      id: '/api/public/jobs/culture'
+      path: '/api/public/jobs/culture'
+      fullPath: '/api/public/jobs/culture'
+      preLoaderRoute: typeof ApiPublicJobsCultureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -362,6 +382,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicJobsCultureRoute: ApiPublicJobsCultureRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
