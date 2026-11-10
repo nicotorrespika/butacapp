@@ -1,0 +1,4 @@
+import { useState } from "react";
+import { Film,Music,BookOpen,Palette,Drama,CalendarDays } from "lucide-react";
+const icons={movie:Film,music:Music,book:BookOpen,art:Palette,theater:Drama,festival:CalendarDays};
+export function EventImage({title,interest,url}:{title:string;interest:string;url:string|null}){const [failed,setFailed]=useState<string|null>(null);const Icon=icons[interest as keyof typeof icons] ?? CalendarDays;return <div className="relative aspect-video w-full overflow-hidden rounded-sm border border-border bg-card">{url&&failed!==url?<img src={url} alt={title} loading="lazy" decoding="async" onError={()=>setFailed(url)} className="h-full w-full object-cover"/>:<div className="flex h-full items-center gap-5 p-6"><Icon className="size-12 shrink-0 text-primary"/><span className="line-clamp-3 break-words font-display text-3xl text-primary">{title}</span></div>}<div className="poster-fade pointer-events-none absolute inset-0"/></div>;}

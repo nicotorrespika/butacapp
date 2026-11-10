@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { dateRange,interests,eventPriceMatches } from "@/lib/culture";
 import { Button } from "./ui/button";
+import { EventImage } from "./EventImage";
 export function EventAgenda({personal=false,initialQuery=""}:{personal?:boolean;initialQuery?:string}) {
  const {user}=useAuth();const qc=useQueryClient();const [mode,setMode]=useState("week");const [chosen,setChosen]=useState("");const [price,setPrice]=useState("all");const [selected,setSelected]=useState<string[]>([]);const [text,setText]=useState(initialQuery);const [city,setCity]=useState("Ciudad de Buenos Aires");const [changing,setChanging]=useState(false);const [calendar,setCalendar]=useState(false);const [creating,setCreating]=useState(false);const [neighborhood,setNeighborhood]=useState("");
  const profile=useQuery({queryKey:["culture","city",user?.id],enabled:!!user,queryFn:async()=>{const r=await supabase.from("profiles").select("city,city_configured,event_interests").eq("id",user?.id ?? "").single();return r.data;}});
