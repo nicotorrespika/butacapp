@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getMovie } from "@/lib/movies.functions";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { Check, ExternalLink, Loader2, Send, Trash2 } from "lucide-react";
+import { ArrowUpRight, Check, ExternalLink, Loader2, Send, Trash2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +16,7 @@ import { UserAvatar } from "@/components/UserAvatar";
 import { DONE_LABEL, hasMoviePage, movieRouteId, type MediaType } from "@/lib/media";
 import { averageScore, ratingScore } from "@/lib/ratings";
 import { keys, type CommentRow, type ItemRow, type ProfileRow, type RatingRow } from "@/lib/queries";
+import { MovieActions } from "./MovieActions";
 
 const ago = (iso: string) => formatDistanceToNow(new Date(iso), { addSuffix: true, locale: es });
 
@@ -35,6 +38,8 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
   const [sending, setSending] = useState(false);
   const [reviewDraft, setReviewDraft] = useState<string | null>(null);
   const [savingReview, setSavingReview] = useState(false);
+  const movieCall=useServerFn(getMovie);
+  const metadata=useQuery({queryKey:["movie", "sheet",item?.external_id],enabled:!!item&&!inline&&hasMoviePage(item.source,item.media_type as MediaType),queryFn:()=>movieCall({data:{id:movieRouteId(item?.external_id ?? "")}})});
 
   if (!item) return <Drawer open={false} onOpenChange={onOpenChange} />;
 
@@ -129,16 +134,16 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
         <div className={inline ? "pb-2" : "overflow-y-auto px-4 pb-8"}>
           {/* Header: poster + meta */}
           {!inline && <div className="flex gap-4 pt-4">
-            {hasMoviePage(item.source, media) ? <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)} aria-label={`Ver ficha de ${item.title}`} className="w-28 shrink-0"><Poster src={item.image_url} alt={item.title} media={media} /></Link> : <Poster src={item.image_url} alt={item.title} media={media} className="w-28 shrink-0" />}
+            <Poster src={item.image_url} alt={item.title} media={media} className="w-20 shrink-0" />
             <div className="min-w-0 flex-1 pt-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">{item.kind_label}</p>
               <DrawerTitle className="mt-1 font-display text-3xl font-normal leading-[1.05]">
                 {hasMoviePage(item.source, media) ? (
-                  <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)} className="underline decoration-primary/50 underline-offset-4">{item.title}</Link>
+                  <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} className="underline decoration-primary/50 underline-offset-4">{item.title}<ArrowUpRight className="ml-1 inline size-4"/></Link>
                 ) : item.title}
               </DrawerTitle>
               <DrawerDescription className="mt-1.5 text-sm">
-                {[item.creator, item.year].filter(Boolean).join(" · ") || "—"}
+                {[metadata.data?.ok?metadata.data.data.directors.map(d=>d.name).join(" · ")||item.creator:item.creator, item.year].filter(Boolean).join(" · ") || "—"}
               </DrawerDescription>
               <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                 <UserAvatar name={name(item.added_by)} url={profiles[item.added_by]?.avatar_url} className="size-6 text-xs" />
@@ -160,6 +165,8 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
             <Check />
             {item.done ? `${labels.done}${item.done_by ? ` · ${name(item.done_by)}` : ""}` : labels.todo}
           </Button>
+
+          {media==="movie"&&<div className="mt-4"><MovieActions favoriteOnly result={{source:item.source,externalId:item.external_id,title:item.title,year:item.year,imageUrl:item.image_url,creator:item.creator,mediaType:media,kindLabel:item.kind_label ?? "Película",externalUrl:item.external_url}}/></div>}
 
           {/* Ratings */}
           <section className="mt-8 py-6">
@@ -254,7 +261,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
           {!inline && <div className="mt-8 flex flex-wrap gap-2">
             {hasMoviePage(item.source, media) && (
               <Button asChild variant="outline" size="sm">
-                <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)}><ExternalLink /> Ficha y similares</Link>
+                <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }}><ExternalLink /> Ficha y similares</Link>
               </Button>
             )}
             {item.external_url && (

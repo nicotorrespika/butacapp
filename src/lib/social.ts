@@ -19,7 +19,7 @@ export const friendsQuery = (id: string) => queryOptions({ queryKey: ["social", 
   return r.data.map(f => ({ ...f, profile: p.data?.find(p => p.id === (f.sender_id === id ? f.receiver_id : f.sender_id)) }));
 }});
 export const watchedQuery = (id: string) => queryOptions({ queryKey: ["social", "watched", id], queryFn: async () => {
-  const r = await supabase.from("watched_movies").select("*").eq("user_id", id).order("watched_at", { ascending: false }); if(r.error) throw r.error; return r.data;
+  const r = await supabase.from("movie_entries").select("*").eq("user_id", id).order("updated_at", { ascending: false }); if(r.error) throw r.error; return r.data;
 }});
 export const profileListsQuery = (id: string) => queryOptions({ queryKey: ["social", "lists", id], queryFn: async () => {
   const r = await supabase.from("lists").select("*").eq("owner_id", id).order("updated_at", { ascending: false }); if(r.error) throw r.error; return r.data;

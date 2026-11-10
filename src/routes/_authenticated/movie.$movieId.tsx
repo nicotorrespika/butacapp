@@ -9,6 +9,7 @@ import { MediaRow, useCardProps } from "@/components/MediaRow";
 import { Poster } from "@/components/Poster";
 import { MovieTrailer } from "@/components/MovieTrailer";
 import { MovieListActivity } from "@/components/MovieListActivity";
+import { MovieActions } from "@/components/MovieActions";
 import { Skeleton } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { useAddToList } from "@/hooks/use-add-to-list";
@@ -110,6 +111,7 @@ function MoviePage() {
       <div className="mt-10 space-y-10">
         {m.trailerKey && <MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} />}
         <MovieListActivity key={m.routeId} movie={m} listId={list} />
+        <section className="px-4"><MovieActions key={m.routeId} result={m.result}/></section>
         <div className="space-y-6 px-4">
           <Scores scores={m.scores} />
           <div className="flex flex-wrap gap-2">

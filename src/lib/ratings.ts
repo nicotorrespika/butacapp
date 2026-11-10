@@ -12,3 +12,6 @@ export function averageScore(scores: number[]): number | null {
   const avg = valid.reduce((a, b) => a + b, 0) / valid.length;
   return Math.round(avg * 10) / 10;
 }
+
+/** Five visual stars, with each half worth one point. */
+export const starFill = (score: number | null, star: number) => Math.max(0, Math.min(1, (score ?? 0) / 2 - (star - 1)));

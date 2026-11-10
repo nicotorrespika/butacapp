@@ -360,6 +360,97 @@ export type Database = {
         }
         Relationships: []
       }
+      movie_comments: {
+        Row: {
+          body: string
+          created_at: string
+          external_id: string
+          id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          external_id: string
+          id?: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          external_id?: string
+          id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movie_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      movie_entries: {
+        Row: {
+          external_id: string
+          favorite: boolean
+          genres: string[]
+          id: string
+          image_url: string | null
+          review: string
+          score_10: number | null
+          source: string
+          title: string
+          updated_at: string
+          user_id: string
+          watched: boolean
+          year: number | null
+        }
+        Insert: {
+          external_id: string
+          favorite?: boolean
+          genres?: string[]
+          id?: string
+          image_url?: string | null
+          review?: string
+          score_10?: number | null
+          source: string
+          title: string
+          updated_at?: string
+          user_id: string
+          watched?: boolean
+          year?: number | null
+        }
+        Update: {
+          external_id?: string
+          favorite?: boolean
+          genres?: string[]
+          id?: string
+          image_url?: string | null
+          review?: string
+          score_10?: number | null
+          source?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          watched?: boolean
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movie_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -22,6 +22,20 @@
       "when": 1794293600674,
       "tag": "0002_butacapp_social",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794294256577,
+      "tag": "0003_personal_movie_entries",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794294356698,
+      "tag": "0004_movie_friend_comments",
+      "breakpoints": true
     }
   ]
 }
