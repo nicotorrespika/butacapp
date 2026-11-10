@@ -1196,6 +1196,24 @@ export type Database = {
         }
         Relationships: []
       }
+      similar_recommendations: {
+        Row: {
+          cache_key: string
+          payload: Json
+          updated_at: string
+        }
+        Insert: {
+          cache_key: string
+          payload: Json
+          updated_at?: string
+        }
+        Update: {
+          cache_key?: string
+          payload?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       social_comments: {
         Row: {
           activity_id: string | null
