@@ -7,7 +7,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { SearchResponse, SearchResult } from "@/lib/media";
 import { parseQuery } from "@/lib/search-query";
-import { searchArt, searchItunesMovies, searchMusic, searchTmdb } from "@/server/search-providers";
+import { searchArt, searchImdbFallback, searchMusic, searchTmdb } from "@/server/search-providers";
 
 const inputSchema = z.object({
   q: z.string().trim().min(1).max(120),
@@ -36,11 +36,11 @@ export const searchMedia = createServerFn({ method: "POST" })
 
     const [movie, music, art] = await Promise.all([
       want("movie")
-        ? run("Películas", () => (tmdbKey ? searchTmdb(parsed, tmdbKey) : searchItunesMovies(parsed)))
+        ? run("Películas", () => (tmdbKey ? searchTmdb(parsed, tmdbKey) : searchImdbFallback(parsed)))
         : Promise.resolve([]),
       want("music") ? run("Música", () => searchMusic(parsed)) : Promise.resolve([]),
       want("art") ? run("Arte", () => searchArt(parsed)) : Promise.resolve([]),
     ]);
 
-    return { movie, music, art, movieProvider: tmdbKey ? "tmdb" : "itunes", warnings };
+    return { movie, music, art, movieProvider: tmdbKey ? "tmdb" : "basic", warnings };
   });

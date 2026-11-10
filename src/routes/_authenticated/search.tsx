@@ -189,9 +189,9 @@ function SearchPage() {
                 </section>
               );
             })}
-            {(filter === "all" || filter === "movie") && data.movieProvider === "itunes" && (
+            {(filter === "all" || filter === "movie") && data.movieProvider === "basic" && (
               <p className="pb-4 text-center text-[11px] text-muted-foreground">
-                Películas desde iTunes. Con una clave de TMDB los resultados son más completos.
+                Películas en modo básico. Con una clave de TMDB los resultados son mucho más completos.
               </p>
             )}
           </div>

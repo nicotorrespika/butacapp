@@ -3,7 +3,7 @@
  * Runs only on the server (inside the search server function), so the
  * TMDB key never reaches the browser. All providers use plain fetch.
  *
- *  - Movies/series: TMDB (needs TMDB_API_KEY) → fallback iTunes Search (no key)
+ *  - Movies/series: TMDB (needs TMDB_API_KEY) → fallback IMDb autocomplete (no key)
  *  - Music: iTunes Search API (albums + songs, no key)
  *  - Art: Art Institute of Chicago + The Met Museum (no key)
  */
@@ -141,7 +141,8 @@ export async function searchTmdb(q: ParsedQuery, key: string): Promise<SearchRes
 }
 
 /* ------------------------------------------------------------------ */
-/* iTunes Search (music + movie fallback)                               */
+/* iTunes Search (music)                                               */
+/* (kept below: movie fallback)                               */
 /* ------------------------------------------------------------------ */
 
 interface ItunesItem {
@@ -203,24 +204,48 @@ export async function searchMusic(q: ParsedQuery): Promise<SearchResult[]> {
   return dedupe(byYear.length ? byYear : mapped).slice(0, 24);
 }
 
-/** Movie fallback when no TMDB key is configured. */
-export async function searchItunesMovies(q: ParsedQuery): Promise<SearchResult[]> {
-  const term = q.text || String(q.year ?? "");
+/**
+ * Movie fallback when no TMDB key is configured: IMDb's public autocomplete
+ * feed (no key, but limited to ~8 results and no director info).
+ * Configure TMDB_API_KEY for full results.
+ */
+interface ImdbSuggest {
+  id: string;
+  l?: string;
+  qid?: string;
+  s?: string;
+  y?: number;
+  i?: { imageUrl?: string };
+}
+const IMDB_KINDS: Record<string, string> = {
+  movie: "Película",
+  tvSeries: "Serie",
+  tvMiniSeries: "Miniserie",
+  tvMovie: "Película",
+};
+
+export async function searchImdbFallback(q: ParsedQuery): Promise<SearchResult[]> {
+  const term = (q.year && q.text ? `${q.text} ${q.year}` : q.text || String(q.year ?? "")).toLowerCase();
   if (!term) return [];
-  const d = await itunes({ term, media: "movie", entity: "movie", limit: q.year ? 50 : 24 });
-  const mapped = d.results.map((m) => ({
-    source: "itunes",
-    externalId: `movie:${m.trackId}`,
-    mediaType: "movie" as const,
-    title: m.trackName ?? "Sin título",
-    creator: m.artistName ?? null, // iTunes reports the director here
-    year: extractYear(m.releaseDate),
-    imageUrl: bigArtwork(m.artworkUrl100),
-    kindLabel: "Película",
-    externalUrl: m.trackViewUrl ?? null,
-  }));
-  const byYear = q.year && q.text ? mapped.filter((m) => m.year === q.year) : mapped;
-  return dedupe(byYear.length ? byYear : mapped).slice(0, 24);
+  const fetchTerm = (t: string) =>
+    getJson<{ d?: ImdbSuggest[] }>(`https://v3.sg.media-imdb.com/suggestion/x/${encodeURIComponent(t)}.json`);
+  let d = await fetchTerm(term);
+  // "Tarkovsky 1979" may yield nothing as a phrase → retry with the text only.
+  if (!d.d?.some((x) => x.qid && IMDB_KINDS[x.qid]) && q.text && q.year) d = await fetchTerm(q.text.toLowerCase());
+  const mapped: SearchResult[] = (d.d ?? [])
+    .filter((x) => x.id.startsWith("tt") && x.qid && IMDB_KINDS[x.qid])
+    .map((x) => ({
+      source: "imdb",
+      externalId: x.id,
+      mediaType: "movie" as const,
+      title: x.l ?? "Sin título",
+      creator: x.s || null, // main cast
+      year: x.y ?? null,
+      imageUrl: x.i?.imageUrl ? x.i.imageUrl.replace(/\._V1_.*\.jpg$/, "._V1_UX342_.jpg") : null,
+      kindLabel: IMDB_KINDS[x.qid ?? ""] ?? "Película",
+      externalUrl: `https://www.imdb.com/title/${x.id}/`,
+    }));
+  return boostYear(mapped, q.year);
 }
 
 /* ------------------------------------------------------------------ */

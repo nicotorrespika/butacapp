@@ -28,7 +28,7 @@ export interface SearchResponse {
   music: SearchResult[];
   art: SearchResult[];
   /** Which provider served movies (tmdb when the key is configured). */
-  movieProvider: "tmdb" | "itunes";
+  movieProvider: "tmdb" | "basic";
   warnings: string[];
 }
 
