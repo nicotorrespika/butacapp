@@ -1,10 +1,12 @@
 # Roadmap
 
 ## Cultural expansion requested November 10, 2026
-- [ ] Home tabs Todo / Cine / Música / Libros / Arte, remembered selection and category-filtered friends activity; preserve existing cinema flows
+- [ ] Replace standalone Arte with Eventos; preserve legacy art items without exposing art creation/search/discovery/Top 5
+- [ ] Eventos: official Buenos Aires agenda first, city preference and location consent, date/interest/free-paid filters, list/calendar, verified details and directions
+- [ ] Eventos: community submissions/reports, Voy / Me interesa, personal agenda, friend activity/invitations and verified Betty suggestions
+- [ ] Home tabs Todo / Cine / Música / Libros / Eventos, remembered selection and category-filtered friends activity; preserve existing cinema flows
 - [ ] Books: verified search, full details, list panels, personal state and category Top 5
 - [ ] Music: album details, tracklist, available audio previews, personal state and category Top 5
-- [ ] Art: work details, verified collection metadata, personal state and category Top 5
 - [ ] Cultural news/events with cited short summaries and persistent cache; backend web search requires an authorized connection
 - [ ] Category-specific Sorprendeme, Descubrir and verified Betty recommendations, including list context
 - [ ] Run cinema regressions and authenticated mobile checks at each stage
