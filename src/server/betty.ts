@@ -4,7 +4,7 @@ import {recommendationSchema} from "@/lib/recommendation-types";
 import {verifiedUnique,type BettyMovie} from "@/lib/betty-types";
 import {tmdbFetcher,mapTmdb,type TmdbItem} from "./search-providers";
 import {createLovableAiGatewayRunIdFetch} from "./ai/run-id.ts";
-export async function askBetty(apiKey:string,tmdbKey:string,prompt:string,context:unknown,excluded:string[]){
+export async function askBetty(apiKey:string,tmdbKey:string,prompt:string,context:unknown,excluded:string[],research?:((movie:BettyMovie)=>Promise<import("@/lib/movie-research").MovieReview[]>)|undefined){
  const run=createLovableAiGatewayRunIdFetch();const provider=createOpenAI({baseURL:"https://ai.gateway.lovable.dev/v1",apiKey,headers:{"Lovable-API-Key":apiKey,"X-Lovable-AIG-SDK":"vercel-ai-sdk"},fetch:run.fetch});
  const tmdb=tmdbFetcher(tmdbKey);
  async function generate(extra:string){
@@ -20,7 +20,8 @@ export async function askBetty(apiKey:string,tmdbKey:string,prompt:string,contex
   }
   return verifiedUnique(movies,excluded);
  }
- const first=await generate("");if(first.length>=3)return first;
+ const enrich=async(movies:BettyMovie[])=>{if(!research)return movies;return Promise.all(movies.slice(0,4).map(async movie=>{try{const sources=await research(movie);const source=sources.find(s=>!/^IMDb|Rotten Tomatoes|Metacritic/i.test(s.source)) ?? sources[0];return source?{...movie,reason:`${movie.reason} Chisme cinéfilo: ${source.source} cuenta que ${source.summary}`,sources}:movie;}catch{return movie;}}));};
+ const first=await generate("");if(first.length>=3)return enrich(first);
  const extra=await generate(`Necesito otras opciones distintas; ya verifiqué: ${first.map(m=>m.result.title).join(", ")}.`);
- return verifiedUnique([...first,...extra],excluded);
+ return enrich(verifiedUnique([...first,...extra],excluded));
 }
