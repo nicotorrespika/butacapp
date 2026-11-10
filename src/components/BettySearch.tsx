@@ -1,7 +1,9 @@
 import {useEffect,useState} from "react";
 import {useQuery,useQueryClient} from "@tanstack/react-query";
 import {useServerFn} from "@tanstack/react-start";
-import {Link} from "@tanstack/react-router";
+import {Link,useNavigate} from "@tanstack/react-router";
+import type {Tables} from "@/integrations/supabase/types";
+import {useScreenState} from "@/hooks/use-screen-state";
 import {Glasses,Plus,Heart,RefreshCw,Send,ThumbsDown,Loader2} from "lucide-react";
 import {toast} from "sonner";
 import {getBetty} from "@/lib/betty.functions";
@@ -13,7 +15,8 @@ import type {BettyMovie} from "@/lib/betty-types";
 import {Button} from "./ui/button";
 import {Poster} from "./Poster";
 const placeholders=["Contale a Betty qué querés ver…","Un policial argentino de los que te dejan pensando","Algo corto y raro para ver con amigos"];
-export function BettySearch({listId,contextual=false}:{listId?:string|undefined;contextual?:boolean}){
+export function BettySearch({listId,contextual=false,saved}:{listId?:string|undefined;contextual?:boolean;saved?:Tables<"betty_history">}){
+ const navigate=useNavigate();
  const {user}=useAuth();const call=useServerFn(getBetty);const qc=useQueryClient();const adder=useAddToList(listId);const [text,setText]=useState("");const [placeholder,setPlaceholder]=useState(0);const [busy,setBusy]=useState(false);const [movies,setMovies]=useState<BettyMovie[]>([]);const [threadId,setThreadId]=useState<string|undefined>();const [historyId,setHistoryId]=useState("");const [message,setMessage]=useState("");const [retryable,setRetryable]=useState(true);const [rejected,setRejected]=useState<string[]>([]);
  const history=useQuery({queryKey:["betty","history",user?.id],enabled:!!user,queryFn:async()=>{if(!user)return [];const r=await supabase.from("betty_history").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(20);if(r.error)throw r.error;return r.data;}});
  useEffect(()=>{const timer=setInterval(()=>setPlaceholder(i=>(i+1)%placeholders.length),5000);return()=>clearInterval(timer);},[]);
