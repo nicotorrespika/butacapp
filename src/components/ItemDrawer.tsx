@@ -129,7 +129,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
         <div className={inline ? "pb-2" : "overflow-y-auto px-4 pb-8"}>
           {/* Header: poster + meta */}
           {!inline && <div className="flex gap-4 pt-4">
-            <Poster src={item.image_url} alt={item.title} media={media} className="w-28 shrink-0" />
+            {hasMoviePage(item.source, media) ? <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)} aria-label={`Ver ficha de ${item.title}`} className="w-28 shrink-0"><Poster src={item.image_url} alt={item.title} media={media} /></Link> : <Poster src={item.image_url} alt={item.title} media={media} className="w-28 shrink-0" />}
             <div className="min-w-0 flex-1 pt-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">{item.kind_label}</p>
               <DrawerTitle className="mt-1 font-display text-3xl font-normal leading-[1.05]">
