@@ -43,6 +43,7 @@ function FeedRow({activity:a,profile}:{activity:Activity;profile?:{username:stri
  const likes=useQuery({queryKey:["social","likes",a.id],queryFn:async()=>{const r=await supabase.from("activity_likes").select("user_id").eq("activity_id",a.id);if(r.error)throw r.error;return r.data;}});
  const list=useQuery({queryKey:["social","feed-list",a.list_id],enabled:!!a.list_id,queryFn:async()=>{const r=await supabase.from("lists").select("name").eq("id",a.list_id ?? "").maybeSingle();return r.data;}});
  const covers=useQuery({queryKey:["social","feed-covers",a.list_id],enabled:a.kind==="created_list"&&!!a.list_id,queryFn:async()=>{const r=await supabase.from("list_items").select("image_url,title").eq("list_id",a.list_id ?? "").not("image_url","is",null).limit(4);return r.data ?? [];}});
+ const itemPoster=useQuery({queryKey:["social","feed-poster",a.item_id],enabled:!!a.item_id&&!a.image_url,queryFn:async()=>{const r=await supabase.from("list_items").select("image_url").eq("id",a.item_id ?? "").maybeSingle();return r.data?.image_url ?? null;}});
  const rating=useQuery({queryKey:["social","feed-rating",a.item_id,a.user_id],enabled:a.kind==="added"&&!!a.item_id,queryFn:async()=>{const r=await supabase.from("ratings").select("score_10").eq("item_id",a.item_id ?? "").eq("user_id",a.user_id).maybeSingle();if(r.error)throw r.error;return r.data;}});
  const score=a.kind==="added"?rating.data?.score_10 ?? a.score_10:a.score_10;
  const liked=likes.data?.some(l=>l.user_id===user?.id);const verb={watched:a.category==="music"?"escuchó":a.category==="book"?"leyó":"vio",rated:"puntuó",reviewed:"reseñó",created_list:"creó la lista",added:"agregó",commented:"comentó en"}[a.kind] ?? "descubrió";
@@ -57,6 +58,6 @@ function FeedRow({activity:a,profile}:{activity:Activity;profile?:{username:stri
   {!!covers.data?.length&&<div className="mt-3 flex gap-1">{covers.data.map((c,i)=><Poster key={i} src={c.image_url} alt={c.title} media="movie" className="w-10"/>)}</div>}
   <div className="mt-3 flex flex-wrap gap-2"><Button variant="ghost" aria-pressed={liked} className={`px-0 ${liked?"text-primary":"text-muted-foreground"}`} onClick={like}><Heart fill={liked?"currentColor":"none"}/>Me gusta {likes.data?.length||""}</Button><Button variant="ghost" className="text-muted-foreground" onClick={()=>setReply(!reply)}><MessageCircle/>Responder</Button></div>
   {reply&&<div className="mt-4"><SocialComments activityId={a.id}/></div>}
-  </div>{movie&&<Link to="/movie/$movieId" params={{movieId:movieRouteId(a.external_id ?? "")}} search={{list:a.list_id ?? undefined}} className="w-14 shrink-0 self-start"><Poster src={a.image_url} alt={a.title} media="movie"/></Link>}
+  </div>{movie&&<Link to="/movie/$movieId" params={{movieId:movieRouteId(a.external_id ?? "")}} search={{list:a.list_id ?? undefined}} className="mt-14 w-20 shrink-0 self-start"><Poster src={a.image_url ?? itemPoster.data ?? null} alt={a.title} media="movie"/></Link>}
  </article>;
 }
