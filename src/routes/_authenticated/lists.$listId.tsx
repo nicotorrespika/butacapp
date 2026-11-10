@@ -26,8 +26,10 @@ import {
   type ItemRow,
 } from "@/lib/queries";
 import { cn } from "@/lib/utils";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_authenticated/lists/$listId")({
+  validateSearch:z.object({item:z.string().optional()}),
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },
@@ -60,7 +62,8 @@ function ListPage() {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [sort, setSort] = useState<SortKey>("recent");
   const [adder, setAdder] = useState<string>("all");
-  const [openId, setOpenId] = useState<string | null>(null);
+  const {item:openId}=Route.useSearch();
+  const setOpenId=(item:string|null)=>navigate({to:"/lists/$listId",params:{listId},search:{item:item ?? undefined},replace:true});
   const [inviting, setInviting] = useState(false);
 
   // Per-item aggregates: average score and comment count.
@@ -136,9 +139,10 @@ function ListPage() {
       <header className="relative px-4 pb-5 pt-[max(env(safe-area-inset-top),0.75rem)]">
         <div className="relative">
           <div className="flex items-center justify-between">
-            <Button asChild variant="ghost" size="icon" aria-label="Volver">
+            <Button asChild variant="ghost" aria-label="Volver">
               <Link to="/lists">
                 <ArrowLeft className="size-5" />
+                Atrás
               </Link>
             </Button>
             {d && isMember && (
@@ -277,11 +281,7 @@ function ListPage() {
                   item={i}
                   stat={stats[i.id]}
                   adderName={d?.profiles[i.added_by]?.display_name}
-                  onOpen={() => {
-                    if (hasMoviePage(i.source, i.media_type as MediaType)) {
-                      void navigate({ to: "/movie/$movieId", params: { movieId: movieRouteId(i.external_id) }, search: { list: listId } });
-                    } else setOpenId(i.id);
-                  }}
+                  onOpen={() => void setOpenId(i.id)}
                 />
               </li>
             ))}
