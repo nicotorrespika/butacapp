@@ -133,7 +133,11 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
             <Poster src={item.image_url} alt={item.title} media={media} className="w-28 shrink-0" />
             <div className="min-w-0 flex-1 pt-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">{item.kind_label}</p>
-              <DrawerTitle className="mt-1 font-display text-3xl font-normal leading-[1.05]">{item.title}</DrawerTitle>
+              <DrawerTitle className="mt-1 font-display text-3xl font-normal leading-[1.05]">
+                {hasMoviePage(item.source, media) ? (
+                  <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)} className="underline decoration-primary/50 underline-offset-4">{item.title}</Link>
+                ) : item.title}
+              </DrawerTitle>
               <DrawerDescription className="mt-1.5 text-sm">
                 {[item.creator, item.year].filter(Boolean).join(" · ") || "—"}
               </DrawerDescription>
