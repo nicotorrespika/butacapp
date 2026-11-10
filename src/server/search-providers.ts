@@ -142,7 +142,6 @@ export async function searchTmdb(q: ParsedQuery, key: string): Promise<SearchRes
 
 /* ------------------------------------------------------------------ */
 /* iTunes Search (music)                                               */
-/* (kept below: movie fallback)                               */
 /* ------------------------------------------------------------------ */
 
 interface ItunesItem {
