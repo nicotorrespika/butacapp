@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, ExternalLink, Loader2, Plus } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { z } from "zod";
 import { BackButton } from "@/components/BackButton";
 import { FetchProblem } from "@/components/FetchProblem";
 import { MediaRow, useCardProps } from "@/components/MediaRow";
 import { Poster } from "@/components/Poster";
+import { MovieTrailer } from "@/components/MovieTrailer";
+import { MovieListActivity } from "@/components/MovieListActivity";
 import { Skeleton } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { useAddToList } from "@/hooks/use-add-to-list";
@@ -54,7 +56,6 @@ function MoviePage() {
   );
 
   const m = q.data.data;
-  const added = adder.isAdded(m.result);
   const meta = [
     m.year,
     m.runtime ? `${m.runtime} min` : null,
@@ -66,19 +67,19 @@ function MoviePage() {
     <div className="pb-6">
       {/* Backdrop hero */}
       <header className="relative">
-        <div className="absolute inset-x-0 top-0 h-72 overflow-hidden">
-          {m.backdropUrl && <img src={m.backdropUrl} alt="" className="h-full w-full object-cover opacity-60" />}
+        {m.backdropUrl && <div className="absolute inset-x-0 top-0 h-80 overflow-hidden">
+          <img src={m.backdropUrl} alt="" className="h-full w-full object-cover opacity-35 blur-sm" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/60 to-background" />
-        </div>
+        </div>}
         <div className="relative px-4 pt-[max(env(safe-area-inset-top),0.75rem)]">
           <BackButton />
-          <div className="mt-24 flex items-end gap-4">
-            <Poster src={m.posterUrl} alt={m.title} media="movie" className="w-32 shrink-0 shadow-2xl" />
+          <div className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-end">
+            <Poster src={m.posterUrl} alt={m.title} media="movie" className="w-44 shrink-0 sm:w-48" />
             <div className="min-w-0 pb-1 animate-rise">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
                 {m.type === "tv" ? "Serie" : "Película"}
               </p>
-              <h1 className="mt-1 font-display text-4xl leading-[0.95]">{m.title}</h1>
+              <h1 className="mt-2 break-words font-display text-4xl leading-tight">{m.title}</h1>
               {m.originalTitle && <p className="mt-1 text-xs italic text-muted-foreground">{m.originalTitle}</p>}
               <p className="mt-2 text-sm text-muted-foreground">{meta.join(" · ")}</p>
             </div>
@@ -86,52 +87,38 @@ function MoviePage() {
         </div>
       </header>
 
-      <div className="mt-5 space-y-6 px-4">
+      <div className="mt-6 space-y-8 px-4">
         {m.directors.length > 0 && <PeopleLine people={m.directors} listId={list} />}
-
-        {/* Main action */}
-        <Button
-          size="lg"
-          variant={added ? "done" : "default"}
-          className="w-full"
-          disabled={added || adder.isBusy(m.result)}
-          onClick={() => adder.add(m.result)}
-        >
-          {adder.isBusy(m.result) ? <Loader2 className="animate-spin" /> : added ? <Check /> : <Plus />}
-          {added
-            ? `En «${adder.targetList?.name ?? "tu lista"}»`
-            : adder.targetList
-              ? `Agregar a «${adder.targetList.name}»`
-              : "Agregar a una lista"}
-        </Button>
-
-        {/* Critic scores */}
-        <Scores scores={m.scores} />
-
-        <div className="flex flex-wrap gap-2">
-          {m.links.letterboxd && <ExtLink href={m.links.letterboxd}>Letterboxd</ExtLink>}
-          {m.links.imdb && <ExtLink href={m.links.imdb}>IMDb</ExtLink>}
-          <ExtLink href={m.links.tmdb}>TMDB</ExtLink>
-        </div>
 
         {(m.overview || m.genres.length > 0) && (
           <section>
-            {m.tagline && <p className="font-display text-xl italic text-primary">«{m.tagline}»</p>}
-            {m.overview && <p className="mt-2 text-[15px] leading-relaxed text-foreground/90">{m.overview}</p>}
             {m.genres.length > 0 && (
-              <ul className="mt-3 flex flex-wrap gap-2">
+              <ul className="flex flex-wrap gap-2">
                 {m.genres.map((g) => (
-                  <li key={g} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+                  <li key={g} className="rounded-sm bg-card px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                     {g}
                   </li>
                 ))}
               </ul>
             )}
+            {m.overview && <><h2 className="mt-8 font-display text-2xl">Sinopsis</h2><p className="mt-4 max-w-2xl text-[15px] leading-7 text-muted-foreground">{m.overview}</p></>}
           </section>
         )}
       </div>
 
       {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
+      <div className="mt-10 space-y-10">
+        {m.trailerKey && <MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} />}
+        <MovieListActivity key={m.routeId} movie={m} listId={list} />
+        <div className="space-y-6 px-4">
+          <Scores scores={m.scores} />
+          <div className="flex flex-wrap gap-2">
+            {m.links.letterboxd && <ExtLink href={m.links.letterboxd}>Letterboxd</ExtLink>}
+            {m.links.imdb && <ExtLink href={m.links.imdb}>IMDb</ExtLink>}
+            <ExtLink href={m.links.tmdb}>TMDB</ExtLink>
+          </div>
+        </div>
+      </div>
 
       <div className="mt-8 space-y-8">
         {m.sections.map((s) => (
@@ -162,7 +149,7 @@ function MoviePage() {
 
 function PeopleLine({ people, listId }: { people: CreditPerson[]; listId: string | undefined }) {
   return (
-    <p className="text-sm text-muted-foreground">
+    <div className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
       {people[0]?.role === "Creación" ? "Creada por " : "Dirigida por "}
       {people.map((p, i) => (
         <span key={p.id}>
@@ -171,13 +158,13 @@ function PeopleLine({ people, listId }: { people: CreditPerson[]; listId: string
             to="/person/$personId"
             params={{ personId: String(p.id) }}
             search={{ list: listId }}
-            className="font-semibold text-foreground underline decoration-primary/60 underline-offset-4"
+            className="inline-flex min-h-11 items-center font-medium text-foreground transition-colors hover:text-primary"
           >
             {p.name}
           </Link>
         </span>
       ))}
-    </p>
+    </div>
   );
 }
 
@@ -198,7 +185,7 @@ function Scores({ scores }: { scores: CriticScore[] }) {
           href={s.url ?? undefined}
           target="_blank"
           rel="noreferrer"
-          className="rounded-2xl border border-border bg-secondary/50 p-3 transition-colors active:bg-accent"
+          className="py-3 transition-colors active:bg-accent"
         >
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             {SCORE_STYLE[s.source]}
@@ -206,7 +193,7 @@ function Scores({ scores }: { scores: CriticScore[] }) {
           <p
             className={cn(
               "mt-1 font-display text-4xl leading-none",
-              s.percent >= 75 ? "text-success" : s.percent >= 55 ? "text-primary" : "text-destructive",
+              "text-foreground",
             )}
           >
             {s.value}
@@ -237,7 +224,7 @@ function CastRow({ cast, listId }: { cast: CreditPerson[]; listId: string | unde
   return (
     <section className="mt-8">
       <h2 className="mb-3 px-4 font-display text-2xl">Reparto</h2>
-      <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-none">
+      <div className="flex gap-4 overflow-x-auto px-4 pb-2 scrollbar-none">
         {cast.map((c) => (
           <Link
             key={c.id}
@@ -246,7 +233,7 @@ function CastRow({ cast, listId }: { cast: CreditPerson[]; listId: string | unde
             search={{ list: listId }}
             className="w-24 shrink-0 text-center transition-transform active:scale-[0.97]"
           >
-            <div className="mx-auto size-20 overflow-hidden rounded-full border border-border bg-secondary">
+            <div className="mx-auto aspect-[3/4] w-20 overflow-hidden rounded-sm bg-secondary">
               {c.photoUrl ? (
                 <img src={c.photoUrl} alt={c.name} loading="lazy" className="h-full w-full object-cover" />
               ) : (

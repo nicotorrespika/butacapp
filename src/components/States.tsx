@@ -19,7 +19,7 @@ export function EmptyState({
 }) {
   return (
     <div className={cn("flex flex-col items-center px-6 py-14 text-center animate-rise", className)}>
-      <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-secondary text-primary ring-1 ring-border [&_svg]:size-7">
+      <div className="mb-5 flex size-16 items-center justify-center text-muted-foreground [&_svg]:size-7 [&_svg]:stroke-1">
         {icon}
       </div>
       <h2 className="font-display text-2xl text-foreground">{title}</h2>

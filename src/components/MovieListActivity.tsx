@@ -13,7 +13,7 @@ export function MovieListActivity({ movie, listId }: { movie: MovieDetail; listI
   const lists = useQuery(myListsQuery);
   const [chosen, setChosen] = useState("");
   const selected = listId ?? chosen;
-  const eligible = lists.data?.filter((l) => l.kind === "movie" || l.kind === "mixed") ?? [];
+  const eligible = lists.data?.filter((l) => l.kind === "movies" || l.kind === "mixed") ?? [];
   return (
     <section className="px-4" aria-label="Actividad en la lista">
       <h2 className="mb-4 font-display text-2xl">En tu lista</h2>
