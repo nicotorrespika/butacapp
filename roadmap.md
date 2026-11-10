@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Expand to BUTACAPP: five-tab navigation, poster-mosaic public home and friends activity home
+- [ ] Add social profiles: username, bio, photo, reorderable top 5, profile tabs and viewing statistics
+- [ ] Add friends: member search, requests/acceptance, profiles and privacy-aware activity
+- [ ] Add list visibility (private/friends/public), friend collaborator invitations and comments on lists/reviews/friend profiles
 - [x] Implement movie detail: official YouTube trailer, Spanish/English synopsis, 8 cast members, direct list entry and inline list activity (live TMDB checks blocked below)
 - [x] Apply quiet Letterboxd direction: blue-gray near-black surfaces, DM Sans + Newsreader, sole amber accent, subtle posters and transitions
 - [x] Align filmographies and suggestion rows with the quiet minimal movie-page style (live TMDB checks blocked below)
