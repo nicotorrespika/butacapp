@@ -53,6 +53,7 @@ export interface MovieDetail {
   /** Ready to add to a list. */
   result: SearchResult;
   sections: SuggestionSection[];
+  watchProviders?:{link:string;names:string[]}|null;
 }
 
 export interface PersonDetail {

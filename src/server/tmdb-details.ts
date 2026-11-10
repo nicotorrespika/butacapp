@@ -285,9 +285,12 @@ export async function fetchMovieDetail(
     ref.type,
     directors.map((x) => x.name).join(", ") || null,
   );
+  let watchProviders: {link:string;names:string[]}|null=null;
+  try{const providers=await tmdb<{results:{AR?:{link:string;flatrate?:{provider_name:string}[];rent?:{provider_name:string}[];buy?:{provider_name:string}[]}}}>(`/${ref.type}/${ref.id}/watch/providers`);const ar=providers.results.AR;if(ar)watchProviders={link:ar.link,names:[...new Set([...(ar.flatrate ?? []),...(ar.rent ?? []),...(ar.buy ?? [])].map(p=>p.provider_name))]};}catch{/* Availability is optional. */}
 
   return {
     routeId: `${ref.type}-${ref.id}`,
+    watchProviders,
     type: ref.type,
     title,
     originalTitle: (d.original_title ?? d.original_name) !== title ? (d.original_title ?? d.original_name ?? null) : null,

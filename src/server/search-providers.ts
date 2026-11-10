@@ -59,7 +59,8 @@ export function tmdbFetcher(key: string): TmdbFetch {
   const isBearer = key.startsWith("eyJ");
   return <T>(path: string, params: Record<string, string | number | undefined> = {}) => {
     const url = new URL(`https://api.themoviedb.org/3${path}`);
-    url.searchParams.set("language", "es-MX");
+    url.searchParams.set("language", "es-AR");
+    url.searchParams.set("region", "AR");
     url.searchParams.set("include_adult", "false");
     for (const [k, v] of Object.entries(params)) if (v !== undefined) url.searchParams.set(k, String(v));
     if (!isBearer) url.searchParams.set("api_key", key);
