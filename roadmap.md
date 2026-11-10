@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Read and implement uploaded Spotify integration requirements
+- [x] Spotify: user chose title/artist search links instead of direct catalog/Odesli integration; stage two stays unimplemented pending confirmation
 - [ ] Movie criticism: real IMDb/Rotten Tomatoes/Metacritic links and Argentine media short cited summaries; Betty recounts them as chisme
 - [ ] Show each friend movie poster beside its feed title
 

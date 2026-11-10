@@ -15,10 +15,8 @@ export async function researchedEvents(apiKey: string, connection: string, city:
 export interface CulturalNews { title:string; summary:string; url:string; source:string; date:string|null; }
 const feedBase="https://www.pagina12.com.ar/arc/outboundfeeds/rss";
 const feeds = {movie:[`${feedBase}/suplementos/cultura-y-espectaculos/notas`],music:[`${feedBase}/suplementos/no/notas`],book:[`${feedBase}/suplementos/radar-libros/notas`]};
-/** Short own-feed teaser: strips markup and caps at one sentence, never the full article. */
-const teaser=(v:unknown)=>typeof v==="string"?(v.replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim().split(/(?<=[.!?])\s/)[0] ?? "").slice(0,180):"";
 export async function rssNews(category:"movie"|"music"|"book"):Promise<CulturalNews[]> {
   const parser=new XMLParser({ignoreAttributes:false});const rows:CulturalNews[]=[];
-  await Promise.all(feeds[category].map(async url=>{try{const r=await fetch(url,{signal:AbortSignal.timeout(7000)});if(!r.ok)return;const feed=parser.parse(await r.text());const items=feed.rss?.channel?.item ?? [];for(const i of Array.isArray(items)?items:[items]){if(typeof i.title!=="string"||typeof i.link!=="string")continue;rows.push({title:i.title,url:i.link,source:"Página/12",date:typeof i.pubDate==="string"?i.pubDate:null,summary:teaser(i.description)});}}catch{/* RSS failure is independent */}}));
+  await Promise.all(feeds[category].map(async url=>{try{const r=await fetch(url,{signal:AbortSignal.timeout(7000)});if(!r.ok)return;const feed=parser.parse(await r.text());const items=feed.rss?.channel?.item ?? [];for(const i of Array.isArray(items)?items:[items]){if(typeof i.title!=="string"||typeof i.link!=="string")continue;rows.push({title:i.title,url:i.link,source:"Página/12",date:typeof i.pubDate==="string"?i.pubDate:null,summary:`Una novedad ${category==="movie"?"de cine":category==="music"?"musical":"del mundo de los libros"} publicada por Página/12.`});}}catch{/* RSS failure is independent */}}));
   return rows.slice(0,8);
 }
