@@ -1,0 +1,2 @@
+import {catalogId} from "./betty-types";
+export function discoveryExclusions(entries:{external_id:string;user_id:string;watched:boolean;queued:boolean;dismissed:boolean}[],items:{external_id:string}[],userId:string){return new Set([...entries.filter(e=>e.user_id===userId&&(e.watched||e.queued||e.dismissed)).map(e=>catalogId(e.external_id)),...items.map(i=>catalogId(i.external_id))]);}

@@ -6,11 +6,12 @@ import {askBetty} from "@/server/betty";
 import {recommendationError} from "@/server/recommendations";
 import {catalogId,type BettyResponse} from "./betty-types";
 import {tmdbFetcher,mapTmdb,type TmdbItem} from "@/server/search-providers";
+import {discoveryExclusions} from "./discovery";
 export const discoverMovies=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({argentina:z.boolean().optional(),genre:z.string().optional(),decade:z.number().optional(),mood:z.string().optional()}).parse(input)).handler(async({data,context})=>{
  const key=process.env["TMDB_API_KEY"];if(!key)return [];
  const tmdb=tmdbFetcher(key);const db=context.supabase;
  const [entries,items,profile]=await Promise.all([db.from("movie_entries").select("external_id,watched,queued,dismissed,user_id").limit(500),db.from("list_items").select("external_id").eq("media_type","movie").limit(500),db.from("profiles").select("top_five").eq("id",context.userId).single()]);
- const excluded=new Set([...(entries.data ?? []).filter(e=>e.user_id===context.userId&&(e.watched||e.queued||e.dismissed)).map(e=>catalogId(e.external_id)),...(items.data ?? []).map(i=>catalogId(i.external_id))]);
+ const excluded=discoveryExclusions(entries.data ?? [],items.data ?? [],context.userId);
  const genre=data.genre||({"Para llorar":"18","Para no pensar":"35","De noche":"53","Con amigos":"12"}[data.mood ?? ""]);
  const filters={with_origin_country:data.argentina?"AR":undefined,with_genres:genre,"primary_release_date.gte":data.decade?`${data.decade}-01-01`:undefined,"primary_release_date.lte":data.decade?`${data.decade+9}-12-31`:undefined};
  const popular=await tmdb<{results:TmdbItem[]}>("/discover/movie",{sort_by:"popularity.desc","vote_count.gte":50,...filters});
