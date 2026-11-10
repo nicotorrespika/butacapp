@@ -18,7 +18,7 @@ export function SocialComments({ activityId, profileId, listId, reviewItemId, re
  }});
  async function send(e:React.FormEvent){
   e.preventDefault();if(!user||!body.trim())return;setBusy(true);
-  const r=await supabase.from("social_comments").insert({user_id:user.id,body:body.trim(),activity_id:activityId,profile_id:profileId,list_id:listId,review_item_id:reviewItemId,review_user_id:reviewUserId}).select("id").single();
+  const r=await supabase.from("social_comments").insert({user_id:user.id,body:body.trim(),activity_id:activityId ?? null,profile_id:profileId ?? null,list_id:listId ?? null,review_item_id:reviewItemId ?? null,review_user_id:reviewUserId ?? null}).select("id").single();
   setBusy(false);if(r.error)return void toast.error("No se pudo enviar. Probá otra vez.");setBody("");qc.invalidateQueries({queryKey:key});
   toast.success("Comentario enviado",{action:{label:"Deshacer",onClick:async()=>{await supabase.from("social_comments").delete().eq("id",r.data.id);qc.invalidateQueries({queryKey:key});}}});
  }

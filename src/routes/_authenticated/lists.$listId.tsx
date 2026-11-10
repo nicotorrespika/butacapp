@@ -303,18 +303,6 @@ function ListPage() {
         )}
       </div>
 
-      {/* Floating "+" always within thumb reach, just above the bottom nav. */}
-      {false && d && total > 0 && (
-        <Link
-          to="/search"
-          search={searchToAdd}
-          aria-label={`Agregar a «${d.list.name}»`}
-          className="fixed bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom)+1rem)] right-[max(1rem,calc((100vw-64rem)/2+1rem))] z-30 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform duration-200 ease-cine active:scale-90"
-        >
-          <Plus className="size-7" strokeWidth={2.5} />
-        </Link>
-      )}
-
       {d && (
         <>
           <ItemDrawer

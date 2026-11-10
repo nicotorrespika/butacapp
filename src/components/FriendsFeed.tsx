@@ -21,9 +21,9 @@ export function FriendsFeed(){
   let q=supabase.from("activity").select("*").in("user_id",ids).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(20);
   if(filter)q=q.in("kind",["watched","rated"]);if(pageParam)q=q.or(`created_at.lt.${pageParam.date},and(created_at.eq.${pageParam.date},id.lt.${pageParam.id})`);
   const r=await q;if(r.error)throw r.error;return r.data;
- },getNextPageParam:last=>last.length===20?{date:last[last.length-1].created_at,id:last[last.length-1].id}:undefined});
+ },getNextPageParam:last=>{const row=last.at(-1);return last.length===20&&row?{date:row.created_at,id:row.id}:undefined;}});
  useEffect(()=>{const el=end.current;if(!el)return;const observer=new IntersectionObserver(e=>{if(e[0]?.isIntersecting&&feed.hasNextPage&&!feed.isFetchingNextPage)void feed.fetchNextPage();},{rootMargin:"300px"});observer.observe(el);return()=>observer.disconnect();},[feed.hasNextPage,feed.isFetchingNextPage,feed.fetchNextPage]);
- return <section onTouchStart={e=>{start.current=window.scrollY===0?e.touches[0].clientY:0;}} onTouchEnd={e=>{if(start.current&&e.changedTouches[0].clientY-start.current>80)void feed.refetch();}} className="px-4 py-8">
+ return <section onTouchStart={e=>{start.current=window.scrollY===0?(e.touches[0]?.clientY ?? 0):0;}} onTouchEnd={e=>{if(start.current&&(e.changedTouches[0]?.clientY ?? 0)-start.current>80)void feed.refetch();}} className="px-4 py-8">
   <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-display text-3xl">En qué andan</h2><Button variant="ghost" onClick={()=>feed.refetch()} disabled={!ids.length||feed.isFetching}><RefreshCw/>Actualizar</Button></div>
   <div className="my-4 flex gap-2"><Button variant="ghost" aria-pressed={!filter} onClick={()=>setFilter(false)}>Todo</Button><Button variant="ghost" aria-pressed={filter} onClick={()=>setFilter(true)}>Solo vistas y notas</Button></div>
   {!friends.isLoading&&!ids.length?<div className="py-12"><p className="font-display text-2xl">La sala espera a tu gente.</p><Button asChild className="mt-6" size="lg"><Link to="/friends"><Search/>Buscar amigos</Link></Button></div>:<>
@@ -34,7 +34,7 @@ export function FriendsFeed(){
   </>}
  </section>;
 }
-function FeedRow({activity:a,profile}:{activity:Activity;profile?:{username:string|null;display_name:string;avatar_url:string|null}}){
+function FeedRow({activity:a,profile}:{activity:Activity;profile?:{username:string|null;display_name:string;avatar_url:string|null}|undefined}){
  const {user}=useAuth();const qc=useQueryClient();const [reply,setReply]=useState(false);const [expanded,setExpanded]=useState(false);
  const likes=useQuery({queryKey:["social","likes",a.id],queryFn:async()=>{const r=await supabase.from("activity_likes").select("user_id").eq("activity_id",a.id);if(r.error)throw r.error;return r.data;}});
  const list=useQuery({queryKey:["social","feed-list",a.list_id],enabled:!!a.list_id,queryFn:async()=>{const r=await supabase.from("lists").select("name").eq("id",a.list_id ?? "").maybeSingle();return r.data;}});
