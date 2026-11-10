@@ -18,7 +18,7 @@ import { LIST_KIND_LABEL, type ListKind } from "@/lib/media";
 import { keys, type ListRow } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 
-const KINDS: ListKind[] = ["mixed", "movies", "music", "art"];
+const KINDS: ListKind[] = ["mixed", "movies", "music", "books"];
 
 /** Form to create a list; reused inside the add-to-list sheet. */
 export function CreateListForm({
@@ -91,7 +91,7 @@ export function CreateListForm({
         <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tipo</span>
         <div className="grid grid-cols-4 gap-2">
           {KINDS.map((k) => (
-            <button
+            <Button variant="outline"
               key={k}
               type="button"
               onClick={() => setKind(k)}
@@ -104,7 +104,7 @@ export function CreateListForm({
               )}
             >
               {LIST_KIND_LABEL[k]}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

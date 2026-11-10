@@ -8,10 +8,11 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { PersonResult, SearchResponse, SearchResult } from "@/lib/media";
 import { parseQuery } from "@/lib/search-query";
 import { searchArt, searchImdbFallback, searchMusic, searchTmdb } from "@/server/search-providers";
+import { searchBooks } from "@/server/culture-providers";
 
 const inputSchema = z.object({
   q: z.string().trim().min(1).max(120),
-  filter: z.enum(["all", "movie", "music", "art"]),
+  filter: z.enum(["all", "movie", "music", "book", "art"]),
 });
 
 export const searchMedia = createServerFn({ method: "POST" })
@@ -19,7 +20,7 @@ export const searchMedia = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inputSchema.parse(input))
   .handler(async ({ data }): Promise<SearchResponse> => {
     const parsed = parseQuery(data.q);
-    const want = (t: "movie" | "music" | "art") => data.filter === "all" || data.filter === t;
+    const want = (t: "movie" | "music" | "book" | "art") => data.filter === "all" || data.filter === t;
     const tmdbKey = process.env["TMDB_API_KEY"];
     const warnings: string[] = [];
 
@@ -52,11 +53,12 @@ export const searchMedia = createServerFn({ method: "POST" })
       return searchImdbFallback(parsed);
     };
 
-    const [movie, music, art] = await Promise.all([
+    const [movie, music, book, art] = await Promise.all([
       want("movie") ? run("Películas", movies) : Promise.resolve([]),
       want("music") ? run("Música", () => searchMusic(parsed)) : Promise.resolve([]),
-      want("art") ? run("Arte", () => searchArt(parsed)) : Promise.resolve([]),
+      want("book") ? run("Libros", () => searchBooks(data.q)) : Promise.resolve([]),
+      data.filter === "art" ? run("Arte", () => searchArt(parsed)) : Promise.resolve([]),
     ]);
 
-    return { people, movie, music, art, movieProvider, warnings };
+    return { people, movie, music, book, art, movieProvider, warnings };
   });

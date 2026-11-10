@@ -17,6 +17,8 @@ import { DONE_LABEL, hasMoviePage, movieRouteId, type MediaType } from "@/lib/me
 import { averageScore, ratingScore } from "@/lib/ratings";
 import { keys, type CommentRow, type ItemRow, type ProfileRow, type RatingRow } from "@/lib/queries";
 import { MovieActions } from "./MovieActions";
+import { CultureActions } from "./CultureActions";
+import { cultureRouteId, isCulture } from "@/lib/culture";
 
 const ago = (iso: string) => formatDistanceToNow(new Date(iso), { addSuffix: true, locale: es });
 
@@ -140,7 +142,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
               <DrawerTitle className="mt-1 font-display text-3xl font-normal leading-[1.05]">
                 {hasMoviePage(item.source, media) ? (
                   <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} className="underline decoration-primary/50 underline-offset-4">{item.title}<ArrowUpRight className="ml-1 inline size-4"/></Link>
-                ) : item.title}
+                ) : isCulture(media) ? <Link to="/culture/$cultureId" params={{cultureId:cultureRouteId(item.source,item.external_id)}} search={{list:item.list_id}} className="underline decoration-primary/50 underline-offset-4">{item.title}<ArrowUpRight className="ml-1 inline size-4"/></Link> : item.title}
               </DrawerTitle>
               <DrawerDescription className="mt-1.5 text-sm">
                 {[metadata.data?.ok?metadata.data.data.directors.map(d=>d.name).join(" · ")||item.creator:item.creator, item.year].filter(Boolean).join(" · ") || "—"}
@@ -167,6 +169,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
           </Button>
 
           {media==="movie"&&<div className="mt-4"><MovieActions favoriteOnly result={{source:item.source,externalId:item.external_id,title:item.title,year:item.year,imageUrl:item.image_url,creator:item.creator,mediaType:media,kindLabel:item.kind_label ?? "Película",externalUrl:item.external_url}}/></div>}
+          {isCulture(media)&&<div className="mt-4"><CultureActions favoriteOnly result={{source:item.source,externalId:item.external_id,title:item.title,year:item.year,imageUrl:item.image_url,creator:item.creator,mediaType:media,kindLabel:item.kind_label ?? "Título",externalUrl:item.external_url}}/></div>}
 
           {/* Ratings */}
           <section className="mt-8 py-6">

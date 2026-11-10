@@ -31,7 +31,7 @@ describe("movie details", () => {
       return Response.json({ id: 42, title: "Película", overview: "", credits: { crew: [], cast: Array.from({ length: 12 }, (_, id) => ({ id, name: `Actor ${id}` })) }, videos: { results: [] } });
     }));
     const movie = await fetchMovieDetail("movie-42", "test-key", undefined);
-    expect(urls[0]?.searchParams.get("language")).toBe("es-MX");
+    expect(urls[0]?.searchParams.get("language")).toBe("es-AR");
     expect(urls[0]?.searchParams.get("append_to_response")?.split(",")).toEqual(expect.arrayContaining(["credits", "videos"]));
     expect(movie.overview).toBe("English synopsis");
     expect(movie.cast).toHaveLength(8);

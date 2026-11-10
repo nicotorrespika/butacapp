@@ -63,7 +63,7 @@ export function AddToListDrawer({
   }
 
   const defaultKind: ListKind =
-    result?.mediaType === "movie" ? "movies" : result?.mediaType === "music" ? "music" : result ? "art" : "mixed";
+    result?.mediaType === "movie" ? "movies" : result?.mediaType === "music" ? "music" : result?.mediaType === "book" ? "books" : "mixed";
 
   return (
     <Drawer open={open} onOpenChange={close}>
