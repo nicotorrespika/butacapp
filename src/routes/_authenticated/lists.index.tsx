@@ -30,8 +30,8 @@ function MyLists() {
     <div className="px-4 pt-[max(env(safe-area-inset-top),1rem)]">
       <header className="flex items-end justify-between gap-3 pb-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">Cartelera</p>
-          <h1 className="font-display text-4xl">Mis listas</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">2BOLUDOS</p>
+          <h1 className="font-display text-4xl">mis listas!!!!</h1>
         </div>
         <Button onClick={() => setCreating(true)}>
           <Plus /> Nueva
