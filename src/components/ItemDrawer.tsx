@@ -162,7 +162,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
           </Button>
 
           {/* Ratings */}
-          <section className="mt-8 border-y border-border py-6">
+          <section className="mt-8 py-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tu nota</p>
@@ -171,7 +171,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Grupo</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Promedio del grupo</p>
                 <p className="font-display text-4xl leading-none text-primary">{avg ?? "–"}<span className="text-sm text-muted-foreground">/10</span></p>
                 <p className="text-[11px] text-muted-foreground">
                   {itemRatings.length} voto{itemRatings.length === 1 ? "" : "s"}

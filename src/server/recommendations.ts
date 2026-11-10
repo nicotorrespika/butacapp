@@ -4,7 +4,7 @@ import { recommendationSchema, excludeExisting, type RecommendedMovie } from "@/
 import { createLovableAiGatewayRunIdFetch } from "./ai/run-id.ts";
 import { mapTmdb, tmdbFetcher, type TmdbItem } from "./search-providers";
 
-export async function recommendMovies(apiKey: string, description: string, context: { name: string; description: string | null; items: { title: string; year: number | null; done: boolean }[]; ratings: { score_10: number | null; review: string | null }[] }, tmdbKey: string | undefined): Promise<RecommendedMovie[]> {
+export async function recommendMovies(apiKey: string, description: string, context: { name: string; description: string | null; items: { title: string; year: number | null; done: boolean; ratings: { score_10: number | null; review: string | null }[] }[] }, tmdbKey: string | undefined): Promise<RecommendedMovie[]> {
   const run = createLovableAiGatewayRunIdFetch();
   const provider = createOpenAI({ baseURL: "https://ai.gateway.lovable.dev/v1", apiKey, headers: { "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" }, fetch: run.fetch });
   const generation = streamText({
