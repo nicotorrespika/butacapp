@@ -28,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/search")({
     f: z.enum(["all", "movie", "music", "art"]).optional(),
     /** When set, "+" adds straight into this list (opened from a list's "Agregar" button). */
     list: z.string().uuid().optional(),
+    top: z.boolean().optional(),
   }),
   head: () => ({
     meta: [
@@ -72,7 +73,15 @@ function SearchPage() {
   }
   const cardProps = (r: SearchResult) => ({
     result: r,
-    onAdd: adder.add,
+    onAdd: params.top ? async (r: SearchResult) => {
+      const { data: { user } } = await supabase.auth.getUser(); if (!user) return;
+      const p = await supabase.from("profiles").select("top_five").eq("id",user.id).single();
+      const top = topFive(p.data?.top_five);
+      if(top.length>=5) return void toast.error("Tu Top 5 está completo. Quitá una película desde Perfil.");
+      if(top.some(m=>m.externalId===r.externalId)) return void toast("Ya está en tu Top 5");
+      const result=await supabase.from("profiles").update({top_five:JSON.parse(JSON.stringify([...top,r]))}).eq("id",user.id);
+      if(result.error)toast.error("No se pudo guardar");else toast.success("Agregada a tu Top 5");
+    } : adder.add,
     added: adder.isAdded(r),
     busy: adder.isBusy(r),
     targetName: targetList?.name,

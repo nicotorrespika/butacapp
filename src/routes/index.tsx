@@ -4,6 +4,8 @@ import { Disc3, Film, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { takePendingRedirect, useAuth } from "@/hooks/use-auth";
 import hero from "@/assets/hero-theater.jpg";
+import { HomeExperience } from "@/components/HomeExperience";
+import { BottomNav } from "@/components/BottomNav";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,8 +21,9 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Landing,
+  component: Home,
 });
+function Home(){return <div className="mx-auto max-w-5xl pb-nav"><HomeExperience/><BottomNav/></div>;}
 
 /** Public landing. Signed-in visitors (incl. OAuth returns) go straight to their lists. */
 function Landing() {

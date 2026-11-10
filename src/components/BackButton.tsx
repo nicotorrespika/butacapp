@@ -9,11 +9,12 @@ export function BackButton() {
   return (
     <Button
       variant="glass"
-      size="icon"
+      size="sm"
       aria-label="Volver"
       onClick={() => (window.history.length > 1 ? router.history.back() : void navigate({ to: "/search" }))}
     >
       <ArrowLeft className="size-5" />
+      Atrás
     </Button>
   );
 }
