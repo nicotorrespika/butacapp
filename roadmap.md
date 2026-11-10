@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Soften the overly bright orange to a restrained muted copper accent
+
 - [ ] Show first movie posters below list names on home and profile
 
 - [ ] Complete public/private list controls and invitation read/collaborate flows

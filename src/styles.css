@@ -85,7 +85,7 @@
   --popover: var(--card);
   --popover-foreground: var(--foreground);
   /* Projector amber */
-  --primary: #ff6a1a;
+  --primary: oklch(0.72 0.095 48);
   --seat: #b3202a;
   --paper: #efe6d2;
   --paper-foreground: #14181c;
