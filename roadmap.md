@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Replace Betty introduction with user's literal greeting ending “negri.”
+
 - [x] Soften the overly bright orange to a restrained muted copper accent
 
 - [ ] Show first movie posters below list names on home and profile
