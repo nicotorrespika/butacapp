@@ -36,6 +36,20 @@
       "when": 1794294356698,
       "tag": "0004_movie_friend_comments",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794294877342,
+      "tag": "0005_betty_history",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794295043460,
+      "tag": "0006_discovery_preferences",
+      "breakpoints": true
     }
   ]
 }

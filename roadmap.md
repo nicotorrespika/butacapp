@@ -1,5 +1,11 @@
 # Roadmap
 
+- [x] Argentine localization: es-AR/AR TMDB, Argentine cinema priority and home collection, viewing providers in Argentina
+- [x] Add Sorprendeme on Inicio and swipe/button discovery with filters, watched/queued/passed exclusions and undo (pointer handlers verified; native touch swipe remains unverified)
+- [x] Optional popcorn ratings preference in profile (saved after reload)
+
+- [x] Add Buscar/Descubrir/Betty modes, verified natural-language recommendations, refinements, pending-list actions, feedback and saved Betty history (live request and follow-up verified)
+
 - [x] Adjust movie interactions: list poster opens quick sheet; sheet title opens full detail and Back restores sheet; personal watched/rating/review/favorite controls outside lists. Mobile navigation and favorite persistence verified.
 
 - [x] Review uploaded TMDB Daily ID Exports documentation: ID-only exports do not replace API credentials or full movie details

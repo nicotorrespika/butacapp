@@ -114,6 +114,80 @@ export type Database = {
           },
         ]
       }
+      betty_feedback: {
+        Row: {
+          created_at: string
+          external_id: string
+          history_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          external_id: string
+          history_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          external_id?: string
+          history_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "betty_feedback_history_id_fkey"
+            columns: ["history_id"]
+            isOneToOne: false
+            referencedRelation: "betty_history"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "betty_feedback_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      betty_history: {
+        Row: {
+          created_at: string
+          id: string
+          movies: Json
+          prompt: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          movies?: Json
+          prompt: string
+          thread_id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          movies?: Json
+          prompt?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "betty_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           body: string
@@ -397,11 +471,13 @@ export type Database = {
       }
       movie_entries: {
         Row: {
+          dismissed: boolean
           external_id: string
           favorite: boolean
           genres: string[]
           id: string
           image_url: string | null
+          queued: boolean
           review: string
           score_10: number | null
           source: string
@@ -412,11 +488,13 @@ export type Database = {
           year: number | null
         }
         Insert: {
+          dismissed?: boolean
           external_id: string
           favorite?: boolean
           genres?: string[]
           id?: string
           image_url?: string | null
+          queued?: boolean
           review?: string
           score_10?: number | null
           source: string
@@ -427,11 +505,13 @@ export type Database = {
           year?: number | null
         }
         Update: {
+          dismissed?: boolean
           external_id?: string
           favorite?: boolean
           genres?: string[]
           id?: string
           image_url?: string | null
+          queued?: boolean
           review?: string
           score_10?: number | null
           source?: string
@@ -458,6 +538,7 @@ export type Database = {
           created_at: string
           display_name: string
           id: string
+          rating_style: string
           top_five: Json
           updated_at: string
           username: string | null
@@ -468,6 +549,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id: string
+          rating_style?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
@@ -478,6 +560,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id?: string
+          rating_style?: string
           top_five?: Json
           updated_at?: string
           username?: string | null

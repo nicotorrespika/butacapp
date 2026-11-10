@@ -235,4 +235,6 @@
 }
 @keyframes mosaic-drift { from { transform: translateY(0); } to { transform: translateY(-8%); } }
 .poster-mosaic { animation: mosaic-drift 60s linear infinite alternate; opacity: 0.45; }
+.discovery-poster { height: min(42dvh, 350px); aspect-ratio: 2/3; width: auto; margin-inline: auto; }
+.discovery-poster img { object-fit: contain; }
 @media (prefers-reduced-motion: reduce) { .poster-mosaic { animation: none; } }
