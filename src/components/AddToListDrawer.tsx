@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { addResultToList } from "@/lib/add-item";
 import {
   Drawer,
   DrawerContent,
@@ -47,26 +47,13 @@ export function AddToListDrawer({
   async function add(listId: string, listName: string) {
     if (!result || !user) return;
     setBusyId(listId);
-    const { error } = await supabase.from("list_items").insert({
-      list_id: listId,
-      media_type: result.mediaType,
-      source: result.source,
-      external_id: result.externalId,
-      title: result.title,
-      creator: result.creator,
-      year: result.year,
-      image_url: result.imageUrl,
-      kind_label: result.kindLabel,
-      external_url: result.externalUrl,
-      added_by: user.id,
-    });
+    const res = await addResultToList(result, listId, user.id);
     setBusyId(null);
-    if (error) {
-      // 23505 = unique violation → already in that list.
-      if (error.code === "23505") {
+    if (!res.ok) {
+      if (res.duplicate) {
         setAddedTo((s) => new Set(s).add(listId));
         toast("Ya estaba en esa lista");
-      } else toast.error("No se pudo agregar", { description: error.message });
+      } else toast.error("No se pudo agregar", { description: res.message });
       return;
     }
     setAddedTo((s) => new Set(s).add(listId));

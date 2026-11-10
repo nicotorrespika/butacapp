@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Check, MessageCircle, Search, Trash2, UserPlus } from "lucide-react";
+import { ArrowLeft, Check, MessageCircle, Plus, Search, Trash2, UserPlus } from "lucide-react";
+import { filterForListKind } from "@/lib/add-item";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -105,6 +106,10 @@ function ListPage() {
   const doneCount = (items.data ?? []).filter((i) => i.done).length;
   const total = items.data?.length ?? 0;
   const heroCover = items.data?.find((i) => i.image_url)?.image_url;
+  // Opens search pointed at this list, pre-filtered to its type.
+  const searchToAdd = d
+    ? { list: d.list.id, f: filterForListKind(d.list.kind) === "all" ? undefined : filterForListKind(d.list.kind) }
+    : {};
 
   async function deleteList() {
     if (!d || !confirm(`¿Borrar «${d.list.name}» para todos? No se puede deshacer.`)) return;
@@ -142,9 +147,16 @@ function ListPage() {
               </Link>
             </Button>
             {d && (
-              <Button variant="glass" size="sm" onClick={() => setInviting(true)}>
-                <UserPlus /> Invitar
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button variant="glass" size="sm" onClick={() => setInviting(true)}>
+                  <UserPlus /> Invitar
+                </Button>
+                <Button asChild size="sm">
+                  <Link to="/search" search={searchToAdd}>
+                    <Plus /> Agregar
+                  </Link>
+                </Button>
+              </div>
             )}
           </div>
 
@@ -251,8 +263,8 @@ function ListPage() {
             title="La sala está vacía"
             action={
               <Button asChild size="lg">
-                <Link to="/search">
-                  <Search /> Buscar algo para sumar
+                <Link to="/search" search={searchToAdd}>
+                  <Plus /> Agregar a esta lista
                 </Link>
               </Button>
             }
@@ -290,6 +302,18 @@ function ListPage() {
           </div>
         )}
       </div>
+
+      {/* Floating "+" always within thumb reach, just above the bottom nav. */}
+      {d && total > 0 && (
+        <Link
+          to="/search"
+          search={searchToAdd}
+          aria-label={`Agregar a «${d.list.name}»`}
+          className="fixed bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom)+1rem)] right-[max(1rem,calc((100vw-64rem)/2+1rem))] z-30 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow transition-transform duration-200 ease-cine active:scale-90"
+        >
+          <Plus className="size-7" strokeWidth={2.5} />
+        </Link>
+      )}
 
       {d && (
         <>

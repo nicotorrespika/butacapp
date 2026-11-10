@@ -1,19 +1,29 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Search, SearchX, X } from "lucide-react";
+import { ArrowLeft, Loader2, Search, SearchX, X } from "lucide-react";
+import { toast } from "sonner";
 import { z } from "zod";
 import { AddToListDrawer } from "@/components/AddToListDrawer";
 import { ResultCard } from "@/components/ResultCard";
 import { EmptyState, ErrorState, PosterGridSkeleton } from "@/components/States";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { MEDIA_LABEL, type MediaType, type SearchFilter, type SearchResult } from "@/lib/media";
+import { addResultToList } from "@/lib/add-item";
+import { listAccepts, MEDIA_LABEL, type MediaType, type SearchFilter, type SearchResult } from "@/lib/media";
+import { keys, listQuery } from "@/lib/queries";
 import { searchMedia } from "@/lib/search.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/search")({
-  validateSearch: z.object({ q: z.string().optional(), f: z.enum(["all", "movie", "music", "art"]).optional() }),
+  validateSearch: z.object({
+    q: z.string().optional(),
+    f: z.enum(["all", "movie", "music", "art"]).optional(),
+    /** When set, "+" adds straight into this list (opened from a list's "Agregar" button). */
+    list: z.string().uuid().optional(),
+  }),
   head: () => ({
     meta: [
       { title: "Buscar — Butaca" },
@@ -42,6 +52,34 @@ function SearchPage() {
   const q = useDebouncedValue(text.trim(), 350);
   const [adding, setAdding] = useState<SearchResult | null>(null);
   const search = useServerFn(searchMedia);
+  const { user } = useAuth();
+  const qc = useQueryClient();
+
+  // Target list (when coming from a list page). Results added here get a check.
+  const target = useQuery({ ...listQuery(params.list ?? ""), enabled: !!params.list });
+  const targetList = params.list ? target.data?.list : undefined;
+  const [addedKeys, setAddedKeys] = useState<Set<string>>(new Set());
+  const [busyKey, setBusyKey] = useState<string | null>(null);
+  const resultKey = (r: SearchResult) => `${r.source}:${r.externalId}`;
+
+  async function handleAdd(r: SearchResult) {
+    // No target (or the list doesn't take this type) → let the user pick a list.
+    if (!targetList || !user || !listAccepts(targetList.kind, r.mediaType)) return setAdding(r);
+    const k = resultKey(r);
+    setBusyKey(k);
+    const res = await addResultToList(r, targetList.id, user.id);
+    setBusyKey(null);
+    if (!res.ok && !res.duplicate) return void toast.error("No se pudo agregar", { description: res.message });
+    setAddedKeys((s) => new Set(s).add(k));
+    qc.invalidateQueries({ queryKey: keys.items(targetList.id) });
+    qc.invalidateQueries({ queryKey: keys.myLists });
+    if (res.ok) toast.success(`Agregado a «${targetList.name}»`);
+    else toast("Ya estaba en esa lista");
+  }
+
+  function clearTarget() {
+    navigate({ search: (s) => ({ ...s, list: undefined }), replace: true });
+  }
 
   const query = useQuery({
     queryKey: ["search", q, filter],
@@ -70,7 +108,24 @@ function SearchPage() {
     <div>
       {/* Sticky search header */}
       <header className="sticky top-0 z-30 bg-background/85 px-4 pb-3 pt-[max(env(safe-area-inset-top),1rem)] backdrop-blur-xl">
-        <h1 className="mb-3 font-display text-4xl">Buscar</h1>
+        {targetList ? (
+          <div className="mb-3 flex items-center gap-2">
+            <Button asChild variant="ghost" size="icon" aria-label="Volver a la lista">
+              <Link to="/lists/$listId" params={{ listId: targetList.id }}>
+                <ArrowLeft className="size-5" />
+              </Link>
+            </Button>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Agregando a</p>
+              <h1 className="truncate font-display text-3xl leading-tight">{targetList.name}</h1>
+            </div>
+            <Button variant="glass" size="sm" onClick={clearTarget}>
+              Otra lista
+            </Button>
+          </div>
+        ) : (
+          <h1 className="mb-3 font-display text-4xl">Buscar</h1>
+        )}
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -173,9 +228,12 @@ function SearchPage() {
                   <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 scrollbar-none">
                     {items.slice(0, 12).map((r) => (
                       <ResultCard
-                        key={`${r.source}:${r.externalId}`}
+                        key={resultKey(r)}
                         result={r}
-                        onAdd={setAdding}
+                        onAdd={handleAdd}
+                        added={addedKeys.has(resultKey(r))}
+                        busy={busyKey === resultKey(r)}
+                        targetName={targetList?.name}
                         className={cn("shrink-0 snap-start", m === "movie" ? "w-32" : "w-40")}
                       />
                     ))}
@@ -184,7 +242,14 @@ function SearchPage() {
               ) : (
                 <section key={m} className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
                   {items.map((r) => (
-                    <ResultCard key={`${r.source}:${r.externalId}`} result={r} onAdd={setAdding} />
+                    <ResultCard
+                      key={resultKey(r)}
+                      result={r}
+                      onAdd={handleAdd}
+                      added={addedKeys.has(resultKey(r))}
+                      busy={busyKey === resultKey(r)}
+                      targetName={targetList?.name}
+                    />
                   ))}
                 </section>
               );
