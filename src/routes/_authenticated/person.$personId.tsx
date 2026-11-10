@@ -20,9 +20,9 @@ export const Route = createFileRoute("/_authenticated/person/$personId")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Filmografía — Butaca" },
+      { title: "Filmografía — BUTACAPP" },
       { name: "description", content: "Filmografía completa de directores y actores, lista para sumar a tus listas." },
-      { property: "og:title", content: "Filmografía — Butaca" },
+      { property: "og:title", content: "Filmografía — BUTACAPP" },
       { property: "og:description", content: "Todas sus películas y series en un solo lugar." },
     ],
   }),

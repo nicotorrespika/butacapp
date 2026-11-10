@@ -19,9 +19,9 @@ export const Route = createFileRoute("/auth")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Entrar — Butaca" },
+      { title: "Entrar — BUTACAPP" },
       { name: "description", content: "Iniciá sesión o creá tu cuenta para armar listas compartidas." },
-      { property: "og:title", content: "Entrar — Butaca" },
+      { property: "og:title", content: "Entrar — BUTACAPP" },
       { property: "og:description", content: "Iniciá sesión para armar listas de cine, música y arte en grupo." },
     ],
   }),

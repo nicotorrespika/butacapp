@@ -32,9 +32,9 @@ export const Route = createFileRoute("/_authenticated/lists/$listId")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Lista — Butaca" },
+      { title: "Lista — BUTACAPP" },
       { name: "description", content: "Lista compartida: marcá, puntuá y comentá en grupo." },
-      { property: "og:title", content: "Lista compartida — Butaca" },
+      { property: "og:title", content: "Lista compartida — BUTACAPP" },
       { property: "og:description", content: "Marcá, puntuá y comentá en grupo." },
     ],
   }),

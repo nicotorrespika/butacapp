@@ -13,9 +13,9 @@ export const Route = createFileRoute("/_authenticated/lists/")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Mis listas — Butaca" },
+      { title: "Mis listas — BUTACAPP" },
       { name: "description", content: "Tus listas compartidas de películas, música y arte." },
-      { property: "og:title", content: "Mis listas — Butaca" },
+      { property: "og:title", content: "Mis listas — BUTACAPP" },
       { property: "og:description", content: "Tus listas compartidas de películas, música y arte." },
     ],
   }),
