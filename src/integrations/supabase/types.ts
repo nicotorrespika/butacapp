@@ -547,6 +547,30 @@ export type Database = {
           },
         ]
       }
+      culture_jobs: {
+        Row: {
+          key: string
+          last_completed_at: string | null
+          lease_until: string
+          paused_reason: string | null
+          run_id: string | null
+        }
+        Insert: {
+          key: string
+          last_completed_at?: string | null
+          lease_until?: string
+          paused_reason?: string | null
+          run_id?: string | null
+        }
+        Update: {
+          key?: string
+          last_completed_at?: string | null
+          lease_until?: string
+          paused_reason?: string | null
+          run_id?: string | null
+        }
+        Relationships: []
+      }
       culture_updates: {
         Row: {
           key: string
@@ -1170,6 +1194,7 @@ export type Database = {
     Functions: {
       accept_friend: { Args: { request_id: string }; Returns: undefined }
       accept_invite: { Args: { _token: string }; Returns: string }
+      acquire_culture_job: { Args: { job_key: string }; Returns: boolean }
       are_friends: { Args: { a: string; b: string }; Returns: boolean }
       can_read_list: { Args: { lid: string; uid: string }; Returns: boolean }
       claim_email_invites: { Args: never; Returns: number }
