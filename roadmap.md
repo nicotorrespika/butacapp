@@ -1,6 +1,7 @@
 # Roadmap
 
 - [ ] Complete movie detail: official YouTube trailer, Spanish/English synopsis, 8 cast members, direct list entry and inline list activity
+- [ ] Apply quiet Letterboxd direction: blue-gray near-black surfaces, DM Sans + Newsreader, sole amber accent, subtle posters and transitions
 - [x] Simplify the visual style: quieter dark surfaces, unframed list covers, discreet navigation and minimal search controls
 - [x] Refine the interface toward an indie/cult film festival aesthetic inspired by Letterboxd
 
