@@ -85,6 +85,13 @@
       "when": 1794331986271,
       "tag": "0011_cinema_venues_event_images",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1794332187156,
+      "tag": "0012_private_messages_notifications",
+      "breakpoints": true
     }
   ]
 }
