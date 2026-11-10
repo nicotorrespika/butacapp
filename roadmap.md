@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Complete public/private list controls and invitation read/collaborate flows
+- [ ] Show friends' movie additions with their rating in feed, respecting list visibility and live updates
+
 - [ ] Apply uploaded author-cinema aesthetic: burnt-orange accent, expressive italic movie titles, condensed headings/logo, mono metadata, numbered Top 5 and paper review tickets; preserve usability
 
 - [x] Betty inside existing lists uses their movies, ratings and critiques; live recommendation verified
