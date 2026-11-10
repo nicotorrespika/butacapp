@@ -1,3 +1,4 @@
+import {useScreenState} from "@/hooks/use-screen-state";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -60,9 +61,9 @@ function ListPage() {
   const comments = useQuery(commentsQuery(listId));
   useListRealtime(listId);
 
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [sort, setSort] = useState<SortKey>("recent");
-  const [adder, setAdder] = useState<string>("all");
+  const [status, setStatus] = useScreenState<StatusFilter>(`list:${listId}:status`,"all");
+  const [sort, setSort] = useScreenState<SortKey>(`list:${listId}:sort`,"recent");
+  const [adder, setAdder] = useScreenState<string>(`list:${listId}:adder`,"all");
   const {item:openId}=Route.useSearch();
   const setOpenId=(item:string|null)=>navigate({to:"/lists/$listId",params:{listId},search:{item:item ?? undefined},replace:true});
   const [inviting, setInviting] = useState(false);

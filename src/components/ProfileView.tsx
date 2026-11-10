@@ -1,3 +1,4 @@
+import {useScreenState} from "@/hooks/use-screen-state";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -20,8 +21,8 @@ import { ErrorState } from "./States";
 
 export function ProfileView({userId}:{userId:string}){
  const {user}=useAuth();const own=user?.id===userId;const qc=useQueryClient();const p=useQuery(profileQuery(userId));const watches=useQuery(watchedQuery(userId));const lists=useQuery(profileListsQuery(userId));const relations=useQuery({...friendsQuery(user?.id ?? ""),enabled:!!user});
- const [category,setCategory]=useState<"movie"|"music"|"book">("movie");
- const [tab,setTab]=useState("Listas");const [editing,setEditing]=useState(false);const [name,setName]=useState("");const [username,setUsername]=useState("");const [bio,setBio]=useState("");const [avatar,setAvatar]=useState("");const [creating,setCreating]=useState(false);const [saving,setSaving]=useState(false);
+ const [category,setCategory]=useScreenState<"movie"|"music"|"book">(`profile:${userId}:category`,"movie");
+ const [tab,setTab]=useScreenState(`profile:${userId}:tab`,"Listas");const [editing,setEditing]=useState(false);const [name,setName]=useState("");const [username,setUsername]=useState("");const [bio,setBio]=useState("");const [avatar,setAvatar]=useState("");const [creating,setCreating]=useState(false);const [saving,setSaving]=useState(false);
  useEffect(()=>{if(p.data){setName(p.data.display_name);setUsername(p.data.username ?? "");setBio(p.data.bio);setAvatar(p.data.avatar_url ?? "");}},[p.data]);
  const refresh=()=>qc.invalidateQueries({queryKey:["social"]});
  async function save(e:React.FormEvent){e.preventDefault();setSaving(true);const r=await supabase.from("profiles").update({display_name:name.trim(),username:username.trim().toLowerCase(),bio,avatar_url:avatar||null}).eq("id",userId);setSaving(false);if(r.error)return void toast.error("No se pudo guardar. Usá un usuario único de 3 a 24 letras, números o guiones bajos.");setEditing(false);refresh();qc.invalidateQueries({queryKey:["profile"]});toast.success("Perfil actualizado");}
