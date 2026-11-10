@@ -36,6 +36,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  useEffect(() => {
+    if (!state.user) return;
+    const invitedBy = sessionStorage.getItem("butacapp:invited-by");
+    if (!invitedBy || invitedBy === state.user.id || !/^[0-9a-f-]{36}$/i.test(invitedBy)) return;
+    void supabase.from("share_referrals").insert({user_id:state.user.id,invited_by:invitedBy}).then(({error})=>{
+      if (!error || error.code === "23505") sessionStorage.removeItem("butacapp:invited-by");
+    });
+  }, [state.user?.id]);
+
   return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>;
 }
 

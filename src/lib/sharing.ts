@@ -17,7 +17,7 @@ export function shareResult(r: SearchResult): ShareContent {
   return { kind: r.mediaType === "movie" ? "movie" : "culture", id: r.mediaType === "movie" ? movieRouteId(r.externalId) : cultureRouteId(r.source, r.externalId), title: r.title, image: r.imageUrl, year: r.year, category: r.kindLabel };
 }
 export function parseSharedCard(value: unknown): ShareContent | null {
-  const parsed = shareRefSchema.extend({ title: z.string().min(1).max(300), image: z.string().url().nullable().optional(), year: z.number().nullable().optional(), category: z.string().max(60).optional() }).safeParse(value);
+  const parsed = shareRefSchema.extend({ title: z.string().min(1).max(300), image: z.string().url().refine(v=>v.startsWith("https://")).nullable().optional(), year: z.number().nullable().optional(), category: z.string().max(60).optional() }).safeParse(value);
   return parsed.success ? parsed.data : null;
 }
 export function internalShareTarget(ref: ShareRef) {

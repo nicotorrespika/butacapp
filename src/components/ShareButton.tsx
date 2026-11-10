@@ -31,7 +31,7 @@ export function ShareButton({ content, compact=false }: { content: ShareContent;
     const rank=(id:string)=>(recent.data ?? []).reduce((n,m,i)=>n+(m.sender_id===id||m.recipient_id===id?100-i:0),0);
     return rank(b.peerId)-rank(a.peerId);
   }).filter(f=>`${f.profile?.display_name} ${f.profile?.username}`.toLowerCase().includes(term.toLowerCase()));
-  const locked=content.private || permissions.data?.public===false;
+  const locked=permissions.data ? !permissions.data.public : !!content.private;
   const log=async(channel:"chat"|"whatsapp"|"copy"|"native")=>{
     if(user)await supabase.from("content_shares").insert({user_id:user.id,kind:content.kind,content_id:content.id,channel});
   };
