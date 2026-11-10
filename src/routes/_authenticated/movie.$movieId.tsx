@@ -10,6 +10,7 @@ import { Poster } from "@/components/Poster";
 import { MovieTrailer } from "@/components/MovieTrailer";
 import { MovieListActivity } from "@/components/MovieListActivity";
 import { MovieActions } from "@/components/MovieActions";
+import { MovieReviews } from "@/components/MovieReviews";
 import { Skeleton } from "@/components/States";
 import { Button } from "@/components/ui/button";
 import { useAddToList } from "@/hooks/use-add-to-list";
@@ -123,6 +124,7 @@ function MoviePage() {
         </div>
       </div>
 
+      <MovieReviews id={m.routeId}/>
       <div className="mt-8 space-y-8">
         {m.sections.map((s) => (
           <MediaRow
