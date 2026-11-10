@@ -233,3 +233,6 @@
     display: none;
   }
 }
+@keyframes mosaic-drift { from { transform: translateY(0); } to { transform: translateY(-8%); } }
+.poster-mosaic { animation: mosaic-drift 60s linear infinite alternate; opacity: 0.45; }
+@media (prefers-reduced-motion: reduce) { .poster-mosaic { animation: none; } }

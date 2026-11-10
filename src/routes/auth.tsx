@@ -11,7 +11,7 @@ import { savePendingRedirect, useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import hero from "@/assets/hero-theater.jpg";
 
-const searchSchema = z.object({ redirect: z.string().optional() });
+const searchSchema = z.object({ redirect: z.string().optional(), mode: z.enum(["signup","signin"]).optional() });
 
 export const Route = createFileRoute("/auth")({
   validateSearch: searchSchema,
@@ -44,10 +44,10 @@ function safePath(redirect: string | undefined): string {
 type Mode = "signin" | "signup" | "magic" | "forgot";
 
 function AuthPage() {
-  const { redirect } = Route.useSearch();
+  const { redirect, mode:initialMode } = Route.useSearch();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [mode, setMode] = useState<Mode>("signin");
+  const [mode, setMode] = useState<Mode>(initialMode ?? "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -168,7 +168,7 @@ function AuthPage() {
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Tu nombre"
+                    placeholder="Nombre de usuario"
                     autoComplete="name"
                     className="h-12 rounded-xl text-base"
                     required

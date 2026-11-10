@@ -36,6 +36,7 @@ export function CreateListForm({
   const [description, setDescription] = useState("");
   const [kind, setKind] = useState<ListKind>(defaultKind);
   const [saving, setSaving] = useState(false);
+  const [visibility,setVisibility]=useState("private");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,7 +44,7 @@ export function CreateListForm({
     setSaving(true);
     const { data, error } = await supabase
       .from("lists")
-      .insert({ name: name.trim(), description: description.trim(), kind, owner_id: user.id })
+      .insert({ name: name.trim(), description: description.trim(), kind, visibility, owner_id: user.id })
       .select()
       .single();
     setSaving(false);
@@ -107,6 +108,7 @@ export function CreateListForm({
           ))}
         </div>
       </div>
+      <label className="text-sm text-muted-foreground">Quién puede verla<select aria-label="Quién puede verla" value={visibility} onChange={e=>setVisibility(e.target.value)} className="mt-2 h-11 w-full rounded-sm border border-input bg-background px-3"><option value="private">Solo colaboradores</option><option value="friends">Amigos</option><option value="public">Cualquiera</option></select></label>
       <Button type="submit" size="lg" disabled={saving || !name.trim()} className="mt-2">
         {saving && <Loader2 className="animate-spin" />}
         {submitLabel}

@@ -16,7 +16,12 @@ export function SocialComments({ activityId, profileId, listId, reviewItemId, re
   if(reviewItemId)query=query.eq("review_item_id",reviewItemId).eq("review_user_id",reviewUserId ?? "");else query=query.is("review_item_id",null);
   const r=await query;if(r.error)throw r.error;return r.data;
  }});
- async function send(e:React.FormEvent){e.preventDefault();if(!user||!body.trim())return;setBusy(true);const r=await supabase.from("social_comments").insert({user_id:user.id,body:body.trim(),activity_id:activityId,profile_id:profileId,list_id:listId,review_item_id:reviewItemId,review_user_id:reviewUserId});setBusy(false);if(r.error)return void toast.error("No se pudo enviar. Probá otra vez.");setBody("");qc.invalidateQueries({queryKey:key});toast.success("Comentario enviado",{action:{label:"Deshacer",onClick:async()=>{const latest=await supabase.from("social_comments").select("id").eq("user_id",user.id).order("created_at",{ascending:false}).limit(1).single();if(latest.data)await supabase.from("social_comments").delete().eq("id",latest.data.id);qc.invalidateQueries({queryKey:key});}});}
+ async function send(e:React.FormEvent){
+  e.preventDefault();if(!user||!body.trim())return;setBusy(true);
+  const r=await supabase.from("social_comments").insert({user_id:user.id,body:body.trim(),activity_id:activityId,profile_id:profileId,list_id:listId,review_item_id:reviewItemId,review_user_id:reviewUserId}).select("id").single();
+  setBusy(false);if(r.error)return void toast.error("No se pudo enviar. Probá otra vez.");setBody("");qc.invalidateQueries({queryKey:key});
+  toast.success("Comentario enviado",{action:{label:"Deshacer",onClick:async()=>{await supabase.from("social_comments").delete().eq("id",r.data.id);qc.invalidateQueries({queryKey:key});}}});
+ }
  return <div className="space-y-4">
   {q.isError&&<p className="text-sm text-muted-foreground">No pudimos cargar los comentarios. <Button variant="link" onClick={()=>q.refetch()}>Reintentar</Button></p>}
   {q.data?.map(c=><article key={c.id} className="flex gap-2"><div className="min-w-0 flex-1"><Link to="/people/$userId" params={{userId:c.user_id}} className="inline-flex min-h-11 items-center text-sm">{c.profile?.username ?? c.profile?.display_name ?? "Alguien"}</Link><p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">{c.body}</p></div>{user?.id===c.user_id&&<Button variant="ghost" onClick={async()=>{await supabase.from("social_comments").delete().eq("id",c.id);qc.invalidateQueries({queryKey:key});}}><Trash2/>Borrar</Button>}</article>)}

@@ -21,6 +21,10 @@ import {
 } from "@/lib/media";
 import { searchMedia } from "@/lib/search.functions";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { topFive } from "@/lib/social";
+import { toast } from "sonner";
+import { BackButton } from "@/components/BackButton";
 
 export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: z.object({
@@ -135,7 +139,7 @@ function SearchPage() {
             </Button>
           </div>
         ) : (
-          <h1 className="mb-3 font-display text-4xl">Buscar</h1>
+          <div className="mb-4"><BackButton/><h1 className="mt-4 font-display text-4xl">{params.top?"Elegí tu Top 5":"Buscar"}</h1></div>
         )}
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
