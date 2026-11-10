@@ -41,3 +41,4 @@ use the editor.
 - `ratings` and `comments` carry a denormalized `list_id` set by trigger from the item. Why: enables RLS and realtime filtering per list.
 - Invites: token links via `get_invite`/`accept_invite` RPCs; email invites are rows auto-claimed by `claim_email_invites` on sign-in. Why: no outbound email service required.
 - Social views share browser-safe query helpers and use database-enforced visibility; the feed paginates by timestamp plus ID. Why: keeps privacy centralized and pagination stable when activities share a timestamp.
+- Personal movie state lives in movie_entries, independent of list ratings; list sheet selection lives in validated URL search state. Why: favorites need not be watched and browser Back restores the selected list panel.

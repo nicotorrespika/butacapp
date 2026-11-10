@@ -162,7 +162,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
             {item.done ? `${labels.done}${item.done_by ? ` · ${name(item.done_by)}` : ""}` : labels.todo}
           </Button>
 
-          {media==="movie"&&<div className="mt-4"><MovieActions favoriteOnly result={{source:item.source as "tmdb",externalId:item.external_id,title:item.title,year:item.year,imageUrl:item.image_url,creator:item.creator,mediaType:media,kindLabel:item.kind_label,externalUrl:item.external_url}}/></div>}
+          {media==="movie"&&<div className="mt-4"><MovieActions favoriteOnly result={{source:item.source,externalId:item.external_id,title:item.title,year:item.year,imageUrl:item.image_url,creator:item.creator,mediaType:media,kindLabel:item.kind_label ?? "Película",externalUrl:item.external_url}}/></div>}
 
           {/* Ratings */}
           <section className="mt-8 py-6">
