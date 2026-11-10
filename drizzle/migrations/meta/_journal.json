@@ -15,6 +15,13 @@
       "when": 1794291870526,
       "tag": "0001_ten_point_ratings_and_reviews",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794293600674,
+      "tag": "0002_butacapp_social",
+      "breakpoints": true
     }
   ]
 }
