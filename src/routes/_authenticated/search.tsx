@@ -45,9 +45,9 @@ export const Route = createFileRoute("/_authenticated/search")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { title: "Buscar — BUTACAPP" },
-      { name: "description", content: "Buscá películas, series, discos, canciones y obras de arte en un solo lugar." },
+      { name: "description", content: "Buscá películas, series, discos, canciones y libros en un solo lugar." },
       { property: "og:title", content: "Buscar — BUTACAPP" },
-      { property: "og:description", content: "Un buscador para películas, música y arte." },
+      { property: "og:description", content: "Un buscador para películas, música y libros." },
     ],
   }),
   component: SearchPage,
@@ -60,7 +60,7 @@ const CHIPS: { id: SearchFilter; label: string }[] = [
   { id: "book", label: "Libros" },
 ];
 
-const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", "Monet", "1994", "Björk", "Frida Kahlo"];
+const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", "Cortázar", "1994", "Björk", "Borges"];
 
 function SearchPage() {
   const params = Route.useSearch();
@@ -163,7 +163,7 @@ function SearchPage() {
             value={text}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Título, autor, año…"
-            aria-label="Buscar películas, música y arte"
+            aria-label="Buscar películas, música y libros"
             className="h-12 w-full rounded-sm border border-input bg-transparent pl-12 pr-12 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
           />
           {(query.isFetching || typing) && q.length >= 2 ? (
@@ -219,7 +219,7 @@ function SearchPage() {
               ))}
             </div>
             <p className="mt-8 max-w-sm text-sm text-muted-foreground">
-              Escribí un título, un director, una banda o un pintor. Sumá un año para afinar: «Kubrick 1968».
+              Escribí un título, un director, una banda o un autor. Sumá un año para afinar: «Kubrick 1968».
             </p>
           </div>
         ) : query.isError ? (

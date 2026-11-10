@@ -45,3 +45,6 @@ use the editor.
 - Betty uses authenticated structured-output server functions, verifies exact title/year matches in TMDB and stores user-owned thread history and feedback. Why: unverified catalog entries never reach recommendations and personal tastes remain private.
 - Discovery stores queued/dismissed/watched choices in personal entries and normalizes catalog IDs before exclusion; UI offers gestures plus explicit buttons. Why: cross-surface choices stay consistent without requiring gestures.
 - List covers reuse a shared poster strip; friends' added-item activities resolve the author's current list rating and subscribe to RLS-filtered realtime. Why: previews and activity stay consistent without duplicating stored scores.
+- Cultural catalog details use authenticated server functions and shared list sheets; personal cultural state is independent of list ratings. Why: extends music/books without changing cinema behavior.
+- Cultural feeds and events read persisted records collected by managed authenticated HTTP schedules; async research run IDs and leases persist server-side. Why: screen opens incur no research calls and pending jobs survive refreshes.
+- Existing cultural entries update only changed fields and immediately refresh their query cache. Why: consecutive actions must not overwrite ratings, favorites or reviews.
