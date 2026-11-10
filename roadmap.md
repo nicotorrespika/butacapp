@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Read and implement uploaded Spotify integration requirements
 - [ ] Movie criticism: real IMDb/Rotten Tomatoes/Metacritic links and Argentine media short cited summaries; Betty recounts them as chisme
 - [ ] Show each friend movie poster beside its feed title
 
