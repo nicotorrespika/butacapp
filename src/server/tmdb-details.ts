@@ -278,7 +278,7 @@ export async function fetchMovieDetail(
   }
 
   const result = mapTmdb(
-    { id: d.id, title, release_date: d.release_date, first_air_date: d.first_air_date, poster_path: d.poster_path },
+    { id: d.id, title, release_date: d.release_date ?? "", first_air_date: d.first_air_date ?? "", poster_path: d.poster_path ?? null },
     ref.type,
     directors.map((x) => x.name).join(", ") || null,
   );
