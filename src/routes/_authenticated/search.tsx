@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Loader2, Search, SearchX, X } from "lucide-react";
-import { toast } from "sonner";
 import { z } from "zod";
-import { AddToListDrawer } from "@/components/AddToListDrawer";
 import { ResultCard } from "@/components/ResultCard";
 import { EmptyState, ErrorState, PosterGridSkeleton } from "@/components/States";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
+import { resultKey, useAddToList } from "@/hooks/use-add-to-list";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { addResultToList } from "@/lib/add-item";
-import { listAccepts, MEDIA_LABEL, type MediaType, type SearchFilter, type SearchResult } from "@/lib/media";
-import { keys, listQuery } from "@/lib/queries";
+import {
+  departmentLabel,
+  hasMoviePage,
+  MEDIA_LABEL,
+  movieRouteId,
+  type MediaType,
+  type PersonResult,
+  type SearchFilter,
+  type SearchResult,
+} from "@/lib/media";
 import { searchMedia } from "@/lib/search.functions";
 import { cn } from "@/lib/utils";
 
@@ -50,32 +55,27 @@ function SearchPage() {
   const [text, setText] = useState(params.q ?? "");
   const filter: SearchFilter = params.f ?? "all";
   const q = useDebouncedValue(text.trim(), 350);
-  const [adding, setAdding] = useState<SearchResult | null>(null);
   const search = useServerFn(searchMedia);
-  const { user } = useAuth();
-  const qc = useQueryClient();
+  const adder = useAddToList(params.list);
+  const targetList = adder.targetList;
 
-  // Target list (when coming from a list page). Results added here get a check.
-  const target = useQuery({ ...listQuery(params.list ?? ""), enabled: !!params.list });
-  const targetList = params.list ? target.data?.list : undefined;
-  const [addedKeys, setAddedKeys] = useState<Set<string>>(new Set());
-  const [busyKey, setBusyKey] = useState<string | null>(null);
-  const resultKey = (r: SearchResult) => `${r.source}:${r.externalId}`;
-
-  async function handleAdd(r: SearchResult) {
-    // No target (or the list doesn't take this type) → let the user pick a list.
-    if (!targetList || !user || !listAccepts(targetList.kind, r.mediaType)) return setAdding(r);
-    const k = resultKey(r);
-    setBusyKey(k);
-    const res = await addResultToList(r, targetList.id, user.id);
-    setBusyKey(null);
-    if (!res.ok && !res.duplicate) return void toast.error("No se pudo agregar", { description: res.message });
-    setAddedKeys((s) => new Set(s).add(k));
-    qc.invalidateQueries({ queryKey: keys.items(targetList.id) });
-    qc.invalidateQueries({ queryKey: keys.myLists });
-    if (res.ok) toast.success(`Agregado a «${targetList.name}»`);
-    else toast("Ya estaba en esa lista");
+  // Movies with a TMDB/IMDb id open their page (synopsis, scores, similar titles).
+  function openMovie(r: SearchResult) {
+    if (!hasMoviePage(r.source, r.mediaType)) return;
+    void navigate({
+      to: "/movie/$movieId",
+      params: { movieId: movieRouteId(r.externalId) },
+      search: { list: params.list },
+    });
   }
+  const cardProps = (r: SearchResult) => ({
+    result: r,
+    onAdd: adder.add,
+    added: adder.isAdded(r),
+    busy: adder.isBusy(r),
+    targetName: targetList?.name,
+    onOpen: hasMoviePage(r.source, r.mediaType) ? openMovie : undefined,
+  });
 
   function clearTarget() {
     navigate({ search: (s) => ({ ...s, list: undefined }), replace: true });
@@ -100,7 +100,7 @@ function SearchPage() {
   }, [q]);
 
   const data = query.data;
-  const total = data ? data.movie.length + data.music.length + data.art.length : 0;
+  const total = data ? data.people.length + data.movie.length + data.music.length + data.art.length : 0;
   const sections: MediaType[] = filter === "all" ? ["movie", "music", "art"] : [filter];
   const typing = text.trim() !== q;
 
@@ -209,6 +209,16 @@ function SearchPage() {
                 {w}
               </p>
             ))}
+            {data.people.length > 0 && (filter === "all" || filter === "movie") && (
+              <section>
+                <h2 className="mb-3 font-display text-2xl">Personas</h2>
+                <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-none">
+                  {data.people.map((p) => (
+                    <PersonChip key={p.id} person={p} listId={params.list} />
+                  ))}
+                </div>
+              </section>
+            )}
             {sections.map((m) => {
               const items = data[m];
               if (!items.length) return null;
@@ -229,11 +239,7 @@ function SearchPage() {
                     {items.slice(0, 12).map((r) => (
                       <ResultCard
                         key={resultKey(r)}
-                        result={r}
-                        onAdd={handleAdd}
-                        added={addedKeys.has(resultKey(r))}
-                        busy={busyKey === resultKey(r)}
-                        targetName={targetList?.name}
+                        {...cardProps(r)}
                         className={cn("shrink-0 snap-start", m === "movie" ? "w-32" : "w-40")}
                       />
                     ))}
@@ -242,14 +248,7 @@ function SearchPage() {
               ) : (
                 <section key={m} className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
                   {items.map((r) => (
-                    <ResultCard
-                      key={resultKey(r)}
-                      result={r}
-                      onAdd={handleAdd}
-                      added={addedKeys.has(resultKey(r))}
-                      busy={busyKey === resultKey(r)}
-                      targetName={targetList?.name}
-                    />
+                    <ResultCard key={resultKey(r)} {...cardProps(r)} />
                   ))}
                 </section>
               );
@@ -263,7 +262,31 @@ function SearchPage() {
         )}
       </div>
 
-      <AddToListDrawer result={adding} onOpenChange={(o) => !o && setAdding(null)} />
+      {adder.sheet}
     </div>
+  );
+}
+
+/** Round photo + name; opens the person's full filmography. */
+function PersonChip({ person, listId }: { person: PersonResult; listId: string | undefined }) {
+  return (
+    <Link
+      to="/person/$personId"
+      params={{ personId: String(person.id) }}
+      search={{ list: listId }}
+      className="flex w-28 shrink-0 flex-col items-center text-center animate-rise active:scale-[0.97] transition-transform"
+    >
+      <div className="size-24 overflow-hidden rounded-full border border-border bg-secondary">
+        {person.photoUrl ? (
+          <img src={person.photoUrl} alt={person.name} loading="lazy" className="h-full w-full object-cover" />
+        ) : (
+          <span className="flex h-full w-full items-center justify-center font-display text-3xl text-muted-foreground">
+            {person.name.charAt(0)}
+          </span>
+        )}
+      </div>
+      <span className="mt-2 line-clamp-2 text-sm font-semibold leading-tight">{person.name}</span>
+      <span className="text-[11px] uppercase tracking-wider text-primary">{departmentLabel(person.department)}</span>
+    </Link>
   );
 }

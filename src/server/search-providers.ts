@@ -7,12 +7,12 @@
  *  - Music: iTunes Search API (albums + songs, no key)
  *  - Art: Art Institute of Chicago + The Met Museum (no key)
  */
-import type { SearchResult } from "@/lib/media";
+import type { PersonResult, SearchResult } from "@/lib/media";
 import { boostYear, extractYear, type ParsedQuery } from "@/lib/search-query";
 
 const TIMEOUT_MS = 7000;
 
-async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
+export async function getJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, { ...init, signal: AbortSignal.timeout(TIMEOUT_MS) });
   if (!res.ok) throw new Error(`${new URL(url).host} respondió ${res.status}`);
   return (await res.json()) as T;
@@ -32,7 +32,7 @@ function dedupe(items: SearchResult[]): SearchResult[] {
 /* TMDB                                                                 */
 /* ------------------------------------------------------------------ */
 
-interface TmdbItem {
+export interface TmdbItem {
   id: number;
   media_type?: "movie" | "tv" | "person";
   title?: string;
@@ -43,11 +43,18 @@ interface TmdbItem {
   popularity?: number;
   job?: string;
   known_for_department?: string;
+  profile_path?: string | null;
+  known_for?: TmdbItem[];
+  character?: string;
+  vote_count?: number;
 }
 
-const TMDB_IMG = "https://image.tmdb.org/t/p/w342";
+export const TMDB_IMG = "https://image.tmdb.org/t/p/w342";
+export const TMDB_PROFILE = "https://image.tmdb.org/t/p/w185";
 
-function tmdbFetcher(key: string) {
+export type TmdbFetch = <T>(path: string, params?: Record<string, string | number | undefined>) => Promise<T>;
+
+export function tmdbFetcher(key: string): TmdbFetch {
   // Supports both a v3 API key and a v4 "Read Access Token" (JWT).
   const isBearer = key.startsWith("eyJ");
   return <T>(path: string, params: Record<string, string | number | undefined> = {}) => {
@@ -63,7 +70,7 @@ function tmdbFetcher(key: string) {
   };
 }
 
-function mapTmdb(i: TmdbItem, type: "movie" | "tv", creator: string | null = null): SearchResult {
+export function mapTmdb(i: TmdbItem, type: "movie" | "tv", creator: string | null = null): SearchResult {
   return {
     source: "tmdb",
     externalId: `${type}:${i.id}`,
@@ -77,7 +84,10 @@ function mapTmdb(i: TmdbItem, type: "movie" | "tv", creator: string | null = nul
   };
 }
 
-export async function searchTmdb(q: ParsedQuery, key: string): Promise<SearchResult[]> {
+export async function searchTmdb(
+  q: ParsedQuery,
+  key: string,
+): Promise<{ results: SearchResult[]; people: PersonResult[] }> {
   const tmdb = tmdbFetcher(key);
 
   // Year only → most popular movies of that year.
@@ -86,12 +96,24 @@ export async function searchTmdb(q: ParsedQuery, key: string): Promise<SearchRes
       primary_release_year: q.year,
       sort_by: "popularity.desc",
     });
-    return d.results.slice(0, 20).map((i) => mapTmdb(i, "movie"));
+    return { results: d.results.slice(0, 20).map((i) => mapTmdb(i, "movie")), people: [] };
   }
 
   const multi = await tmdb<{ results: TmdbItem[] }>("/search/multi", { query: q.text });
   const works = multi.results.filter((r) => r.media_type === "movie" || r.media_type === "tv");
   const person = multi.results.find((r) => r.media_type === "person");
+
+  // People matches (directors, actors…) → shown as a row that opens their full filmography.
+  const people: PersonResult[] = multi.results
+    .filter((r) => r.media_type === "person" && (r.known_for?.length || r.profile_path))
+    .slice(0, 6)
+    .map((p) => ({
+      id: p.id,
+      name: p.name ?? "Sin nombre",
+      photoUrl: p.profile_path ? `${TMDB_PROFILE}${p.profile_path}` : null,
+      department: p.known_for_department ?? null,
+      knownFor: (p.known_for ?? []).map((k) => k.title ?? k.name ?? "").filter(Boolean).slice(0, 3),
+    }));
 
   let results: SearchResult[] = [];
 
@@ -137,7 +159,7 @@ export async function searchTmdb(q: ParsedQuery, key: string): Promise<SearchRes
       }
     }),
   );
-  return results;
+  return { results, people };
 }
 
 /* ------------------------------------------------------------------ */

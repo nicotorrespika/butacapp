@@ -23,7 +23,41 @@ export interface SearchResult {
   externalUrl: string | null;
 }
 
+/** A person (director, actor…) matched by the movie search. */
+export interface PersonResult {
+  id: number;
+  name: string;
+  photoUrl: string | null;
+  /** TMDB department, e.g. "Directing", "Acting". */
+  department: string | null;
+  knownFor: string[];
+}
+
+const DEPARTMENT_LABEL: Record<string, string> = {
+  Directing: "Dirección",
+  Acting: "Actuación",
+  Writing: "Guion",
+  Production: "Producción",
+  Sound: "Música",
+  Camera: "Fotografía",
+  Editing: "Montaje",
+  Art: "Arte",
+  "Costume & Make-Up": "Vestuario",
+  "Visual Effects": "Efectos visuales",
+  Crew: "Equipo",
+};
+export const departmentLabel = (d: string | null | undefined) => (d ? (DEPARTMENT_LABEL[d] ?? d) : "Cine");
+
+/** Route param for a movie page: "movie:123" → "movie-123"; IMDb ids ("tt…") stay as-is. */
+export const movieRouteId = (externalId: string) => externalId.replace(":", "-");
+
+/** Whether a stored/search item can open a movie page (TMDB or IMDb ids). */
+export const hasMoviePage = (source: string, mediaType: string) =>
+  mediaType === "movie" && (source === "tmdb" || source === "imdb");
+
 export interface SearchResponse {
+  /** People (directors, actors) matching the query; only with TMDB. */
+  people: PersonResult[];
   movie: SearchResult[];
   music: SearchResult[];
   art: SearchResult[];

@@ -11,9 +11,12 @@ export function ResultCard({
   added = false,
   busy = false,
   targetName,
+  onOpen,
 }: {
   result: SearchResult;
   onAdd: (r: SearchResult) => void;
+  /** Tap on cover/title opens the detail page (movies). */
+  onOpen?: ((r: SearchResult) => void) | undefined;
   className?: string;
   /** Already added to the target list (shows a check instead of "+"). */
   added?: boolean;
@@ -24,7 +27,18 @@ export function ResultCard({
   return (
     <article className={cn("group relative animate-rise", className)}>
       <div className="relative">
-        <Poster src={result.imageUrl} alt={result.title} media={result.mediaType} />
+        {onOpen ? (
+          <button
+            type="button"
+            onClick={() => onOpen(result)}
+            aria-label={`Ver ficha de ${result.title}`}
+            className="block w-full transition-transform duration-200 ease-cine active:scale-[0.98]"
+          >
+            <Poster src={result.imageUrl} alt={result.title} media={result.mediaType} />
+          </button>
+        ) : (
+          <Poster src={result.imageUrl} alt={result.title} media={result.mediaType} />
+        )}
         <button
           type="button"
           onClick={() => onAdd(result)}
@@ -49,7 +63,15 @@ export function ResultCard({
         </button>
       </div>
       <div className="mt-2 px-0.5">
-        <h3 className="line-clamp-2 font-sans text-sm font-semibold leading-snug text-foreground">{result.title}</h3>
+        <h3 className="line-clamp-2 font-sans text-sm font-semibold leading-snug text-foreground">
+          {onOpen ? (
+            <button type="button" onClick={() => onOpen(result)} className="text-left">
+              {result.title}
+            </button>
+          ) : (
+            result.title
+          )}
+        </h3>
         <p className="mt-0.5 truncate text-xs text-muted-foreground">
           {[result.creator, result.year].filter(Boolean).join(" · ") || result.kindLabel}
         </p>

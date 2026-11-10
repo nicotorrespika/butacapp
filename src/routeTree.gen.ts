@@ -18,6 +18,8 @@ import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedInviteTokenRouteImport } from './routes/_authenticated/invite.$token'
 import { Route as AuthenticatedListsIndexRouteImport } from './routes/_authenticated/lists.index'
 import { Route as AuthenticatedListsListIdRouteImport } from './routes/_authenticated/lists.$listId'
+import { Route as AuthenticatedMovieMovieIdRouteImport } from './routes/_authenticated/movie.$movieId'
+import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -65,6 +67,18 @@ const AuthenticatedListsListIdRoute =
     path: '/lists/$listId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMovieMovieIdRoute =
+  AuthenticatedMovieMovieIdRouteImport.update({
+    id: '/movie/$movieId',
+    path: '/movie/$movieId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPersonPersonIdRoute =
+  AuthenticatedPersonPersonIdRouteImport.update({
+    id: '/person/$personId',
+    path: '/person/$personId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -74,6 +88,8 @@ export interface FileRoutesByFullPath {
   '/search': typeof AuthenticatedSearchRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/lists/$listId': typeof AuthenticatedListsListIdRoute
+  '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
+  '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -84,6 +100,8 @@ export interface FileRoutesByTo {
   '/search': typeof AuthenticatedSearchRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/lists/$listId': typeof AuthenticatedListsListIdRoute
+  '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
+  '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
 }
 export interface FileRoutesById {
@@ -96,6 +114,8 @@ export interface FileRoutesById {
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/invite/$token': typeof AuthenticatedInviteTokenRoute
   '/_authenticated/lists/$listId': typeof AuthenticatedListsListIdRoute
+  '/_authenticated/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
+  '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
 }
 export interface FileRouteTypes {
@@ -108,6 +128,8 @@ export interface FileRouteTypes {
     | '/search'
     | '/invite/$token'
     | '/lists/$listId'
+    | '/movie/$movieId'
+    | '/person/$personId'
     | '/lists/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -118,6 +140,8 @@ export interface FileRouteTypes {
     | '/search'
     | '/invite/$token'
     | '/lists/$listId'
+    | '/movie/$movieId'
+    | '/person/$personId'
     | '/lists'
   id:
     | '__root__'
@@ -129,6 +153,8 @@ export interface FileRouteTypes {
     | '/_authenticated/search'
     | '/_authenticated/invite/$token'
     | '/_authenticated/lists/$listId'
+    | '/_authenticated/movie/$movieId'
+    | '/_authenticated/person/$personId'
     | '/_authenticated/lists/'
   fileRoutesById: FileRoutesById
 }
@@ -204,6 +230,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedListsListIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/movie/$movieId': {
+      id: '/_authenticated/movie/$movieId'
+      path: '/movie/$movieId'
+      fullPath: '/movie/$movieId'
+      preLoaderRoute: typeof AuthenticatedMovieMovieIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/person/$personId': {
+      id: '/_authenticated/person/$personId'
+      path: '/person/$personId'
+      fullPath: '/person/$personId'
+      preLoaderRoute: typeof AuthenticatedPersonPersonIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -212,6 +252,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedInviteTokenRoute: typeof AuthenticatedInviteTokenRoute
   AuthenticatedListsListIdRoute: typeof AuthenticatedListsListIdRoute
+  AuthenticatedMovieMovieIdRoute: typeof AuthenticatedMovieMovieIdRoute
+  AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
 }
 
@@ -220,6 +262,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedInviteTokenRoute: AuthenticatedInviteTokenRoute,
   AuthenticatedListsListIdRoute: AuthenticatedListsListIdRoute,
+  AuthenticatedMovieMovieIdRoute: AuthenticatedMovieMovieIdRoute,
+  AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
 }
 
