@@ -22,7 +22,7 @@ export const Route = createFileRoute("/auth")({
       { title: "Entrar — BUTACAPP" },
       { name: "description", content: "Iniciá sesión o creá tu cuenta para armar listas compartidas." },
       { property: "og:title", content: "Entrar — BUTACAPP" },
-      { property: "og:description", content: "Iniciá sesión para armar listas de cine, música y arte en grupo." },
+      { property: "og:description", content: "Iniciá sesión para armar listas de cine, música y libros en grupo." },
     ],
   }),
   component: AuthPage,

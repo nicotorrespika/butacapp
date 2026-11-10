@@ -1,5 +1,11 @@
 # Roadmap
 
+## Latest requests
+- [ ] Read and implement uploaded Spotify integration requirements
+- [ ] Movie criticism: real IMDb/Rotten Tomatoes/Metacritic links and Argentine media short cited summaries; Betty recounts them as chisme
+- [ ] Show each friend movie poster beside its feed title
+
+
 ## Cultural expansion requested November 10, 2026
 - [ ] New home header and category search: Inicio / Cine / Música / Libros / Eventos with user's exact questions and contextual Betty
 - [ ] Category mini feeds with saved items, likes/comments/sharing; scheduled collection only, persisted daily news/releases/recommendations and six-hour events with daily expiry cleanup

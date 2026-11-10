@@ -45,9 +45,9 @@ export const Route = createFileRoute("/_authenticated/search")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { title: "Buscar — BUTACAPP" },
-      { name: "description", content: "Buscá películas, series, discos, canciones y obras de arte en un solo lugar." },
+      { name: "description", content: "Buscá películas, series, discos, canciones y libros en un solo lugar." },
       { property: "og:title", content: "Buscar — BUTACAPP" },
-      { property: "og:description", content: "Un buscador para películas, música y arte." },
+      { property: "og:description", content: "Un buscador para películas, música y libros." },
     ],
   }),
   component: SearchPage,
@@ -60,7 +60,7 @@ const CHIPS: { id: SearchFilter; label: string }[] = [
   { id: "book", label: "Libros" },
 ];
 
-const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", "Monet", "1994", "Björk", "Frida Kahlo"];
+const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", "Cortázar", "1994", "Björk", "Borges"];
 
 function SearchPage() {
   const params = Route.useSearch();
@@ -132,8 +132,8 @@ function SearchPage() {
   return (
     <div>
       <div className="flex gap-2 px-4 py-4" role="tablist" aria-label="Modo de búsqueda">{([["search","Buscar"],["discover","Descubrir"],["betty","Betty"]] as const).map(([id,label])=><Button key={id} variant="ghost" role="tab" aria-selected={mode===id} onClick={()=>navigate({search:s=>({...s,mode:id}),replace:true})}>{label}</Button>)}</div>
-      {mode!=="search"&&<div role="tablist" aria-label="Categoría" className="flex gap-2 overflow-x-auto px-4 pb-4">{CHIPS.filter(c=>c.id!=="all").map(c=><Button variant="ghost" role="tab" aria-selected={filter===c.id} key={c.id} onClick={()=>setFilter(c.id)}>{c.label}</Button>)}</div>}
-      {mode==="betty"?(isCulture(filter==="all"?"movie":filter)?<CultureBetty key={filter} type={filter==="book"?"book":"music"} {...(params.list?{listId:params.list}:{})}/>:<BettySearch listId={params.list}/>):mode==="discover"?(filter==="book"||filter==="music"?<CultureDiscovery key={filter} type={filter}/>:<DiscoveryDeck/>):<>
+      {mode!=="search"&&<div role="tablist" aria-label="Categoría" className="flex gap-2 overflow-x-auto px-4 pb-4">{CHIPS.filter(c=>mode==="betty"||c.id!=="all").map(c=><Button variant="ghost" role="tab" aria-selected={filter===c.id} key={c.id} onClick={()=>setFilter(c.id)}>{c.label}</Button>)}</div>}
+      {mode==="betty"?(filter==="all"?<CultureBetty type="all"/>:isCulture(filter)?<CultureBetty key={filter} type={filter==="book"?"book":"music"} {...(params.list?{listId:params.list}:{})}/>:<BettySearch listId={params.list}/>):mode==="discover"?(filter==="book"||filter==="music"?<CultureDiscovery key={filter} type={filter}/>:<DiscoveryDeck/>):<>
       {/* Sticky search header */}
       <header className="sticky top-0 z-30 bg-background px-4 pb-3 pt-[max(env(safe-area-inset-top),2rem)]">
         {targetList ? (
@@ -163,7 +163,7 @@ function SearchPage() {
             value={text}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Título, autor, año…"
-            aria-label="Buscar películas, música y arte"
+            aria-label="Buscar películas, música y libros"
             className="h-12 w-full rounded-sm border border-input bg-transparent pl-12 pr-12 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
           />
           {(query.isFetching || typing) && q.length >= 2 ? (
@@ -219,7 +219,7 @@ function SearchPage() {
               ))}
             </div>
             <p className="mt-8 max-w-sm text-sm text-muted-foreground">
-              Escribí un título, un director, una banda o un pintor. Sumá un año para afinar: «Kubrick 1968».
+              Escribí un título, un director, una banda o un autor. Sumá un año para afinar: «Kubrick 1968».
             </p>
           </div>
         ) : query.isError ? (
