@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { InviteDrawer } from "@/components/InviteDrawer";
 import { ItemDrawer } from "@/components/ItemDrawer";
+import { ListRecommendations } from "@/components/ListRecommendations";
 import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -201,6 +202,7 @@ function ListPage() {
           )}
         </div>
       </header>
+      {d && (d.list.kind === "movies" || d.list.kind === "mixed") && <ListRecommendations listId={listId} />}
 
       {/* Filters + sort */}
       <div className="sticky top-0 z-20 space-y-2 bg-background/85 px-4 py-2 backdrop-blur-xl">

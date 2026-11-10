@@ -29,7 +29,7 @@ function MyLists() {
 
   return (
     <div className="px-5 pt-[max(env(safe-area-inset-top),2rem)] sm:px-8 sm:pt-12">
-      <header className="flex items-end justify-between gap-3 border-b border-border pb-7 mb-7">
+      <header className="mb-8 flex items-end justify-between gap-3 pb-4">
         <div>
           <p className="mb-3 text-[11px] font-medium text-muted-foreground">2BOLUDOS</p>
           <h1 className="font-display text-4xl leading-tight">mis listas!!!!</h1>
@@ -50,14 +50,14 @@ function MyLists() {
       ) : !lists.data?.length ? (
         <EmptyState
           icon={<Library />}
-          title="Todavía no hay funciones"
+          title="Nada guardado todavía"
           action={
             <Button size="lg" onClick={() => setCreating(true)}>
               <Plus /> Crear mi primera lista
             </Button>
           }
         >
-          Creá una lista, invitá a tu gente y empiecen a sumar lo que quieren ver, escuchar o visitar.
+          Una lista. Algo por descubrir.
         </EmptyState>
       ) : (
         <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
