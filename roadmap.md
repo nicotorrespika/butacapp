@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Simplify the visual style: quieter dark surfaces, unframed list covers, discreet navigation and minimal search controls
 - [x] Refine the interface toward an indie/cult film festival aesthetic inspired by Letterboxd
 
 - [ ] Movie catalogue and director search: implemented; live verification blocked by rejected TMDB key
