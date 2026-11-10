@@ -13,7 +13,7 @@ import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/componen
 import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
 import { DONE_LABEL, LIST_KIND_LABEL, type MediaType } from "@/lib/media";
-import { averageScore } from "@/lib/ratings";
+import { averageScore, ratingScore } from "@/lib/ratings";
 import {
   commentsQuery,
   itemsQuery,
@@ -65,7 +65,7 @@ function ListPage() {
     for (const i of items.data ?? []) {
       const rs = (ratings.data ?? []).filter((r) => r.item_id === i.id);
       m[i.id] = {
-        avg: averageScore(rs.map((r) => r.score)),
+        avg: averageScore(rs.map(ratingScore)),
         votes: rs.length,
         comments: (comments.data ?? []).filter((c) => c.item_id === i.id).length,
       };
@@ -318,6 +318,7 @@ function ListPage() {
       {d && (
         <>
           <ItemDrawer
+            key={openItem?.id ?? "closed"}
             item={openItem}
             onOpenChange={(o) => !o && setOpenId(null)}
             ratings={ratings.data ?? []}

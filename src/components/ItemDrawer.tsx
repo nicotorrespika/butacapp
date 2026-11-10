@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { Check, ExternalLink, Loader2, Send, Trash2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,8 @@ import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "@/compone
 import { Poster } from "@/components/Poster";
 import { StarRating } from "@/components/StarRating";
 import { UserAvatar } from "@/components/UserAvatar";
-import { DONE_LABEL, type MediaType } from "@/lib/media";
-import { averageScore } from "@/lib/ratings";
+import { DONE_LABEL, hasMoviePage, movieRouteId, type MediaType } from "@/lib/media";
+import { averageScore, ratingScore } from "@/lib/ratings";
 import { keys, type CommentRow, type ItemRow, type ProfileRow, type RatingRow } from "@/lib/queries";
 
 const ago = (iso: string) => formatDistanceToNow(new Date(iso), { addSuffix: true, locale: es });
@@ -31,14 +32,17 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
   const qc = useQueryClient();
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [reviewDraft, setReviewDraft] = useState<string | null>(null);
+  const [savingReview, setSavingReview] = useState(false);
 
   if (!item) return <Drawer open={false} onOpenChange={onOpenChange} />;
 
   const media = item.media_type as MediaType;
   const labels = DONE_LABEL[media];
   const itemRatings = ratings.filter((r) => r.item_id === item.id);
-  const mine = itemRatings.find((r) => r.user_id === userId)?.score ?? null;
-  const avg = averageScore(itemRatings.map((r) => r.score));
+  const myRating = itemRatings.find((r) => r.user_id === userId);
+  const mine = myRating ? ratingScore(myRating) : null;
+  const avg = averageScore(itemRatings.map(ratingScore));
   const thread = comments.filter((c) => c.item_id === item.id);
   const name = (id: string | null) => (id ? profiles[id]?.display_name || "Alguien" : "Alguien");
 
@@ -65,16 +69,28 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
     qc.setQueryData<RatingRow[]>(listKey, (old = []) => {
       const rest = old.filter((r) => !(r.item_id === item.id && r.user_id === userId));
       return score
-        ? [...rest, { item_id: item.id, list_id: item.list_id, user_id: userId, score, updated_at: new Date().toISOString() }]
+        ? [...rest, { item_id: item.id, list_id: item.list_id, user_id: userId, score: Math.ceil(score / 2), score_10: score, review: myRating?.review ?? "", updated_at: new Date().toISOString() }]
         : rest;
     });
     const { error } = score
       ? await supabase
           .from("ratings")
-          .upsert({ item_id: item.id, list_id: item.list_id, user_id: userId, score }, { onConflict: "item_id,user_id" })
+          .upsert({ item_id: item.id, list_id: item.list_id, user_id: userId, score: Math.ceil(score / 2), score_10: score, review: myRating?.review ?? "" }, { onConflict: "item_id,user_id" })
       : await supabase.from("ratings").delete().eq("item_id", item.id).eq("user_id", userId);
     if (error) toast.error("No se pudo guardar la nota", { description: error.message });
     invalidate(listKey);
+  }
+
+  async function saveReview(e: React.FormEvent) {
+    e.preventDefault();
+    if (!item || !mine) return;
+    setSavingReview(true);
+    const { error } = await supabase.from("ratings").update({ review: (reviewDraft ?? myRating?.review ?? "").trim() }).eq("item_id", item.id).eq("user_id", userId);
+    setSavingReview(false);
+    if (error) return void toast.error("No se pudo guardar la crítica");
+    setReviewDraft(null);
+    invalidate(keys.ratings(item.list_id));
+    toast.success("Crítica guardada");
   }
 
   async function sendComment(e: React.FormEvent) {
@@ -153,7 +169,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
               </div>
               <div className="text-right">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Grupo</p>
-                <p className="font-display text-4xl leading-none text-primary">{avg ?? "–"}</p>
+                <p className="font-display text-4xl leading-none text-primary">{avg ?? "–"}<span className="text-sm text-muted-foreground">/10</span></p>
                 <p className="text-[11px] text-muted-foreground">
                   {itemRatings.length} voto{itemRatings.length === 1 ? "" : "s"}
                 </p>
@@ -164,11 +180,25 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 {itemRatings.map((r) => (
                   <li key={r.user_id} className="flex items-center gap-1.5 rounded-full bg-background/60 py-1 pl-1 pr-2.5 text-xs">
                     <UserAvatar name={name(r.user_id)} url={profiles[r.user_id]?.avatar_url} className="size-6 text-xs ring-0" />
-                    {name(r.user_id)} <span className="font-semibold text-primary">{r.score}★</span>
+                    {name(r.user_id)} <span className="font-semibold text-primary">{ratingScore(r)}/10 ★</span>
                   </li>
                 ))}
               </ul>
             )}
+          </section>
+
+          <section className="mt-6">
+            <h3 className="font-display text-2xl">Tu crítica</h3>
+            <form onSubmit={saveReview} className="mt-3 space-y-3">
+              <textarea aria-label="Tu crítica" value={reviewDraft ?? myRating?.review ?? ""} onChange={(e) => setReviewDraft(e.target.value)} maxLength={3000} rows={3} placeholder="¿Qué te pareció?" className="w-full resize-y rounded-lg border border-input bg-background px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring" />
+              <Button type="submit" disabled={!mine || savingReview}>{savingReview ? <Loader2 className="animate-spin" /> : <Send />} Guardar crítica</Button>
+            </form>
+            {itemRatings.filter((r) => r.review && r.user_id !== userId).map((r) => (
+              <article key={r.user_id} className="mt-4 border-t border-border pt-3">
+                <p className="text-sm font-semibold">{name(r.user_id)} · <span className="text-primary">{ratingScore(r)}/10 ★</span></p>
+                <p className="mt-1 whitespace-pre-wrap break-words text-sm text-muted-foreground">{r.review}</p>
+              </article>
+            ))}
           </section>
 
           {/* Comments */}
@@ -218,6 +248,11 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
           </section>
 
           <div className="mt-8 flex flex-wrap gap-2">
+            {hasMoviePage(item.source, media) && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)}><ExternalLink /> Ficha y similares</Link>
+              </Button>
+            )}
             {item.external_url && (
               <Button asChild variant="outline" size="sm">
                 <a href={item.external_url} target="_blank" rel="noreferrer">

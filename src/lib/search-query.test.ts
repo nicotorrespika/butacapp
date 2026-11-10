@@ -20,8 +20,8 @@ describe("parseQuery", () => {
 });
 
 describe("averageScore", () => {
-  it("averages 1–5 star scores to one decimal", () => {
-    expect(averageScore([5, 4, 4])).toBe(4.3);
+  it("averages 1–10 scores to one decimal", () => {
+    expect(averageScore([10, 8, 8])).toBe(8.7);
   });
   it("is null when nobody rated", () => {
     expect(averageScore([])).toBeNull();
