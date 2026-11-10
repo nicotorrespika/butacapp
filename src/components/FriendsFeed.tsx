@@ -1,3 +1,4 @@
+import {ShareButton} from "./ShareButton";
 import { useEffect, useRef, useState } from "react";
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -56,7 +57,7 @@ function FeedRow({activity:a,profile}:{activity:Activity;profile?:{username:stri
   {!!score&&<div className="mt-2 flex items-center gap-2 text-sm text-primary"><StarRating value={score} size="sm"/><span>{score}/10</span></div>}
   {a.body&&!event&&<><p className={`mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-muted-foreground ${expanded?"":"line-clamp-3"}`}>{a.body}</p>{a.body.length>100&&<Button variant="ghost" className="px-0" onClick={()=>setExpanded(!expanded)}>{expanded?"Ver menos":"Ver más"}</Button>}</>}
   {!!covers.data?.length&&<div className="mt-3 flex gap-1">{covers.data.map((c,i)=><Poster key={i} src={c.image_url} alt={c.title} media="movie" className="w-10"/>)}</div>}
-  <div className="mt-3 flex flex-wrap gap-2"><Button variant="ghost" aria-pressed={liked} className={`px-0 ${liked?"text-primary":"text-muted-foreground"}`} onClick={like}><Heart fill={liked?"currentColor":"none"}/>Me gusta {likes.data?.length||""}</Button><Button variant="ghost" className="text-muted-foreground" onClick={()=>setReply(!reply)}><MessageCircle/>Responder</Button></div>
+  <div className="mt-3 flex flex-wrap gap-2"><Button variant="ghost" aria-pressed={liked} className={`px-0 ${liked?"text-primary":"text-muted-foreground"}`} onClick={like}><Heart fill={liked?"currentColor":"none"}/>Me gusta {likes.data?.length||""}</Button><Button variant="ghost" className="text-muted-foreground" onClick={()=>setReply(!reply)}><MessageCircle/>Responder</Button><ShareButton compact content={{kind:"activity",id:a.id,title:a.title,image:a.image_url ?? itemPoster.data,private:true,category:a.kind==="reviewed"?"Reseña":"Actividad"}}/></div>
   {reply&&<div className="mt-4"><SocialComments activityId={a.id}/></div>}
   </div>{movie&&<Link to="/movie/$movieId" params={{movieId:movieRouteId(a.external_id ?? "")}} search={{list:a.list_id ?? undefined}} className="mt-14 w-20 shrink-0 self-start"><Poster src={a.image_url ?? itemPoster.data ?? null} alt={a.title} media="movie"/></Link>}
  </article>;

@@ -26,7 +26,11 @@ import { Route as AuthenticatedListsListIdRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMovieMovieIdRouteImport } from './routes/_authenticated/movie.$movieId'
 import { Route as AuthenticatedPeopleUserIdRouteImport } from './routes/_authenticated/people.$userId'
 import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
+import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_authenticated/recibido.$searchId'
+import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
+import { Route as ApiPublicJobsSoundtracksRouteImport } from './routes/api/public/jobs/soundtracks'
+import { Route as ApiPublicPortadaKindIdRouteImport } from './routes/api/public/portada.$kind.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -120,9 +124,31 @@ const AuthenticatedPersonPersonIdRoute =
     path: '/person/$personId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRecibidoSearchIdRoute =
+  AuthenticatedRecibidoSearchIdRouteImport.update({
+    id: '/recibido/$searchId',
+    path: '/recibido/$searchId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const CompartirKindIdRoute = CompartirKindIdRouteImport.update({
+  id: '/compartir/$kind/$id',
+  path: '/compartir/$kind/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
   id: '/api/public/jobs/culture',
   path: '/api/public/jobs/culture',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicJobsSoundtracksRoute =
+  ApiPublicJobsSoundtracksRouteImport.update({
+    id: '/api/public/jobs/soundtracks',
+    path: '/api/public/jobs/soundtracks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicPortadaKindIdRoute = ApiPublicPortadaKindIdRouteImport.update({
+  id: '/api/public/portada/$kind/$id',
+  path: '/api/public/portada/$kind/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -142,8 +168,12 @@ export interface FileRoutesByFullPath {
   '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
+  '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
+  '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -161,8 +191,12 @@ export interface FileRoutesByTo {
   '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
+  '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
+  '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -182,8 +216,12 @@ export interface FileRoutesById {
   '/_authenticated/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
   '/_authenticated/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
+  '/_authenticated/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
+  '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -203,8 +241,12 @@ export interface FileRouteTypes {
     | '/movie/$movieId'
     | '/people/$userId'
     | '/person/$personId'
+    | '/recibido/$searchId'
+    | '/compartir/$kind/$id'
     | '/lists/'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/soundtracks'
+    | '/api/public/portada/$kind/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -222,8 +264,12 @@ export interface FileRouteTypes {
     | '/movie/$movieId'
     | '/people/$userId'
     | '/person/$personId'
+    | '/recibido/$searchId'
+    | '/compartir/$kind/$id'
     | '/lists'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/soundtracks'
+    | '/api/public/portada/$kind/$id'
   id:
     | '__root__'
     | '/'
@@ -242,8 +288,12 @@ export interface FileRouteTypes {
     | '/_authenticated/movie/$movieId'
     | '/_authenticated/people/$userId'
     | '/_authenticated/person/$personId'
+    | '/_authenticated/recibido/$searchId'
+    | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/soundtracks'
+    | '/api/public/portada/$kind/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -251,7 +301,10 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  CompartirKindIdRoute: typeof CompartirKindIdRoute
   ApiPublicJobsCultureRoute: typeof ApiPublicJobsCultureRoute
+  ApiPublicJobsSoundtracksRoute: typeof ApiPublicJobsSoundtracksRoute
+  ApiPublicPortadaKindIdRoute: typeof ApiPublicPortadaKindIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -375,11 +428,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonPersonIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/recibido/$searchId': {
+      id: '/_authenticated/recibido/$searchId'
+      path: '/recibido/$searchId'
+      fullPath: '/recibido/$searchId'
+      preLoaderRoute: typeof AuthenticatedRecibidoSearchIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/compartir/$kind/$id': {
+      id: '/compartir/$kind/$id'
+      path: '/compartir/$kind/$id'
+      fullPath: '/compartir/$kind/$id'
+      preLoaderRoute: typeof CompartirKindIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/jobs/culture': {
       id: '/api/public/jobs/culture'
       path: '/api/public/jobs/culture'
       fullPath: '/api/public/jobs/culture'
       preLoaderRoute: typeof ApiPublicJobsCultureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/jobs/soundtracks': {
+      id: '/api/public/jobs/soundtracks'
+      path: '/api/public/jobs/soundtracks'
+      fullPath: '/api/public/jobs/soundtracks'
+      preLoaderRoute: typeof ApiPublicJobsSoundtracksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/portada/$kind/$id': {
+      id: '/api/public/portada/$kind/$id'
+      path: '/api/public/portada/$kind/$id'
+      fullPath: '/api/public/portada/$kind/$id'
+      preLoaderRoute: typeof ApiPublicPortadaKindIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -398,6 +479,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMovieMovieIdRoute: typeof AuthenticatedMovieMovieIdRoute
   AuthenticatedPeopleUserIdRoute: typeof AuthenticatedPeopleUserIdRoute
   AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
+  AuthenticatedRecibidoSearchIdRoute: typeof AuthenticatedRecibidoSearchIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
 }
 
@@ -414,6 +496,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMovieMovieIdRoute: AuthenticatedMovieMovieIdRoute,
   AuthenticatedPeopleUserIdRoute: AuthenticatedPeopleUserIdRoute,
   AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
+  AuthenticatedRecibidoSearchIdRoute: AuthenticatedRecibidoSearchIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
 }
 
@@ -425,7 +508,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  CompartirKindIdRoute: CompartirKindIdRoute,
   ApiPublicJobsCultureRoute: ApiPublicJobsCultureRoute,
+  ApiPublicJobsSoundtracksRoute: ApiPublicJobsSoundtracksRoute,
+  ApiPublicPortadaKindIdRoute: ApiPublicPortadaKindIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

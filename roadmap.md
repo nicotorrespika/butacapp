@@ -1,6 +1,13 @@
 # Roadmap
 
 ## Latest requests
+- [x] Soundtrack persisted albums/tracks, progressive fill and daily schedule, platform searches, music/back links, existing audio previews, community suggestions/reports and profile collection; Midnight in Paris album/tracks and round trip verified
+- [ ] Soundtrack completeness: IMDb/Wikidata association, cited web song lookup through Betty, album report control and reliable release-year correction; source fallback verified but provider reports an inconsistent album date
+- [x] Similar blocks on movie/book/music details, lazy three-day cache, verified catalog results, origin estimates labeled, Argentina-first region alternatives; Hollywood horror and Argentine movie scenarios verified
+- [ ] Similar completeness: author/artist detail pages and additional book/English-band live checks; music catalog sometimes returns fewer verified matches and MusicBrainz returns 503
+- [x] Unified Compartir on details, feeds, lists, movie reviews, profiles, Betty and discovery; friend selection, WhatsApp/copy/native, undo and permission checks; real sender chat card, WhatsApp message/copy and private-list warning verified
+- [x] Stable public share pages with server-rendered metadata, 1200x630 branded cover, invitation attribution storage and share counts; signed-out public page verified
+- [ ] Sharing remaining checks: recipient session, native share menu and actual WhatsApp preview require a recipient/device and publishing; add inviter greeting/friend suggestion and cultural-review sharing
 - [x] Social navigation: four tabs, Avisos/Mensajes/Amigos, private friend messaging, sharing and count
 - [ ] Social completion: message requests, reactions/typing, grouped content notifications, block/mute/report, QR and mutual-friend suggestions; remaining implementation not verified
 - [x] Saved Betty result routes and history; cached/session screen state; app/browser Back verified

@@ -266,6 +266,33 @@ export type Database = {
           },
         ]
       }
+      content_shares: {
+        Row: {
+          channel: string
+          content_id: string
+          created_at: string
+          id: string
+          kind: string
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          content_id: string
+          created_at?: string
+          id?: string
+          kind: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          content_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       cultural_comments: {
         Row: {
           body: string
@@ -636,6 +663,7 @@ export type Database = {
           read_at: string | null
           recipient_id: string
           sender_id: string
+          shared_card: Json | null
           shared_title: string | null
           shared_url: string | null
         }
@@ -646,6 +674,7 @@ export type Database = {
           read_at?: string | null
           recipient_id: string
           sender_id: string
+          shared_card?: Json | null
           shared_title?: string | null
           shared_url?: string | null
         }
@@ -656,6 +685,7 @@ export type Database = {
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
+          shared_card?: Json | null
           shared_title?: string | null
           shared_url?: string | null
         }
@@ -1052,6 +1082,63 @@ export type Database = {
           },
         ]
       }
+      movie_soundtracks: {
+        Row: {
+          artist: string | null
+          confidence: string
+          created_at: string
+          external_id: string
+          hidden: boolean
+          id: string
+          image_url: string | null
+          kind: string
+          movie_id: string
+          movie_poster: string | null
+          movie_title: string
+          source: string
+          source_url: string | null
+          submitted_by: string | null
+          title: string
+          year: number | null
+        }
+        Insert: {
+          artist?: string | null
+          confidence?: string
+          created_at?: string
+          external_id: string
+          hidden?: boolean
+          id?: string
+          image_url?: string | null
+          kind: string
+          movie_id: string
+          movie_poster?: string | null
+          movie_title: string
+          source: string
+          source_url?: string | null
+          submitted_by?: string | null
+          title: string
+          year?: number | null
+        }
+        Update: {
+          artist?: string | null
+          confidence?: string
+          created_at?: string
+          external_id?: string
+          hidden?: boolean
+          id?: string
+          image_url?: string | null
+          kind?: string
+          movie_id?: string
+          movie_poster?: string | null
+          movie_title?: string
+          source?: string
+          source_url?: string | null
+          submitted_by?: string | null
+          title?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1064,6 +1151,7 @@ export type Database = {
           event_interests: string[]
           id: string
           rating_style: string
+          share_visibility: string
           top_five: Json
           updated_at: string
           username: string | null
@@ -1079,6 +1167,7 @@ export type Database = {
           event_interests?: string[]
           id: string
           rating_style?: string
+          share_visibility?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
@@ -1094,6 +1183,7 @@ export type Database = {
           event_interests?: string[]
           id?: string
           rating_style?: string
+          share_visibility?: string
           top_five?: Json
           updated_at?: string
           username?: string | null
@@ -1144,6 +1234,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      share_referrals: {
+        Row: {
+          created_at: string
+          invited_by: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          invited_by: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          invited_by?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      similar_recommendations: {
+        Row: {
+          cache_key: string
+          payload: Json
+          updated_at: string
+        }
+        Insert: {
+          cache_key: string
+          payload: Json
+          updated_at?: string
+        }
+        Update: {
+          cache_key?: string
+          payload?: Json
+          updated_at?: string
+        }
+        Relationships: []
       }
       social_comments: {
         Row: {
@@ -1223,6 +1349,53 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      soundtrack_reports: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string
+          soundtrack_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason: string
+          soundtrack_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string
+          soundtrack_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soundtrack_reports_soundtrack_id_fkey"
+            columns: ["soundtrack_id"]
+            isOneToOne: false
+            referencedRelation: "movie_soundtracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      soundtrack_updates: {
+        Row: {
+          movie_id: string
+          updated_at: string
+        }
+        Insert: {
+          movie_id: string
+          updated_at?: string
+        }
+        Update: {
+          movie_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_notifications: {
         Row: {
@@ -1353,6 +1526,12 @@ export type Database = {
         Args: { _list_id: string; _user_id: string }
         Returns: boolean
       }
+      public_share_summary: { Args: { cid: string; k: string }; Returns: Json }
+      share_access: {
+        Args: { cid: string; k: string; viewer: string }
+        Returns: boolean
+      }
+      shared_betty_results: { Args: { hid: string }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

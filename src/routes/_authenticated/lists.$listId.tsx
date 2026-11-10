@@ -1,3 +1,4 @@
+import {ShareButton} from "@/components/ShareButton";
 import {useScreenState} from "@/hooks/use-screen-state";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
@@ -172,6 +173,7 @@ function ListPage() {
                 {LIST_KIND_LABEL[d.list.kind]}
               </span>
               <h1 className="mt-3 break-words font-display text-4xl leading-tight">{d.list.name}</h1>
+              <ShareButton content={{kind:"list",id:listId,title:d.list.name,description:d.list.description,image:items.data?.[0]?.image_url,private:d.list.visibility!=="public",ownerId:d.list.owner_id,category:"Lista"}}/>
               {d.list.description && <p className="mt-2 text-sm text-muted-foreground">{d.list.description}</p>}
               <div className="mt-4 flex items-center gap-3">
                 <button
