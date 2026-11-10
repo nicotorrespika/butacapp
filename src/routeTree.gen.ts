@@ -26,6 +26,8 @@ import { Route as AuthenticatedListsListIdRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMovieMovieIdRouteImport } from './routes/_authenticated/movie.$movieId'
 import { Route as AuthenticatedPeopleUserIdRouteImport } from './routes/_authenticated/people.$userId'
 import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
+import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_authenticated/recibido.$searchId'
+import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
 
 const IndexRoute = IndexRouteImport.update({
@@ -120,6 +122,17 @@ const AuthenticatedPersonPersonIdRoute =
     path: '/person/$personId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRecibidoSearchIdRoute =
+  AuthenticatedRecibidoSearchIdRouteImport.update({
+    id: '/recibido/$searchId',
+    path: '/recibido/$searchId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const CompartirKindIdRoute = CompartirKindIdRouteImport.update({
+  id: '/compartir/$kind/$id',
+  path: '/compartir/$kind/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
   id: '/api/public/jobs/culture',
   path: '/api/public/jobs/culture',
@@ -142,6 +155,8 @@ export interface FileRoutesByFullPath {
   '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
+  '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
 }
@@ -161,6 +176,8 @@ export interface FileRoutesByTo {
   '/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
+  '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
 }
@@ -182,6 +199,8 @@ export interface FileRoutesById {
   '/_authenticated/movie/$movieId': typeof AuthenticatedMovieMovieIdRoute
   '/_authenticated/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
+  '/_authenticated/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
 }
@@ -203,6 +222,8 @@ export interface FileRouteTypes {
     | '/movie/$movieId'
     | '/people/$userId'
     | '/person/$personId'
+    | '/recibido/$searchId'
+    | '/compartir/$kind/$id'
     | '/lists/'
     | '/api/public/jobs/culture'
   fileRoutesByTo: FileRoutesByTo
@@ -222,6 +243,8 @@ export interface FileRouteTypes {
     | '/movie/$movieId'
     | '/people/$userId'
     | '/person/$personId'
+    | '/recibido/$searchId'
+    | '/compartir/$kind/$id'
     | '/lists'
     | '/api/public/jobs/culture'
   id:
@@ -242,6 +265,8 @@ export interface FileRouteTypes {
     | '/_authenticated/movie/$movieId'
     | '/_authenticated/people/$userId'
     | '/_authenticated/person/$personId'
+    | '/_authenticated/recibido/$searchId'
+    | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
     | '/api/public/jobs/culture'
   fileRoutesById: FileRoutesById
@@ -251,6 +276,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  CompartirKindIdRoute: typeof CompartirKindIdRoute
   ApiPublicJobsCultureRoute: typeof ApiPublicJobsCultureRoute
 }
 
@@ -375,6 +401,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonPersonIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/recibido/$searchId': {
+      id: '/_authenticated/recibido/$searchId'
+      path: '/recibido/$searchId'
+      fullPath: '/recibido/$searchId'
+      preLoaderRoute: typeof AuthenticatedRecibidoSearchIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/compartir/$kind/$id': {
+      id: '/compartir/$kind/$id'
+      path: '/compartir/$kind/$id'
+      fullPath: '/compartir/$kind/$id'
+      preLoaderRoute: typeof CompartirKindIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/jobs/culture': {
       id: '/api/public/jobs/culture'
       path: '/api/public/jobs/culture'
@@ -398,6 +438,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMovieMovieIdRoute: typeof AuthenticatedMovieMovieIdRoute
   AuthenticatedPeopleUserIdRoute: typeof AuthenticatedPeopleUserIdRoute
   AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
+  AuthenticatedRecibidoSearchIdRoute: typeof AuthenticatedRecibidoSearchIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
 }
 
@@ -414,6 +455,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMovieMovieIdRoute: AuthenticatedMovieMovieIdRoute,
   AuthenticatedPeopleUserIdRoute: AuthenticatedPeopleUserIdRoute,
   AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
+  AuthenticatedRecibidoSearchIdRoute: AuthenticatedRecibidoSearchIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
 }
 
@@ -425,6 +467,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  CompartirKindIdRoute: CompartirKindIdRoute,
   ApiPublicJobsCultureRoute: ApiPublicJobsCultureRoute,
 }
 export const routeTree = rootRouteImport

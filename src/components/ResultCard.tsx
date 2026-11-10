@@ -1,3 +1,5 @@
+import {ShareButton} from "./ShareButton";
+import {shareResult} from "@/lib/sharing";
 import { Check, Loader2, Plus } from "lucide-react";
 import { Poster } from "@/components/Poster";
 import type { SearchResult } from "@/lib/media";
@@ -64,6 +66,7 @@ export function ResultCard({
         </Button>
       </div>
       <div className="mt-2 px-0.5">
+        <ShareButton content={shareResult(result)} compact/>
         {result.kindLabel==="Cine argentino"&&<p className="mb-1 text-[10px] uppercase text-primary">Cine argentino</p>}
         <h3 className="line-clamp-2 font-display text-xl leading-snug text-primary">
           {onOpen ? (
