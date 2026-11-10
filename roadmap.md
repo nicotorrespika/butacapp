@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Similar recommendations for films/books/music and author/artist pages; Latin American regional alternatives, Argentina-first, verified catalogs, estimated origin labels, cached lazy blocks and Betty refresh; verify five requested scenarios
 - [ ] Unified Compartir panel on details, feeds, lists, reviews, profiles, Betty and discovery; multi-friend cards, WhatsApp/copy/native, undo and permission checks
 - [ ] Public stable share pages with server-rendered metadata and cover previews, invitation attribution and share counts; verify the five requested sharing checks
 - [x] Social navigation: four tabs, Avisos/Mensajes/Amigos, private friend messaging, sharing and count

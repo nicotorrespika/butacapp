@@ -5,7 +5,7 @@ import { movieRouteId, type SearchResult } from "./media";
 export const shareKinds = ["movie", "culture", "event", "list", "profile", "review", "activity", "feed", "betty"] as const;
 export const shareRefSchema = z.object({ kind: z.enum(shareKinds), id: z.string().min(1).max(200) });
 export type ShareRef = z.infer<typeof shareRefSchema>;
-export type ShareContent = ShareRef & { title: string; image?: string | null; year?: number | null; category?: string; description?: string | null; private?: boolean; ownerId?: string; visibility?: string; target?: string };
+export type ShareContent = ShareRef & { title: string; image?: string | null | undefined; year?: number | null | undefined; category?: string | undefined; description?: string | null | undefined; private?: boolean; ownerId?: string; visibility?: string; target?: string };
 export const APP_ORIGIN = "https://butacapp.lovable.app";
 export function sharePath(ref: ShareRef) { return `/compartir/${ref.kind}/${encodeURIComponent(ref.id)}`; }
 export function shareUrl(ref: ShareRef, inviter?: string) { return `${APP_ORIGIN}${sharePath(ref)}${inviter ? `?de=${encodeURIComponent(inviter)}` : ""}`; }

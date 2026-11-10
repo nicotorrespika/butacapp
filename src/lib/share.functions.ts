@@ -14,7 +14,7 @@ export const getPublicShare = createServerFn({ method: "GET" })
         if (!key) return null;
         const { tmdbFetcher } = await import("@/server/search-providers");
         const tmdb = tmdbFetcher(key);
-        let match = /^(movie|tv)-(\d+)$/.exec(data.id);
+        let match: string[] | null = /^(movie|tv)-(\d+)$/.exec(data.id);
         if (!match && /^tt\d{5,10}$/.test(data.id)) {
           const found = await tmdb<{ movie_results: {id:number}[]; tv_results: {id:number}[] }>(`/find/${data.id}`, { external_source:"imdb_id" });
           const hit = found.movie_results[0] ?? found.tv_results[0];
