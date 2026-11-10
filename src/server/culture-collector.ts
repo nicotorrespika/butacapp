@@ -8,7 +8,7 @@ import { eventSchema,normalizeTitle } from "@/lib/culture";
 import type { SearchResult } from "@/lib/media";
 type DB=SupabaseClient<Database>;
 const gateway="https://connector-gateway.lovable.dev/parallel";
-export async function collectCulture(db:DB,kind:"daily"|"events",keys:{ai?:string;parallel?:string;tmdb?:string}) {
+export async function collectCulture(db:DB,kind:"daily"|"events",keys:{ai?:string|undefined;parallel?:string|undefined;tmdb?:string|undefined}) {
  const tasks=kind==="daily"?["movie","music","book"]:["events"];
  for(const task of tasks){const lock=await db.rpc("acquire_culture_job",{job_key:task});if(!lock.data)continue;
  try{if(task==="events")await collectEvents(db,keys);else await collectCategory(db,task as "movie"|"music"|"book",keys.tmdb);await db.from("culture_jobs").update({lease_until:new Date(0).toISOString(),last_completed_at:new Date().toISOString()}).eq("key",task);}catch(e){console.error("culture collector",task,e);await db.from("culture_jobs").update({lease_until:new Date(0).toISOString()}).eq("key",task);await db.from("culture_updates").upsert({key:task,message:"Uy, fue una bettiada. Conservamos lo que ya encontramos."});}}
@@ -23,7 +23,7 @@ async function collectCategory(db:DB,category:"movie"|"music"|"book",tmdbKey?:st
  if(catalog.length){const day=Math.floor(Date.now()/86400000);const item=catalog[day%catalog.length];if(item)await db.from("culture_feed").upsert({category,kind:"recommendation",title:item.title,summary:category==="book"?"Un libro para descubrir hoy.":category==="music"?"Un disco para escuchar hoy.":"Una película para descubrir hoy.",image_url:item.imageUrl,source_name:category==="book"?"Open Library":category==="music"?"iTunes":"TMDB",source_url:item.externalUrl ?? "",result:JSON.parse(JSON.stringify(item)),published_at:now,updated_at:now},{onConflict:"category,kind,source_url"});}
  if(news.length||catalog.length)await db.from("culture_updates").upsert({key:category,updated_at:now,message:null});
 }
-async function collectEvents(db:DB,keys:{ai?:string;parallel?:string}) {
+async function collectEvents(db:DB,keys:{ai?:string|undefined;parallel?:string|undefined}) {
  if(!keys.ai||!keys.parallel)throw new Error("Research connection unavailable");
  const headers={Authorization:`Bearer ${keys.ai}`,"X-Connection-Api-Key":keys.parallel,"Content-Type":"application/json"};
  const job=await db.from("culture_jobs").select("run_id").eq("key","events").single();
