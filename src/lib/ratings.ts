@@ -1,7 +1,9 @@
-/** Rating helpers. Scores are 1–5 stars, one per user per item. */
+/** Rating helpers. Scores are 1–10, one per user per item. */
 
 export const MIN_SCORE = 1;
-export const MAX_SCORE = 5;
+export const MAX_SCORE = 10;
+
+export const ratingScore = (r: { score_10: number | null; score: number }) => r.score_10 ?? r.score * 2;
 
 /** Group average rounded to one decimal, or null when nobody rated yet. */
 export function averageScore(scores: number[]): number | null {

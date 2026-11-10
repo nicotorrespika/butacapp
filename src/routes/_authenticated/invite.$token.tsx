@@ -12,6 +12,8 @@ import { keys } from "@/lib/queries";
 export const Route = createFileRoute("/_authenticated/invite/$token")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Te invitaron a una lista — Butaca" },
       { name: "description", content: "Sumate a una lista compartida de cine, música y arte." },
       { property: "og:title", content: "Te invitaron a una lista — Butaca" },

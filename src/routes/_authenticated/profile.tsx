@@ -13,6 +13,8 @@ import { keys, myListsQuery, useMyProfile } from "@/lib/queries";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Perfil — Butaca" },
       { name: "description", content: "Tu perfil y preferencias en Butaca." },
       { property: "og:title", content: "Perfil — Butaca" },

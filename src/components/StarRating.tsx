@@ -10,7 +10,7 @@ interface StarRatingProps {
 }
 
 /**
- * 1–5 stars. Interactive when onChange is given (44px targets);
+ * 1–10 stars. Interactive when onChange is given (44px targets);
  * tapping the current score again clears it.
  */
 export function StarRating({ value, onChange, size = "lg", label = "Tu nota" }: StarRatingProps) {
@@ -31,7 +31,7 @@ export function StarRating({ value, onChange, size = "lg", label = "Tu nota" }: 
     );
   }
   return (
-    <div role="radiogroup" aria-label={label} className="flex items-center">
+    <div role="radiogroup" aria-label={label} className="grid w-fit grid-cols-5">
       {stars.map((s) => {
         const active = value !== null && s <= value;
         return (

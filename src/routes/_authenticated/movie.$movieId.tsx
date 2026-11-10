@@ -18,6 +18,8 @@ export const Route = createFileRoute("/_authenticated/movie/$movieId")({
   validateSearch: z.object({ list: z.string().uuid().optional() }),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Película — Butaca" },
       { name: "description", content: "Sinopsis, puntajes de la crítica y películas parecidas para sumar a tu lista." },
       { property: "og:title", content: "Película — Butaca" },
