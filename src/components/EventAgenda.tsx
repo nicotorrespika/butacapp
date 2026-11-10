@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { dateRange,interests,eventPriceMatches } from "@/lib/culture";
 import { Button } from "./ui/button";
 import { EventImage } from "./EventImage";
+import { EventCinema } from "./EventCinema";
 export function EventAgenda({personal=false,initialQuery=""}:{personal?:boolean;initialQuery?:string}) {
  const {user}=useAuth();const qc=useQueryClient();const [mode,setMode]=useScreenState("events:mode","week");const [chosen,setChosen]=useScreenState("events:date","");const [price,setPrice]=useScreenState("events:price","all");const [selected,setSelected]=useScreenState<string[]>("events:interests",[]);const [text,setText]=useScreenState("events:text",initialQuery);const [city,setCity]=useState("Ciudad de Buenos Aires");const [changing,setChanging]=useState(false);const [calendar,setCalendar]=useScreenState("events:calendar",false);const [creating,setCreating]=useState(false);const [neighborhood,setNeighborhood]=useScreenState("events:neighborhood","");
  const profile=useQuery({queryKey:["culture","city",user?.id],enabled:!!user,queryFn:async()=>{const r=await supabase.from("profiles").select("city,city_configured,event_interests").eq("id",user?.id ?? "").single();return r.data;}});
