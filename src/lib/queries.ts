@@ -151,6 +151,7 @@ export function useMyProfile(userId: string | undefined) {
 export function useListRealtime(listId: string) {
   const qc = useQueryClient();
   useEffect(() => {
+    if (!listId) return;
     const filter = `list_id=eq.${listId}`;
     const channel = supabase
       .channel(`list-${listId}-${Math.random().toString(36).slice(2)}`)

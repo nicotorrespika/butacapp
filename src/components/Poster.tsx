@@ -28,7 +28,7 @@ export function Poster({ src, alt, media, className, aspect }: PosterProps) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-lg bg-muted shadow-poster ring-1 ring-border",
+        "relative overflow-hidden rounded-sm bg-muted ring-1 ring-border",
         aspect ?? ASPECT[media],
         className,
       )}

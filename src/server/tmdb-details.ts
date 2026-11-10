@@ -10,6 +10,7 @@
 import type { SearchResult } from "@/lib/media";
 import type { CreditPerson, CriticScore, MovieDetail, PersonDetail, SuggestionSection } from "@/lib/movie-types";
 import { extractYear } from "@/lib/search-query";
+import { selectTrailer, type MovieVideo } from "@/lib/movie-videos";
 import {
   getJson,
   mapTmdb,
@@ -61,6 +62,7 @@ interface TmdbDetail {
   recommendations?: { results: TmdbItem[] };
   similar?: { results: TmdbItem[] };
   keywords?: { keywords?: { id: number }[]; results?: { id: number }[] };
+  videos?: { results: MovieVideo[] };
 }
 
 interface OmdbResponse {
@@ -169,7 +171,8 @@ export async function fetchMovieDetail(
   } else ref = parsed;
 
   const d = await tmdb<TmdbDetail>(`/${ref.type}/${ref.id}`, {
-    append_to_response: "credits,recommendations,similar,keywords,external_ids",
+    append_to_response: "credits,videos,recommendations,similar,keywords,external_ids",
+    include_video_language: "es,en,null",
   }).catch((e: unknown) => {
     if (e instanceof Error && e.message.includes("404")) throw new NotFoundError();
     throw e;
@@ -202,7 +205,7 @@ export async function fetchMovieDetail(
           role: "Creación",
           photoUrl: c.profile_path ? `${TMDB_PROFILE}${c.profile_path}` : null,
         }));
-  const cast: CreditPerson[] = (d.credits?.cast ?? []).slice(0, 12).map((c) => ({
+  const cast: CreditPerson[] = (d.credits?.cast ?? []).slice(0, 8).map((c) => ({
     id: c.id,
     name: c.name,
     role: c.character || null,
@@ -297,6 +300,7 @@ export async function fetchMovieDetail(
     overview,
     posterUrl: d.poster_path ? `${POSTER}${d.poster_path}` : null,
     backdropUrl: d.backdrop_path ? `${BACKDROP}${d.backdrop_path}` : null,
+    trailerKey: selectTrailer(d.videos?.results ?? []),
     directors,
     cast,
     scores,

@@ -8,11 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { InviteDrawer } from "@/components/InviteDrawer";
 import { ItemDrawer } from "@/components/ItemDrawer";
+import { ListRecommendations } from "@/components/ListRecommendations";
 import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
-import { DONE_LABEL, LIST_KIND_LABEL, type MediaType } from "@/lib/media";
+import { DONE_LABEL, LIST_KIND_LABEL, hasMoviePage, movieRouteId, type MediaType } from "@/lib/media";
 import { averageScore, ratingScore } from "@/lib/ratings";
 import {
   commentsQuery,
@@ -107,7 +108,6 @@ function ListPage() {
   const openItem = (items.data ?? []).find((i) => i.id === openId) ?? null;
   const doneCount = (items.data ?? []).filter((i) => i.done).length;
   const total = items.data?.length ?? 0;
-  const heroCover = items.data?.find((i) => i.image_url)?.image_url;
   // Opens search pointed at this list, pre-filtered to its type.
   const searchToAdd = d
     ? { list: d.list.id, f: filterForListKind(d.list.kind) === "all" ? undefined : filterForListKind(d.list.kind) }
@@ -131,16 +131,7 @@ function ListPage() {
 
   return (
     <div>
-      {/* Hero with blurred backdrop of the latest cover */}
-      <header className="relative overflow-hidden px-4 pb-5 pt-[max(env(safe-area-inset-top),0.75rem)]">
-        {heroCover && (
-          <img
-            src={heroCover}
-            alt=""
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-2xl"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
+      <header className="relative px-4 pb-5 pt-[max(env(safe-area-inset-top),0.75rem)]">
         <div className="relative">
           <div className="flex items-center justify-between">
             <Button asChild variant="ghost" size="icon" aria-label="Volver">
@@ -169,10 +160,10 @@ function ListPage() {
             </div>
           ) : (
             <div className="mt-3 animate-rise">
-              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">
+              <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
                 {LIST_KIND_LABEL[d.list.kind]}
               </span>
-              <h1 className="mt-1 font-display text-5xl leading-[0.95]">{d.list.name}</h1>
+              <h1 className="mt-3 break-words font-display text-4xl leading-tight">{d.list.name}</h1>
               {d.list.description && <p className="mt-2 text-sm text-muted-foreground">{d.list.description}</p>}
               <div className="mt-4 flex items-center gap-3">
                 <button
@@ -201,9 +192,10 @@ function ListPage() {
           )}
         </div>
       </header>
+      {d && (d.list.kind === "movies" || d.list.kind === "mixed") && <ListRecommendations listId={listId} />}
 
       {/* Filters + sort */}
-      <div className="sticky top-0 z-20 space-y-2 bg-background/85 px-4 py-2 backdrop-blur-xl">
+      <div className="sticky top-0 z-20 mt-6 space-y-2 bg-background px-4 py-2">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 scrollbar-none">
           {(
             [
@@ -212,24 +204,24 @@ function ListPage() {
               ["done", "Completados"],
             ] as const
           ).map(([id, label]) => (
-            <button
+            <Button variant="ghost"
               key={id}
               type="button"
               onClick={() => setStatus(id)}
               aria-pressed={status === id}
               className={cn(
-                "h-11 shrink-0 rounded-full border px-4 text-sm font-semibold transition-colors",
-                status === id ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground",
+                "h-11 shrink-0 rounded-none border-b px-4 text-sm font-medium transition-colors",
+                status === id ? "border-primary text-foreground" : "border-transparent text-muted-foreground",
               )}
             >
               {label}
-            </button>
+            </Button>
           ))}
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
             aria-label="Ordenar"
-            className="h-11 shrink-0 rounded-full border border-border bg-secondary px-4 text-sm font-semibold text-foreground outline-none"
+            className="h-11 shrink-0 rounded-sm border border-input bg-card px-3 text-sm font-medium text-muted-foreground outline-none"
           >
             <option value="recent">Recientes</option>
             <option value="rating">Mejor nota</option>
@@ -283,7 +275,11 @@ function ListPage() {
                   item={i}
                   stat={stats[i.id]}
                   adderName={d?.profiles[i.added_by]?.display_name}
-                  onOpen={() => setOpenId(i.id)}
+                  onOpen={() => {
+                    if (hasMoviePage(i.source, i.media_type as MediaType)) {
+                      void navigate({ to: "/movie/$movieId", params: { movieId: movieRouteId(i.external_id) }, search: { list: listId } });
+                    } else setOpenId(i.id);
+                  }}
                 />
               </li>
             ))}

@@ -25,10 +25,11 @@ interface ItemDrawerProps {
   profiles: Record<string, ProfileRow>;
   userId: string;
   isOwner: boolean;
+  inline?: boolean;
 }
 
 /** Full detail of one title: done toggle, my rating + group average, comments thread. */
-export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, userId, isOwner }: ItemDrawerProps) {
+export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, userId, isOwner, inline = false }: ItemDrawerProps) {
   const qc = useQueryClient();
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
@@ -124,13 +125,11 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
 
   const canRemove = isOwner || item.added_by === userId;
 
-  return (
-    <Drawer open onOpenChange={onOpenChange}>
-      <DrawerContent className="mx-auto max-h-[94dvh] max-w-xl border-border bg-card">
-        <div className="overflow-y-auto px-4 pb-8">
+  const content = (
+        <div className={inline ? "pb-2" : "overflow-y-auto px-4 pb-8"}>
           {/* Header: poster + meta */}
-          <div className="flex gap-4 pt-4">
-            <Poster src={item.image_url} alt={item.title} media={media} className="w-28 shrink-0" />
+          {!inline && <div className="flex gap-4 pt-4">
+            {hasMoviePage(item.source, media) ? <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)} aria-label={`Ver ficha de ${item.title}`} className="w-28 shrink-0"><Poster src={item.image_url} alt={item.title} media={media} /></Link> : <Poster src={item.image_url} alt={item.title} media={media} className="w-28 shrink-0" />}
             <div className="min-w-0 flex-1 pt-1">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">{item.kind_label}</p>
               <DrawerTitle className="mt-1 font-display text-3xl font-normal leading-[1.05]">
@@ -148,7 +147,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 </span>
               </p>
             </div>
-          </div>
+          </div>}
 
           {/* Done toggle */}
           <Button
@@ -163,8 +162,8 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
           </Button>
 
           {/* Ratings */}
-          <section className="mt-6 rounded-2xl border border-border bg-secondary/50 p-4">
-            <div className="flex items-end justify-between">
+          <section className="mt-8 py-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tu nota</p>
                 <div className="-ml-2.5">
@@ -172,7 +171,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Grupo</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Promedio del grupo</p>
                 <p className="font-display text-4xl leading-none text-primary">{avg ?? "–"}<span className="text-sm text-muted-foreground">/10</span></p>
                 <p className="text-[11px] text-muted-foreground">
                   {itemRatings.length} voto{itemRatings.length === 1 ? "" : "s"}
@@ -215,7 +214,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 {thread.map((c) => (
                   <li key={c.id} className="flex gap-3 animate-rise">
                     <UserAvatar name={name(c.user_id)} url={profiles[c.user_id]?.avatar_url} />
-                    <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm bg-secondary px-3.5 py-2.5">
+                    <div className="min-w-0 flex-1 rounded-sm bg-secondary px-3.5 py-2.5">
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="text-xs font-semibold">{name(c.user_id)}</span>
                         <span className="text-[11px] text-muted-foreground">{ago(c.created_at)}</span>
@@ -223,14 +222,14 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                       <p className="mt-0.5 whitespace-pre-wrap break-words text-sm">{c.body}</p>
                     </div>
                     {(c.user_id === userId || isOwner) && (
-                      <button
+                      <Button variant="ghost" size="icon"
                         type="button"
                         aria-label="Borrar comentario"
                         onClick={() => deleteComment(c.id)}
                         className="flex size-11 shrink-0 items-center justify-center text-muted-foreground"
                       >
                         <Trash2 className="size-4" />
-                      </button>
+                      </Button>
                     )}
                   </li>
                 ))}
@@ -243,7 +242,8 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 maxLength={1000}
                 rows={1}
                 placeholder="Escribí un comentario…"
-                className="min-h-11 flex-1 resize-none rounded-2xl border border-input bg-background px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+                aria-label="Comentario"
+                className="min-h-11 min-w-0 flex-1 resize-none rounded-sm border border-input bg-background px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
               />
               <Button type="submit" size="icon" disabled={sending || !body.trim()} aria-label="Enviar">
                 {sending ? <Loader2 className="animate-spin" /> : <Send />}
@@ -251,7 +251,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
             </form>
           </section>
 
-          <div className="mt-8 flex flex-wrap gap-2">
+          {!inline && <div className="mt-8 flex flex-wrap gap-2">
             {hasMoviePage(item.source, media) && (
               <Button asChild variant="outline" size="sm">
                 <Link to="/movie/$movieId" params={{ movieId: movieRouteId(item.external_id) }} search={{ list: item.list_id }} onClick={() => onOpenChange(false)}><ExternalLink /> Ficha y similares</Link>
@@ -269,9 +269,9 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 <Trash2 /> Quitar de la lista
               </Button>
             )}
-          </div>
+          </div>}
         </div>
-      </DrawerContent>
-    </Drawer>
   );
+  if (inline) return content;
+  return <Drawer open onOpenChange={onOpenChange}><DrawerContent className="mx-auto max-h-[94dvh] max-w-xl border-border bg-card">{content}</DrawerContent></Drawer>;
 }
