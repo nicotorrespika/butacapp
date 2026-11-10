@@ -23,9 +23,9 @@ export const Route = createFileRoute("/_authenticated/movie/$movieId")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Película — Butaca" },
+      { title: "Película — BUTACAPP" },
       { name: "description", content: "Sinopsis, puntajes de la crítica y películas parecidas para sumar a tu lista." },
-      { property: "og:title", content: "Película — Butaca" },
+      { property: "og:title", content: "Película — BUTACAPP" },
       { property: "og:description", content: "Puntajes de la crítica y películas parecidas." },
     ],
   }),
@@ -80,9 +80,9 @@ function MoviePage() {
               <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
                 {m.type === "tv" ? "Serie" : "Película"}
               </p>
-              <h1 className="mt-2 break-words font-display text-4xl leading-tight">{m.title}</h1>
+              <h1 className="mt-2 break-words font-display text-5xl leading-tight text-primary">{m.title}</h1>
               {m.originalTitle && <p className="mt-1 text-xs italic text-muted-foreground">{m.originalTitle}</p>}
-              <p className="mt-2 text-sm text-muted-foreground">{meta.join(" · ")}</p>
+              <dl className="mt-5 grid grid-cols-2 gap-x-8 gap-y-4">{[["AÑO",m.year],["DURACIÓN",m.runtime?`${m.runtime} min`:null],["GÉNERO",m.genres.join(" · ")]].filter(([,value])=>value).map(([label,value])=><div key={label}><dt className="cinema-meta text-muted-foreground">{label}</dt><dd className="mt-1 text-sm">{value}</dd></div>)}</dl>
             </div>
           </div>
         </div>
@@ -145,6 +145,7 @@ function MoviePage() {
           />
         ))}
       </div>
+      <p className="cinema-meta px-4 pt-10 text-muted-foreground">UNA FUNCIÓN DE BUTACAPP</p>
       {adder.sheet}
     </div>
   );
@@ -153,7 +154,7 @@ function MoviePage() {
 function PeopleLine({ people, listId }: { people: CreditPerson[]; listId: string | undefined }) {
   return (
     <div className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
-      {people[0]?.role === "Creación" ? "Creada por " : "Dirigida por "}
+      {people[0]?.role === "Creación" ? <span className="cinema-meta">CREADA POR</span> : <span className="cinema-meta">DIRIGIDA POR</span>}
       {people.map((p, i) => (
         <span key={p.id}>
           {i > 0 && ", "}
