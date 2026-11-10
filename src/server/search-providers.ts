@@ -56,9 +56,10 @@ function tmdbFetcher(key: string) {
     url.searchParams.set("include_adult", "false");
     for (const [k, v] of Object.entries(params)) if (v !== undefined) url.searchParams.set(k, String(v));
     if (!isBearer) url.searchParams.set("api_key", key);
-    return getJson<T>(url.toString(), {
-      headers: isBearer ? { Authorization: `Bearer ${key}`, accept: "application/json" } : undefined,
-    });
+    return getJson<T>(
+      url.toString(),
+      isBearer ? { headers: { Authorization: `Bearer ${key}`, accept: "application/json" } } : {},
+    );
   };
 }
 
@@ -316,8 +317,10 @@ export async function searchArt(q: ParsedQuery): Promise<SearchResult[]> {
   // Interleave both museums so neither dominates.
   const out: SearchResult[] = [];
   for (let i = 0; i < Math.max(a.length, m.length); i++) {
-    if (a[i]) out.push(a[i]);
-    if (m[i]) out.push(m[i]);
+    const fromAic = a[i];
+    const fromMet = m[i];
+    if (fromAic) out.push(fromAic);
+    if (fromMet) out.push(fromMet);
   }
   return boostYear(dedupe(out), q.year).slice(0, 24);
 }

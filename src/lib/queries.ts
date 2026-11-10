@@ -90,7 +90,8 @@ export const listQuery = (id: string) =>
   queryOptions({
     queryKey: keys.list(id),
     queryFn: async (): Promise<ListDetail> => {
-      const list = unwrap(await supabase.from("lists").select("*").eq("id", id).maybeSingle());
+      const { data: list, error } = await supabase.from("lists").select("*").eq("id", id).maybeSingle();
+      if (error) throw new Error(error.message);
       if (!list) throw new Error("NOT_FOUND");
       const members = unwrap(
         await supabase.from("list_members").select("*").eq("list_id", id).order("joined_at"),
@@ -135,8 +136,11 @@ export function useMyProfile(userId: string | undefined) {
   return useQuery({
     queryKey: keys.profile(userId ?? "none"),
     enabled: !!userId,
-    queryFn: async () =>
-      unwrap(await supabase.from("profiles").select("*").eq("id", userId!).maybeSingle()),
+    queryFn: async (): Promise<ProfileRow | null> => {
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", userId!).maybeSingle();
+      if (error) throw new Error(error.message);
+      return data;
+    },
   });
 }
 

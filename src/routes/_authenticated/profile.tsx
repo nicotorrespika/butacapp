@@ -41,7 +41,7 @@ function ProfilePage() {
     setSaving(true);
     const { error } = await supabase.from("profiles").update({ display_name: name.trim() }).eq("id", user.id);
     setSaving(false);
-    if (error) return toast.error("No se pudo guardar", { description: error.message });
+    if (error) return void toast.error("No se pudo guardar", { description: error.message });
     toast.success("Nombre actualizado");
     qc.invalidateQueries({ queryKey: keys.profile(user.id) });
     qc.invalidateQueries({ queryKey: ["list"] });

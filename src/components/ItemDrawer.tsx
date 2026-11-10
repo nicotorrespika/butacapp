@@ -85,7 +85,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
       .from("comments")
       .insert({ item_id: item.id, list_id: item.list_id, user_id: userId, body: body.trim() });
     setSending(false);
-    if (error) return toast.error("No se pudo comentar", { description: error.message });
+    if (error) return void toast.error("No se pudo comentar", { description: error.message });
     setBody("");
     invalidate(keys.comments(item.list_id));
   }
@@ -93,14 +93,14 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
   async function deleteComment(id: string) {
     if (!item) return;
     const { error } = await supabase.from("comments").delete().eq("id", id);
-    if (error) return toast.error("No se pudo borrar", { description: error.message });
+    if (error) return void toast.error("No se pudo borrar", { description: error.message });
     invalidate(keys.comments(item.list_id));
   }
 
   async function removeItem() {
     if (!item || !confirm(`¿Quitar «${item.title}» de la lista?`)) return;
     const { error } = await supabase.from("list_items").delete().eq("id", item.id);
-    if (error) return toast.error("No se pudo quitar", { description: error.message });
+    if (error) return void toast.error("No se pudo quitar", { description: error.message });
     onOpenChange(false);
     invalidate(keys.items(item.list_id));
     invalidate(keys.myLists);

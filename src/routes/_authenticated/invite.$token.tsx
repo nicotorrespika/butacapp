@@ -41,7 +41,7 @@ function InvitePage() {
     setJoining(true);
     const { data, error } = await supabase.rpc("accept_invite", { _token: token });
     setJoining(false);
-    if (error || !data) return toast.error("No se pudo unir", { description: error?.message });
+    if (error || !data) return void toast.error("No se pudo unir", { description: error?.message });
     qc.invalidateQueries({ queryKey: keys.myLists });
     toast.success("¡Ya sos parte de la lista!");
     navigate({ to: "/lists/$listId", params: { listId: data }, replace: true });

@@ -109,7 +109,7 @@ function ListPage() {
   async function deleteList() {
     if (!d || !confirm(`¿Borrar «${d.list.name}» para todos? No se puede deshacer.`)) return;
     const { error } = await supabase.from("lists").delete().eq("id", d.list.id);
-    if (error) return toast.error("No se pudo borrar", { description: error.message });
+    if (error) return void toast.error("No se pudo borrar", { description: error.message });
     qc.invalidateQueries({ queryKey: keys.myLists });
     navigate({ to: "/lists", replace: true });
   }
@@ -117,7 +117,7 @@ function ListPage() {
   async function leaveList() {
     if (!d || !confirm(`¿Salir de «${d.list.name}»?`)) return;
     const { error } = await supabase.from("list_members").delete().eq("list_id", d.list.id).eq("user_id", userId);
-    if (error) return toast.error("No se pudo salir", { description: error.message });
+    if (error) return void toast.error("No se pudo salir", { description: error.message });
     qc.invalidateQueries({ queryKey: keys.myLists });
     navigate({ to: "/lists", replace: true });
   }
@@ -316,8 +316,8 @@ function ItemTile({
   onOpen,
 }: {
   item: ItemRow;
-  stat?: { avg: number | null; votes: number; comments: number };
-  adderName?: string;
+  stat?: { avg: number | null; votes: number; comments: number } | undefined;
+  adderName?: string | undefined;
   onOpen: () => void;
 }) {
   const media = item.media_type as MediaType;

@@ -29,7 +29,7 @@ function ResetPassword() {
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
-    if (error) return toast.error("No se pudo cambiar", { description: error.message });
+    if (error) return void toast.error("No se pudo cambiar", { description: error.message });
     toast.success("Contraseña actualizada");
     navigate({ to: "/lists", replace: true });
   }

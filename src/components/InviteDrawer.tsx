@@ -52,7 +52,7 @@ export function InviteDrawer({
           .insert({ list_id: list.id, created_by: userId })
           .select("token")
           .single();
-        if (error) return toast.error("No se pudo generar el link", { description: error.message });
+        if (error) return void toast.error("No se pudo generar el link", { description: error.message });
         token = data.token;
       }
       setLink(`${window.location.origin}/invite/${token}`);
@@ -85,7 +85,7 @@ export function InviteDrawer({
     setBusy(true);
     const { error } = await supabase.from("list_invites").insert({ list_id: list.id, created_by: userId, email: to });
     setBusy(false);
-    if (error) return toast.error("No se pudo invitar", { description: error.message });
+    if (error) return void toast.error("No se pudo invitar", { description: error.message });
     toast.success(`Invitación guardada para ${to}`, {
       description: "Entra automáticamente cuando inicie sesión con ese email.",
     });
@@ -97,7 +97,7 @@ export function InviteDrawer({
 
   async function removeMember(memberId: string) {
     const { error } = await supabase.from("list_members").delete().eq("list_id", list.id).eq("user_id", memberId);
-    if (error) return toast.error("No se pudo quitar", { description: error.message });
+    if (error) return void toast.error("No se pudo quitar", { description: error.message });
     qc.invalidateQueries({ queryKey: keys.list(list.id) });
   }
 
