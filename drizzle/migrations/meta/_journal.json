@@ -50,6 +50,13 @@
       "when": 1794295043460,
       "tag": "0006_discovery_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794296218699,
+      "tag": "0007_friend_feed_realtime",
+      "breakpoints": true
     }
   ]
 }
