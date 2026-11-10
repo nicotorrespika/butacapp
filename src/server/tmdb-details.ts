@@ -347,31 +347,32 @@ export async function fetchPersonDetail(personId: number, tmdbKey: string): Prom
 
   const credits = p.combined_credits ?? { cast: [], crew: [] };
   const isWork = (w: TmdbItem) => (w.media_type === "movie" || w.media_type === "tv") && !!(w.title ?? w.name);
-  const seen = new Set<string>();
-  const once = (w: TmdbItem) => {
+  // Each category dedupes on its own (someone can direct and act in the same film).
+  const onceIn = (seen: Set<string>) => (w: TmdbItem) => {
     const k = `${w.media_type}:${w.id}`;
     if (seen.has(k)) return false;
     seen.add(k);
     return true;
   };
+  const directedSeen = new Set<string>();
   const map = (w: TmdbItem, creator: string | null) => mapTmdb(w, w.media_type as "movie" | "tv", creator);
 
   const directed = credits.crew
     .filter((w) => isWork(w) && (w.job === "Director" || w.job === "Creator"))
-    .filter(once)
+    .filter(onceIn(directedSeen))
     .map((w) => map(w, p.name))
     .sort(byDateDesc);
 
   // Skip talk-show appearances ("Self") and series with no real role.
   const acted = credits.cast
     .filter((w) => isWork(w) && !SELF_ROLE.test(w.character ?? "") && (w.media_type === "movie" || (w.vote_count ?? 0) > 20))
-    .filter(once)
+    .filter(onceIn(new Set()))
     .map((w) => map(w, null))
     .sort(byDateDesc);
 
   const other = credits.crew
     .filter((w) => isWork(w) && ["Screenplay", "Writer", "Producer", "Original Music Composer", "Director of Photography", "Editor"].includes(w.job ?? ""))
-    .filter(once)
+    .filter(onceIn(new Set(directedSeen)))
     .map((w) => map(w, null))
     .sort(byDateDesc);
 

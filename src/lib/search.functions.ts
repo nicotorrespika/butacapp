@@ -5,7 +5,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { SearchResponse, SearchResult } from "@/lib/media";
+import type { PersonResult, SearchResponse, SearchResult } from "@/lib/media";
 import { parseQuery } from "@/lib/search-query";
 import { searchArt, searchImdbFallback, searchMusic, searchTmdb } from "@/server/search-providers";
 
@@ -34,13 +34,29 @@ export const searchMedia = createServerFn({ method: "POST" })
       }
     };
 
+    // Movies: TMDB (full catalogue + people). If the key is missing or TMDB fails,
+    // fall back to the basic IMDb feed so search keeps working.
+    let people: PersonResult[] = [];
+    let movieProvider: "tmdb" | "basic" = "basic";
+    const movies = async (): Promise<SearchResult[]> => {
+      if (tmdbKey) {
+        try {
+          const r = await searchTmdb(parsed, tmdbKey);
+          people = r.people;
+          movieProvider = "tmdb";
+          return r.results;
+        } catch (e) {
+          console.error("[search] TMDB failed, using basic movie search", e);
+        }
+      }
+      return searchImdbFallback(parsed);
+    };
+
     const [movie, music, art] = await Promise.all([
-      want("movie")
-        ? run("Películas", () => (tmdbKey ? searchTmdb(parsed, tmdbKey) : searchImdbFallback(parsed)))
-        : Promise.resolve([]),
+      want("movie") ? run("Películas", movies) : Promise.resolve([]),
       want("music") ? run("Música", () => searchMusic(parsed)) : Promise.resolve([]),
       want("art") ? run("Arte", () => searchArt(parsed)) : Promise.resolve([]),
     ]);
 
-    return { movie, music, art, movieProvider: tmdbKey ? "tmdb" : "basic", warnings };
+    return { people, movie, music, art, movieProvider, warnings };
   });
