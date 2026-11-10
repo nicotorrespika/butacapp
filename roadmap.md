@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Adjust movie interactions: list poster opens quick sheet; sheet title opens full detail and Back restores sheet; personal watched/rating/review/favorite controls outside lists
+
 - [x] Review uploaded TMDB Daily ID Exports documentation: ID-only exports do not replace API credentials or full movie details
 - [x] Review TMDB image URL documentation: current poster/backdrop URLs already combine image base, size and returned path
 
