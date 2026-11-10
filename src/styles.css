@@ -73,28 +73,28 @@
 :root {
   --radius: 0.375rem;
   /* Surfaces: warm near-blacks */
-  --background: oklch(0.17 0.002 260);
-  --foreground: oklch(0.94 0.004 80);
-  --card: oklch(0.21 0.002 260);
+  --background: oklch(0.145 0.002 260);
+  --foreground: oklch(0.9 0.004 80);
+  --card: oklch(0.185 0.002 260);
   --card-foreground: oklch(0.94 0.012 80);
   --popover: oklch(0.17 0.008 60);
   --popover-foreground: oklch(0.94 0.012 80);
   /* Projector amber */
-  --primary: oklch(0.79 0.15 72);
-  --primary-glow: oklch(0.86 0.13 82);
+  --primary: oklch(0.76 0.085 78);
+  --primary-glow: var(--primary);
   --primary-foreground: oklch(0.17 0.02 60);
-  --secondary: oklch(0.25 0.003 260);
+  --secondary: oklch(0.215 0.002 260);
   --secondary-foreground: oklch(0.92 0.012 80);
-  --muted: oklch(0.23 0.002 260);
-  --muted-foreground: oklch(0.68 0.003 260);
-  --accent: oklch(0.29 0.003 260);
+  --muted: oklch(0.205 0.002 260);
+  --muted-foreground: oklch(0.7 0.003 260);
+  --accent: oklch(0.25 0.003 260);
   --accent-foreground: oklch(0.94 0.012 80);
   --destructive: oklch(0.64 0.2 25);
   --destructive-foreground: oklch(0.97 0.01 80);
   --success: oklch(0.75 0.13 150);
   --border: oklch(0.94 0.012 80 / 9%);
   --input: oklch(0.94 0.012 80 / 12%);
-  --ring: oklch(0.79 0.15 72 / 60%);
+  --ring: oklch(0.76 0.085 78 / 60%);
   --overlay: oklch(0.08 0.004 60);
 
   --chart-1: oklch(0.79 0.15 72);
@@ -119,8 +119,8 @@
     oklch(0.1 0.005 60 / 55%) 45%,
     transparent 100%
   );
-  --shadow-poster: 0 18px 40px -18px oklch(0 0 0 / 85%), 0 2px 6px -2px oklch(0 0 0 / 60%);
-  --shadow-glow: 0 2px 8px oklch(0 0 0 / 20%);
+  --shadow-poster: none;
+  --shadow-glow: none;
   --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-height: 4.25rem;
 }
@@ -143,28 +143,6 @@
     min-height: 100dvh;
   }
 
-  /* Vignette: soft darkening toward the screen edges */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background: none;
-  }
-
-  /* Film grain: tiny SVG noise, very low opacity */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: -50%;
-    pointer-events: none;
-    z-index: 60;
-    opacity: 0.018;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-    animation: none;
-  }
-
   h1, h2, h3 {
     font-family: var(--font-display);
     font-weight: 400;
@@ -179,15 +157,6 @@
   }
 }
 
-@keyframes grain {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-3%, 2%); }
-  40% { transform: translate(2%, -3%); }
-  60% { transform: translate(-2%, -1%); }
-  80% { transform: translate(3%, 3%); }
-  100% { transform: translate(0, 0); }
-}
-
 @keyframes rise {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -199,7 +168,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body::after { animation: none; }
+  .animate-rise, .skeleton-shimmer { animation: none; }
 }
 
 /* ---------- Utilities ---------- */

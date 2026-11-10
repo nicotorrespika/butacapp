@@ -7,7 +7,6 @@ import { CreateListDrawer } from "@/components/CreateListDrawer";
 import { EmptyState, ErrorState, Skeleton } from "@/components/States";
 import { LIST_KIND_LABEL } from "@/lib/media";
 import { myListsQuery, type ListSummary } from "@/lib/queries";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/lists/")({
   head: () => ({
@@ -29,13 +28,13 @@ function MyLists() {
   const navigate = useNavigate();
 
   return (
-    <div className="px-4 pt-[max(env(safe-area-inset-top),1rem)]">
-      <header className="flex items-end justify-between gap-3 pb-5">
+    <div className="px-5 pt-[max(env(safe-area-inset-top),2rem)] sm:px-8 sm:pt-12">
+      <header className="flex items-end justify-between gap-3 border-b border-border pb-7 mb-7">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary">2BOLUDOS</p>
-          <h1 className="font-display text-4xl">mis listas!!!!</h1>
+          <p className="mb-3 text-[11px] font-medium text-muted-foreground">2BOLUDOS</p>
+          <h1 className="font-display text-4xl leading-tight">mis listas!!!!</h1>
         </div>
-        <Button onClick={() => setCreating(true)}>
+        <Button variant="outline" size="sm" onClick={() => setCreating(true)}>
           <Plus /> Nueva
         </Button>
       </header>
@@ -43,7 +42,7 @@ function MyLists() {
       {lists.isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-44 rounded-2xl" />
+            <Skeleton key={i} className="h-64 rounded-sm" />
           ))}
         </div>
       ) : lists.isError ? (
@@ -61,9 +60,9 @@ function MyLists() {
           Creá una lista, invitá a tu gente y empiecen a sumar lo que quieren ver, escuchar o visitar.
         </EmptyState>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {lists.data.map((l, i) => (
-            <li key={l.id} className="animate-rise" style={{ animationDelay: `${i * 50}ms` }}>
+        <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          {lists.data.map((l) => (
+            <li key={l.id}>
               <ListCard list={l} />
             </li>
           ))}
@@ -82,19 +81,18 @@ function MyLists() {
   );
 }
 
-/** List card with a fanned collage of the latest covers. */
+/** Unframed list entry: covers and text never overlap. */
 function ListCard({ list }: { list: ListSummary }) {
   return (
     <Link
       to="/lists/$listId"
       params={{ listId: list.id }}
-      className="group relative block h-44 overflow-hidden rounded-md border border-border bg-card transition-transform duration-300 ease-cine active:scale-[0.98]"
+      className="group block min-w-0 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {/* Cover collage */}
-      <div className="absolute inset-y-0 right-0 flex w-3/5 items-center justify-end pr-3">
+      <div className="flex h-44 gap-1 overflow-hidden rounded-sm bg-card sm:h-48">
         {list.covers.length === 0 ? (
-          <div className="mr-4 flex h-28 w-20 items-center justify-center rounded-lg border border-dashed border-border text-muted-foreground">
-            <Library className="size-6 opacity-50" />
+          <div className="flex w-full items-center justify-center text-muted-foreground">
+            <Library strokeWidth={1} className="size-8 opacity-50" />
           </div>
         ) : (
           list.covers.slice(0, 3).map((src, i) => (
@@ -103,22 +101,18 @@ function ListCard({ list }: { list: ListSummary }) {
               src={src}
               alt=""
               loading="lazy"
-              className={cn(
-                "h-32 w-[5.5rem] rounded-sm object-cover ring-1 ring-border",
-                i > 0 && "-ml-6",
-              )}
+              className="h-full min-w-0 flex-1 basis-0 object-cover"
             />
           ))
         )}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-card via-card/90 to-transparent" />
-      <div className="relative flex h-full max-w-[62%] flex-col p-4">
-        <span className="w-fit text-[10px] font-bold uppercase tracking-wider text-primary">
+      <div className="pt-4">
+        <span className="text-[10px] font-medium text-muted-foreground">
           {LIST_KIND_LABEL[list.kind]}
         </span>
-        <h2 className="mt-2 line-clamp-2 font-display text-2xl leading-tight">{list.name}</h2>
+        <h2 className="mt-1 line-clamp-2 break-words font-display text-2xl leading-tight transition-colors group-hover:text-primary">{list.name}</h2>
         {list.description && <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{list.description}</p>}
-        <div className="mt-auto flex items-center gap-3 text-xs text-muted-foreground">
+        <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
           <span>{list.itemCount} ítems</span>
           <span className="flex items-center gap-1">
             <Users className="size-3.5" /> {list.memberCount}
