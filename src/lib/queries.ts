@@ -64,7 +64,7 @@ export const myListsQuery = queryOptions({
           .select("list_id, image_url")
           .in("list_id", ids)
           .not("image_url", "is", null)
-          .order("created_at", { ascending: false })
+          .order("created_at", { ascending: true })
           .limit(200),
       );
       for (const i of imgs) {

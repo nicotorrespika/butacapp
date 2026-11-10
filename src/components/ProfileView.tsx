@@ -8,6 +8,7 @@ import { profileQuery, profileListsQuery, watchedQuery, topFive, viewingStats, f
 import { movieRouteId, type SearchResult } from "@/lib/media";
 import { useAuth } from "@/hooks/use-auth";
 import { Poster } from "./Poster";
+import {ListCoverStrip} from "./ListCoverStrip";
 import { Button } from "./ui/button";
 import { UserAvatar } from "./UserAvatar";
 import { CreateListDrawer } from "./CreateListDrawer";

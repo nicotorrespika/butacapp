@@ -62,7 +62,7 @@ export function InviteDrawer({
     })();
   }, [open, link, list.id, userId]);
 
-  const message = `Sumate a mi lista «${list.name}» en Butaca`;
+  const message = `Sumate a mi lista «${list.name}» en BUTACAPP`;
 
   async function copy() {
     if (!link) return;
@@ -112,6 +112,7 @@ export function InviteDrawer({
           <DrawerDescription>Los colaboradores pueden agregar, marcar, puntuar y comentar.</DrawerDescription>
         </DrawerHeader>
         <div className="space-y-6 overflow-y-auto px-4 pb-8">
+          {isOwner&&<label className="block text-sm">Privacidad de la lista<select aria-label="Privacidad de la lista" value={list.visibility} onChange={async e=>{const r=await supabase.from("lists").update({visibility:e.target.value}).eq("id",list.id);if(r.error)toast.error("No pudimos cambiar la privacidad. Probá de nuevo.");else{qc.invalidateQueries({queryKey:keys.list(list.id)});qc.invalidateQueries({queryKey:keys.myLists});qc.invalidateQueries({queryKey:["social"]});toast.success("Privacidad actualizada");}} className="mt-2 h-11 w-full rounded-sm border border-input bg-background px-3"><option value="private">Privada · solo colaboradores</option><option value="friends">Visible para amigos</option><option value="public">Pública · cualquiera puede leerla</option></select></label>}
           <section><h3 className="mb-3 font-display text-2xl">Tus amigos</h3>{friends.data?.filter(f=>f.status==="accepted").map(f=><div key={f.id} className="flex items-center justify-between gap-2 py-2"><span className="text-sm">{f.profile?.username ?? f.profile?.display_name}</span><Button variant="outline" disabled={members.some(m=>m.user_id===f.profile?.id)} onClick={async()=>{if(!f.profile)return;const r=await supabase.rpc("invite_friend",{lid:list.id,friend_id:f.profile.id});if(r.error)toast.error("No se pudo invitar");else{toast.success("Amigo agregado a la lista");qc.invalidateQueries({queryKey:keys.list(list.id)});}}}>Invitar</Button></div>)}</section>
           <section>
             <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

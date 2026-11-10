@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getHomePosters,getArgentineMovies } from "@/lib/home.functions";
 import {DiscoveryDeck} from "./DiscoveryDeck";
 import {Poster} from "./Poster";
+import {ListCoverStrip} from "./ListCoverStrip";
 import {movieRouteId} from "@/lib/media";
 import { myListsQuery } from "@/lib/queries";
 import { Button } from "./ui/button";

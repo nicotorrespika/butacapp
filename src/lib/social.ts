@@ -22,7 +22,7 @@ export const watchedQuery = (id: string) => queryOptions({ queryKey: ["social", 
   const r = await supabase.from("movie_entries").select("*").eq("user_id", id).order("updated_at", { ascending: false }); if(r.error) throw r.error; return r.data;
 }});
 export const profileListsQuery = (id: string) => queryOptions({ queryKey: ["social", "lists", id], queryFn: async () => {
-  const r = await supabase.from("lists").select("*").eq("owner_id", id).order("updated_at", { ascending: false }); if(r.error) throw r.error; return r.data;
+  const r = await supabase.from("lists").select("*, items:list_items(image_url,created_at)").eq("owner_id", id).order("updated_at", { ascending: false }); if(r.error) throw r.error; return r.data.map(l=>({...l,covers:l.items.sort((a,b)=>a.created_at.localeCompare(b.created_at)).flatMap(i=>i.image_url?[i.image_url]:[]).slice(0,4)}));
 }});
 export function viewingStats(rows: { score_10: number | null; genres: string[] }[]) {
   const scores = rows.flatMap(r => r.score_10 === null ? [] : [r.score_10]);
