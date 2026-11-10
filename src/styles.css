@@ -50,6 +50,10 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-overlay: var(--overlay);
+  /* Google sign-in button, dark theme (brand guideline colors) */
+  --color-google: #131314;
+  --color-google-border: #8e918f;
+  --color-google-foreground: #e3e3e3;
   --color-ring-offset-background: var(--background);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
