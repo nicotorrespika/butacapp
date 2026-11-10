@@ -32,7 +32,7 @@ function dedupe(items: SearchResult[]): SearchResult[] {
 /* TMDB                                                                 */
 /* ------------------------------------------------------------------ */
 
-interface TmdbItem {
+export interface TmdbItem {
   id: number;
   media_type?: "movie" | "tv" | "person";
   title?: string;
