@@ -27,11 +27,14 @@ import { toast } from "sonner";
 import { BackButton } from "@/components/BackButton";
 import { BettySearch } from "@/components/BettySearch";
 import {DiscoveryDeck} from "@/components/DiscoveryDeck";
+import { CultureDiscovery } from "@/components/CultureDiscovery";
+import { CultureBetty } from "@/components/CultureBetty";
+import { cultureRouteId, isCulture } from "@/lib/culture";
 
 export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: z.object({
     q: z.string().optional(),
-    f: z.enum(["all", "movie", "music", "art"]).optional(),
+    f: z.enum(["all", "movie", "music", "book", "art"]).optional(),
     /** When set, "+" adds straight into this list (opened from a list's "Agregar" button). */
     list: z.string().uuid().optional(),
     top: z.boolean().optional(),
@@ -52,9 +55,9 @@ export const Route = createFileRoute("/_authenticated/search")({
 
 const CHIPS: { id: SearchFilter; label: string }[] = [
   { id: "all", label: "Todo" },
-  { id: "movie", label: "Películas" },
+  { id: "movie", label: "Cine" },
   { id: "music", label: "Música" },
-  { id: "art", label: "Arte" },
+  { id: "book", label: "Libros" },
 ];
 
 const SUGGESTIONS = ["Tarkovsky 1979", "Radiohead OK Computer", "Wong Kar-wai", "Monet", "1994", "Björk", "Frida Kahlo"];
@@ -72,6 +75,7 @@ function SearchPage() {
 
   // Movies with a TMDB/IMDb id open their page (synopsis, scores, similar titles).
   function openMovie(r: SearchResult) {
+    if(isCulture(r.mediaType)){void navigate({to:"/culture/$cultureId",params:{cultureId:cultureRouteId(r.source,r.externalId)},search:{list:params.list}});return;}
     if (!hasMoviePage(r.source, r.mediaType)) return;
     void navigate({
       to: "/movie/$movieId",
@@ -84,16 +88,18 @@ function SearchPage() {
     onAdd: params.top ? async (r: SearchResult) => {
       const { data: { user } } = await supabase.auth.getUser(); if (!user) return;
       const p = await supabase.from("profiles").select("top_five").eq("id",user.id).single();
-      const top = topFive(p.data?.top_five);
+      const profile=await supabase.from("profiles").select("cultural_top_five").eq("id",user.id).single();
+      const cultural=profile.data?.cultural_top_five;const group=cultural&&typeof cultural==="object"&&!Array.isArray(cultural)?cultural:{};
+      const top = r.mediaType==="movie"?topFive(p.data?.top_five):topFive(group[r.mediaType]);
       if(top.length>=5) return void toast.error("Tu Top 5 está completo. Quitá una película desde Perfil.");
       if(top.some(m=>m.externalId===r.externalId)) return void toast("Ya está en tu Top 5");
-      const result=await supabase.from("profiles").update({top_five:JSON.parse(JSON.stringify([...top,r]))}).eq("id",user.id);
+      const result=await supabase.from("profiles").update(r.mediaType==="movie"?{top_five:JSON.parse(JSON.stringify([...top,r]))}:{cultural_top_five:JSON.parse(JSON.stringify({...group,[r.mediaType]:[...top,r]}))}).eq("id",user.id);
       if(result.error)toast.error("No se pudo guardar");else toast.success("Agregada a tu Top 5");
     } : adder.add,
     added: adder.isAdded(r),
     busy: adder.isBusy(r),
     targetName: targetList?.name,
-    onOpen: hasMoviePage(r.source, r.mediaType) ? openMovie : undefined,
+    onOpen: hasMoviePage(r.source, r.mediaType)||isCulture(r.mediaType) ? openMovie : undefined,
   });
 
   function clearTarget() {
@@ -119,14 +125,15 @@ function SearchPage() {
   }, [q]);
 
   const data = query.data;
-  const total = data ? data.people.length + data.movie.length + data.music.length + data.art.length : 0;
-  const sections: MediaType[] = filter === "all" ? ["movie", "music", "art"] : [filter];
+  const total = data ? data.people.length + data.movie.length + data.music.length + data.book.length + data.art.length : 0;
+  const sections: MediaType[] = filter === "all" ? ["movie", "music", "book"] : [filter];
   const typing = text.trim() !== q;
 
   return (
     <div>
       <div className="flex gap-2 px-4 py-4" role="tablist" aria-label="Modo de búsqueda">{([["search","Buscar"],["discover","Descubrir"],["betty","Betty"]] as const).map(([id,label])=><Button key={id} variant="ghost" role="tab" aria-selected={mode===id} onClick={()=>navigate({search:s=>({...s,mode:id}),replace:true})}>{label}</Button>)}</div>
-      {mode==="betty"?<BettySearch listId={params.list}/>:mode==="discover"?<DiscoveryDeck/>:<>
+      {mode!=="search"&&<div role="tablist" aria-label="Categoría" className="flex gap-2 overflow-x-auto px-4 pb-4">{CHIPS.filter(c=>c.id!=="all").map(c=><Button variant="ghost" role="tab" aria-selected={filter===c.id} key={c.id} onClick={()=>setFilter(c.id)}>{c.label}</Button>)}</div>}
+      {mode==="betty"?(isCulture(filter==="all"?"movie":filter)?<CultureBetty key={filter} type={filter==="book"?"book":"music"} {...(params.list?{listId:params.list}:{})}/>:<BettySearch listId={params.list}/>):mode==="discover"?(filter==="book"||filter==="music"?<CultureDiscovery key={filter} type={filter}/>:<DiscoveryDeck/>):<>
       {/* Sticky search header */}
       <header className="sticky top-0 z-30 bg-background px-4 pb-3 pt-[max(env(safe-area-inset-top),2rem)]">
         {targetList ? (
