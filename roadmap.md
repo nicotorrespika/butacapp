@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Show first movie posters below list names on home and profile
+
 - [ ] Complete public/private list controls and invitation read/collaborate flows
 - [ ] Show friends' movie additions with their rating in feed, respecting list visibility and live updates
 
