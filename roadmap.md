@@ -1,6 +1,8 @@
 # Roadmap
 
-- [ ] Expand to BUTACAPP: five-tab navigation, poster-mosaic public home and friends activity home
+- [ ] Expand to BUTACAPP: only Inicio/Buscar/Perfil fixed navigation; lists and friends inside home/profile; poster-mosaic home
+- [ ] Build “En qué andan” friends feed: newest-first infinite loading, pull-to-refresh, likes, replies, activity filter and clear friend-search empty state
+- [ ] Apply intuitive UX: labeled large controls, visible back navigation, one primary action, confirmations with undo and username-only profile onboarding
 - [ ] Add social profiles: username, bio, photo, reorderable top 5, profile tabs and viewing statistics
 - [ ] Add friends: member search, requests/acceptance, profiles and privacy-aware activity
 - [ ] Add list visibility (private/friends/public), friend collaborator invitations and comments on lists/reviews/friend profiles
