@@ -177,6 +177,11 @@
   }
 
   #root, main { position: relative; z-index: 1; }
+
+  /* We render our own clear button in the search bar. */
+  input[type="search"]::-webkit-search-cancel-button {
+    appearance: none;
+  }
 }
 
 @keyframes grain {

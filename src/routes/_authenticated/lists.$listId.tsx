@@ -345,7 +345,7 @@ function ItemTile({
           )}
         </div>
       </div>
-      <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-snug">{item.title}</h3>
+      <h3 className="mt-2 line-clamp-2 font-sans text-sm font-semibold leading-snug">{item.title}</h3>
       <p className="truncate text-xs text-muted-foreground">
         {[item.creator, item.year].filter(Boolean).join(" · ")}
       </p>
