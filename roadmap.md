@@ -1,8 +1,10 @@
 # Roadmap
 
+- [ ] Apply uploaded author-cinema aesthetic: burnt-orange accent, expressive italic movie titles, condensed headings/logo, mono metadata, numbered Top 5 and paper review tickets; preserve usability
+
 - [x] Betty inside existing lists uses their movies, ratings and critiques; live recommendation verified
 - [ ] Enrich Betty and movie pages with cited criticism, verified ratings, Criterion confirmation and related books; cache movie research for several days, tolerate independent source failures, verify suggested titles with TMDB
-- [ ] Configure valid OMDb credentials and backend web-search source; explain how to obtain OMDb key
+- [ ] Configure valid OMDb credentials and backend web-search source; blocked: web-search connection declined and OMDb update stopped; key instructions delivered
 
 - [x] Argentine localization: es-AR/AR TMDB, Argentine cinema priority and home collection, viewing providers in Argentina
 - [x] Add Sorprendeme on Inicio and swipe/button discovery with filters, watched/queued/passed exclusions and undo (pointer handlers verified; native touch swipe remains unverified)
