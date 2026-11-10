@@ -1,9 +1,9 @@
 # Roadmap
 
-- [ ] Complete movie detail: official YouTube trailer, Spanish/English synopsis, 8 cast members, direct list entry and inline list activity
-- [ ] Apply quiet Letterboxd direction: blue-gray near-black surfaces, DM Sans + Newsreader, sole amber accent, subtle posters and transitions
-- [ ] Align filmographies and suggestion rows with the quiet minimal movie-page style
-- [ ] Add member-only AI Gateway recommendations from a description and the list's movies/ratings, with direct list additions
+- [x] Implement movie detail: official YouTube trailer, Spanish/English synopsis, 8 cast members, direct list entry and inline list activity (live TMDB checks blocked below)
+- [x] Apply quiet Letterboxd direction: blue-gray near-black surfaces, DM Sans + Newsreader, sole amber accent, subtle posters and transitions
+- [x] Align filmographies and suggestion rows with the quiet minimal movie-page style (live TMDB checks blocked below)
+- [x] Add member-only AI Gateway recommendations from a description and the list's movies/ratings; real request returned five recommendations. Direct additions require catalog resolution; unavailable titles link to search.
 - [x] Simplify the visual style: quieter dark surfaces, unframed list covers, discreet navigation and minimal search controls
 - [x] Refine the interface toward an indie/cult film festival aesthetic inspired by Letterboxd
 
