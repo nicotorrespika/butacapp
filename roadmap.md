@@ -4,12 +4,13 @@
 
 - [x] Soften the overly bright orange to a restrained muted copper accent
 
-- [ ] Show first movie posters below list names on home and profile
+- [x] Show first movie posters below list names on home and profile (home shows three real posters)
 
-- [ ] Complete public/private list controls and invitation read/collaborate flows
-- [ ] Show friends' movie additions with their rating in feed, respecting list visibility and live updates
+- [x] Public/private list owner controls saved and reloaded; existing collaborator invitations retained
+- [ ] Verify invitation read/collaborate end-to-end with a second account; blocker: no second authorized test session
+- [ ] Verify friends' additions and ratings end-to-end; implementation and realtime configured, blocker: requesting account has no accepted friends
 
-- [ ] Apply uploaded author-cinema aesthetic: burnt-orange accent, expressive italic movie titles, condensed headings/logo, mono metadata, numbered Top 5 and paper review tickets; preserve usability
+- [x] Apply author-cinema typography, softened copper, numbered Top 5 and paper review tickets; mobile home and list verified
 
 - [x] Betty inside existing lists uses their movies, ratings and critiques; live recommendation verified
 - [ ] Enrich Betty and movie pages with cited criticism, verified ratings, Criterion confirmation and related books; cache movie research for several days, tolerate independent source failures, verify suggested titles with TMDB
