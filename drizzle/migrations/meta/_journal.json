@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794289157372,
+      "tag": "0000_watchlists_core",
+      "breakpoints": true
+    }
+  ]
+}
