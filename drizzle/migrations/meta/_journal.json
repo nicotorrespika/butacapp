@@ -57,6 +57,13 @@
       "when": 1794296218699,
       "tag": "0007_friend_feed_realtime",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794328844974,
+      "tag": "0008_culture_books_events",
+      "breakpoints": true
     }
   ]
 }

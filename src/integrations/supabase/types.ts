@@ -17,6 +17,7 @@ export type Database = {
       activity: {
         Row: {
           body: string | null
+          category: string | null
           created_at: string
           external_id: string | null
           id: string
@@ -31,6 +32,7 @@ export type Database = {
         }
         Insert: {
           body?: string | null
+          category?: string | null
           created_at?: string
           external_id?: string | null
           id?: string
@@ -45,6 +47,7 @@ export type Database = {
         }
         Update: {
           body?: string | null
+          category?: string | null
           created_at?: string
           external_id?: string | null
           id?: string
@@ -226,6 +229,273 @@ export type Database = {
             columns: ["list_id"]
             isOneToOne: false
             referencedRelation: "lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cultural_comments: {
+        Row: {
+          body: string
+          created_at: string
+          external_id: string
+          id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          external_id: string
+          id?: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          external_id?: string
+          id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cultural_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cultural_entries: {
+        Row: {
+          consumed: boolean
+          creator: string | null
+          dismissed: boolean
+          external_id: string
+          favorite: boolean
+          id: string
+          image_url: string | null
+          media_type: string
+          queued: boolean
+          review: string
+          score_10: number | null
+          source: string
+          title: string
+          updated_at: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          consumed?: boolean
+          creator?: string | null
+          dismissed?: boolean
+          external_id: string
+          favorite?: boolean
+          id?: string
+          image_url?: string | null
+          media_type: string
+          queued?: boolean
+          review?: string
+          score_10?: number | null
+          source: string
+          title: string
+          updated_at?: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          consumed?: boolean
+          creator?: string | null
+          dismissed?: boolean
+          external_id?: string
+          favorite?: boolean
+          id?: string
+          image_url?: string | null
+          media_type?: string
+          queued?: boolean
+          review?: string
+          score_10?: number | null
+          source?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cultural_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cultural_events: {
+        Row: {
+          address: string | null
+          city: string
+          community: boolean
+          created_by: string | null
+          currency: string
+          description: string
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          interest: string
+          neighborhood: string | null
+          price: number | null
+          source_name: string
+          source_url: string
+          starts_at: string
+          title: string
+          updated_at: string
+          venue: string
+          verified: boolean
+        }
+        Insert: {
+          address?: string | null
+          city: string
+          community?: boolean
+          created_by?: string | null
+          currency?: string
+          description?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          interest: string
+          neighborhood?: string | null
+          price?: number | null
+          source_name: string
+          source_url: string
+          starts_at: string
+          title: string
+          updated_at?: string
+          venue: string
+          verified?: boolean
+        }
+        Update: {
+          address?: string | null
+          city?: string
+          community?: boolean
+          created_by?: string | null
+          currency?: string
+          description?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          interest?: string
+          neighborhood?: string | null
+          price?: number | null
+          source_name?: string
+          source_url?: string
+          starts_at?: string
+          title?: string
+          updated_at?: string
+          venue?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cultural_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      culture_cache: {
+        Row: {
+          expires_at: string
+          key: string
+          payload: Json
+        }
+        Insert: {
+          expires_at: string
+          key: string
+          payload: Json
+        }
+        Update: {
+          expires_at?: string
+          key?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
+      event_attendance: {
+        Row: {
+          event_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          status: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendance_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "cultural_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_attendance_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_reports: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_reports_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "cultural_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -535,8 +805,12 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string
+          city: string
+          city_configured: boolean
           created_at: string
+          cultural_top_five: Json
           display_name: string
+          event_interests: string[]
           id: string
           rating_style: string
           top_five: Json
@@ -546,8 +820,12 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string
+          city?: string
+          city_configured?: boolean
           created_at?: string
+          cultural_top_five?: Json
           display_name?: string
+          event_interests?: string[]
           id: string
           rating_style?: string
           top_five?: Json
@@ -557,8 +835,12 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string
+          city?: string
+          city_configured?: boolean
           created_at?: string
+          cultural_top_five?: Json
           display_name?: string
+          event_interests?: string[]
           id?: string
           rating_style?: string
           top_five?: Json
