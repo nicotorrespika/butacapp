@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Betty inside existing lists uses their movies, ratings and critiques; live recommendation verified
+- [ ] Enrich Betty and movie pages with cited criticism, verified ratings, Criterion confirmation and related books; cache movie research for several days, tolerate independent source failures, verify suggested titles with TMDB
+- [ ] Configure valid OMDb credentials and backend web-search source; explain how to obtain OMDb key
+
 - [x] Argentine localization: es-AR/AR TMDB, Argentine cinema priority and home collection, viewing providers in Argentina
 - [x] Add Sorprendeme on Inicio and swipe/button discovery with filters, watched/queued/passed exclusions and undo (pointer handlers verified; native touch swipe remains unverified)
 - [x] Optional popcorn ratings preference in profile (saved after reload)
