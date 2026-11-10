@@ -2,18 +2,35 @@
 
 ## Qué cambia
 - Renombrar la app a **BUTACAPP**, conservando la estética oscura, silenciosa y minimalista, las listas existentes y las notas de 1–10.
-- Incorporar cinco pestañas: **Inicio, Buscar, Listas, Amigos, Perfil**. El nombre de la barra superior siempre vuelve al inicio.
+- Incorporar solo tres botones inferiores grandes, con ícono y texto: **Inicio, Buscar, Perfil**. No agregar otros botones fijos. El logo BUTACAPP siempre vuelve al inicio.
+- Listas y amigos se acceden desde Inicio y Perfil. Todas las pantallas internas tienen un botón visible **Atrás**.
 - Mantener las funciones actuales de búsqueda, colaboración, críticas y recomendaciones con IA.
 
 ## Inicio
 - Sin sesión: mosaico denso de pósters, oscurecido para que BUTACAPP, una frase breve y los botones **Entrar / Crear cuenta** sean legibles.
 - Pósters de películas populares y mejor valoradas de TMDB, con movimiento muy lento y desactivado cuando la persona prefiera menos animaciones.
-- Con sesión: actividad de amigos y accesos a las listas propias, con estados vacíos cuidados.
+- Con sesión: collage de bienvenida, accesos rápidos a mis listas y el feed **En qué andan** debajo.
+
+## Feed «En qué andan»
+- Lista vertical de actividad de amigos, de más reciente a más antigua, con carga automática al llegar al final y tirar para refrescar; ofrecer también un control visible de actualización.
+- Filas compactas sin tarjetas ni sombras: avatar, usuario y tiempo; póster pequeño siempre en el mismo lado; separación con espacio y una línea muy tenue.
+- Actividades: vio y puntuó, reseñó con extracto y **Ver más**, creó una lista con 3–4 mini pósters, agregó una película y comentó en película o lista.
+- Título de película en serif y enlaces a la ficha; nombre enlazado al perfil del amigo.
+- Likes y respuestas con corazón/comentario acompañados de texto, respetando el pedido de controles claros. Acento solo en estrellas y likes activos.
+- Filtros **Todo / Solo vistas y notas**.
+- Sin amigos: mensaje breve y botón grande **Buscar amigos**, no un feed vacío.
+
+## Uso simple
+- Una sola acción principal destacada por pantalla; el resto discreto, sin menús escondidos.
+- Botones grandes con ícono y texto; ninguna acción depende de entender un ícono solo o descubrir un gesto.
+- Flujos frecuentes de agregar o marcar una película en no más de dos toques desde su selección.
+- Confirmaciones cortas con **Deshacer** para cambios reversibles, estados vacíos con una acción clara y errores amables que indiquen qué hacer.
+- Al crear la cuenta, pedir solo nombre de usuario como dato de perfil; luego ofrecer Top 5 sin obligar. Mantener email/contraseña o Google como credenciales de acceso.
 
 ## Perfiles y amigos
 - Ampliar los perfiles actuales con nombre de usuario único, nombre, bio y foto personalizable.
 - Elegir y reordenar hasta cinco películas destacadas, con controles táctiles accesibles.
-- Mostrar Favoritas, Listas, Reseñas, Vistas y Amigos, junto con estadísticas de películas vistas, promedio de notas y géneros más vistos.
+- Mostrar Listas, Favoritas, Reseñas, Vistas y Amigos, junto con estadísticas de películas vistas, promedio de notas y géneros más vistos. Desde Perfil se puede crear una lista con **+ Nueva lista** y agregar amigos.
 - Buscar personas por nombre o usuario, enviar solicitudes, aceptarlas o rechazarlas y ver perfiles de amigos.
 - Permitir comentarios en el perfil de amigos y en reseñas y listas, conservando los comentarios actuales de películas.
 
@@ -36,6 +53,7 @@
 - Probar solicitudes entre dos cuentas, aceptación, invitación a una lista y lectura de actividad.
 - Agregar pruebas de acceso para listas privadas, de amigos y públicas, y comprobar que ver no permita editar.
 - Verificar persistencia después de recargar y conservar las pruebas actuales de notas, búsqueda y recomendaciones.
+- Verificar paginación y refresco del feed, likes y respuestas, enlaces a perfiles/fichas, filtros y estado sin amigos.
 
 ## Limitación actual
 TMDB y OMDb rechazaron las claves guardadas. La nueva estructura social se puede implementar, pero el mosaico real, las fichas, las filmografías y los géneros necesitan una clave TMDB válida; no se presentarán datos inventados como reales.
