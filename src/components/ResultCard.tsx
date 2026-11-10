@@ -64,6 +64,7 @@ export function ResultCard({
         </Button>
       </div>
       <div className="mt-2 px-0.5">
+        {result.kindLabel==="Cine argentino"&&<p className="mb-1 text-[10px] uppercase text-primary">Cine argentino</p>}
         <h3 className="line-clamp-2 font-display text-lg leading-snug text-foreground">
           {onOpen ? (
             <Button variant="ghost" type="button" onClick={() => onOpen(result)} className="h-auto min-h-11 justify-start whitespace-normal rounded-none p-0 text-left font-display text-lg font-normal hover:bg-transparent">

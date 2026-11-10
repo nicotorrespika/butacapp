@@ -151,15 +151,17 @@ export async function searchTmdb(
     results.slice(0, 8).map(async (r) => {
       if (r.creator || !r.externalId.startsWith("movie:")) return;
       try {
-        const c = await tmdb<{ crew: { job: string; name: string }[] }>(
-          `/movie/${r.externalId.split(":")[1]}/credits`,
+        const c = await tmdb<{ production_countries:{iso_3166_1:string}[];credits:{crew: { job: string; name: string }[]} }>(
+          `/movie/${r.externalId.split(":")[1]}`,{append_to_response:"credits"},
         );
-        r.creator = c.crew.find((p) => p.job === "Director")?.name ?? null;
+        r.creator = c.credits.crew.find((p) => p.job === "Director")?.name ?? null;
+        if(c.production_countries.some(p=>p.iso_3166_1==="AR"))r.kindLabel="Cine argentino";
       } catch {
         /* non-critical */
       }
     }),
   );
+  results.sort((a,b)=>Number(b.kindLabel==="Cine argentino")-Number(a.kindLabel==="Cine argentino"));
   return { results, people };
 }
 
