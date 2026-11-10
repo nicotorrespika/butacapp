@@ -1,0 +1,18 @@
+CREATE TABLE public.direct_messages (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), sender_id uuid NOT NULL REFERENCES public.profiles(id), recipient_id uuid NOT NULL REFERENCES public.profiles(id), body text NOT NULL DEFAULT '', shared_url text, shared_title text, read_at timestamptz, created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT,INSERT,UPDATE ON public.direct_messages TO authenticated;
+GRANT ALL ON public.direct_messages TO service_role;
+ALTER TABLE public.direct_messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY messages_read ON public.direct_messages FOR SELECT TO authenticated USING (auth.uid() IN (sender_id,recipient_id));
+CREATE POLICY messages_send ON public.direct_messages FOR INSERT TO authenticated WITH CHECK (auth.uid()=sender_id AND sender_id<>recipient_id AND public.are_friends(sender_id,recipient_id));
+CREATE POLICY messages_received_read ON public.direct_messages FOR UPDATE TO authenticated USING (auth.uid()=recipient_id) WITH CHECK (auth.uid()=recipient_id);
+CREATE FUNCTION public.protect_message_update() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN IF NEW.sender_id IS DISTINCT FROM OLD.sender_id OR NEW.recipient_id IS DISTINCT FROM OLD.recipient_id OR NEW.body IS DISTINCT FROM OLD.body OR NEW.shared_url IS DISTINCT FROM OLD.shared_url OR NEW.shared_title IS DISTINCT FROM OLD.shared_title OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN RAISE EXCEPTION 'Only read state can be updated'; END IF; RETURN NEW; END $$;
+CREATE TRIGGER message_read_only BEFORE UPDATE ON public.direct_messages FOR EACH ROW EXECUTE FUNCTION public.protect_message_update();
+CREATE TABLE public.user_notifications (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL REFERENCES public.profiles(id), actor_id uuid NOT NULL REFERENCES public.profiles(id), title text NOT NULL, target_url text, read_at timestamptz, created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT,UPDATE ON public.user_notifications TO authenticated;
+GRANT ALL ON public.user_notifications TO service_role;
+ALTER TABLE public.user_notifications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY notices_read ON public.user_notifications FOR SELECT TO authenticated USING(auth.uid()=user_id);
+CREATE POLICY notices_mark ON public.user_notifications FOR UPDATE TO authenticated USING(auth.uid()=user_id) WITH CHECK(auth.uid()=user_id);
+ALTER PUBLICATION supabase_realtime ADD TABLE public.direct_messages,public.user_notifications;
+CREATE FUNCTION public.notify_friend_request() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN IF NEW.status='pending' THEN INSERT INTO public.user_notifications(user_id,actor_id,title,target_url) VALUES(NEW.receiver_id,NEW.sender_id,'Te mandó una solicitud de amistad','/avisos'); END IF; RETURN NEW; END $$;
+CREATE TRIGGER friendship_notice AFTER INSERT ON public.friendships FOR EACH ROW EXECUTE FUNCTION public.notify_friend_request();

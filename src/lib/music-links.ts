@@ -1,0 +1,1 @@
+export function musicSearchLinks(title:string,artist:string|null){const q=encodeURIComponent([title,artist].filter(Boolean).join(" "));return {spotify:`https://open.spotify.com/search/${q}`,apple:`https://music.apple.com/ar/search?term=${q}`,youtube:`https://music.youtube.com/search?q=${q}`,deezer:`https://www.deezer.com/search/${q}`};}

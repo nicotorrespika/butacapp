@@ -191,6 +191,39 @@ export type Database = {
           },
         ]
       }
+      cinema_venues: {
+        Row: {
+          data_source: string
+          enabled: boolean
+          id: string
+          kind: string
+          name: string
+          neighborhood: string | null
+          official_url: string
+          updated_at: string
+        }
+        Insert: {
+          data_source?: string
+          enabled?: boolean
+          id?: string
+          kind?: string
+          name: string
+          neighborhood?: string | null
+          official_url: string
+          updated_at?: string
+        }
+        Update: {
+          data_source?: string
+          enabled?: boolean
+          id?: string
+          kind?: string
+          name?: string
+          neighborhood?: string | null
+          official_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           body: string
@@ -336,6 +369,7 @@ export type Database = {
       cultural_events: {
         Row: {
           address: string | null
+          cinema_section: string | null
           city: string
           community: boolean
           created_by: string | null
@@ -343,6 +377,7 @@ export type Database = {
           description: string
           ends_at: string | null
           id: string
+          image_credit: string | null
           image_url: string | null
           interest: string
           neighborhood: string | null
@@ -357,6 +392,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          cinema_section?: string | null
           city: string
           community?: boolean
           created_by?: string | null
@@ -364,6 +400,7 @@ export type Database = {
           description?: string
           ends_at?: string | null
           id?: string
+          image_credit?: string | null
           image_url?: string | null
           interest: string
           neighborhood?: string | null
@@ -378,6 +415,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          cinema_section?: string | null
           city?: string
           community?: boolean
           created_by?: string | null
@@ -385,6 +423,7 @@ export type Database = {
           description?: string
           ends_at?: string | null
           id?: string
+          image_credit?: string | null
           image_url?: string | null
           interest?: string
           neighborhood?: string | null
@@ -588,6 +627,54 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      direct_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+          shared_title: string | null
+          shared_url: string | null
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+          shared_title?: string | null
+          shared_url?: string | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+          shared_title?: string | null
+          shared_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "direct_messages_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "direct_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       event_attendance: {
         Row: {
@@ -1130,6 +1217,51 @@ export type Database = {
           },
           {
             foreignKeyName: "social_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notifications: {
+        Row: {
+          actor_id: string
+          created_at: string
+          id: string
+          read_at: string | null
+          target_url: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          target_url?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          target_url?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

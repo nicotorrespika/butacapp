@@ -13,9 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedAvisosRouteImport } from './routes/_authenticated/avisos'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
+import { Route as AuthenticatedBettySearchIdRouteImport } from './routes/_authenticated/betty.$searchId'
 import { Route as AuthenticatedCultureCultureIdRouteImport } from './routes/_authenticated/culture.$cultureId'
 import { Route as AuthenticatedEventEventIdRouteImport } from './routes/_authenticated/event.$eventId'
 import { Route as AuthenticatedInviteTokenRouteImport } from './routes/_authenticated/invite.$token'
@@ -45,6 +47,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAvisosRoute = AuthenticatedAvisosRouteImport.update({
+  id: '/avisos',
+  path: '/avisos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
   id: '/friends',
   path: '/friends',
@@ -60,6 +67,12 @@ const AuthenticatedSearchRoute = AuthenticatedSearchRouteImport.update({
   path: '/search',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedBettySearchIdRoute =
+  AuthenticatedBettySearchIdRouteImport.update({
+    id: '/betty/$searchId',
+    path: '/betty/$searchId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedCultureCultureIdRoute =
   AuthenticatedCultureCultureIdRouteImport.update({
     id: '/culture/$cultureId',
@@ -117,9 +130,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/avisos': typeof AuthenticatedAvisosRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
   '/culture/$cultureId': typeof AuthenticatedCultureCultureIdRoute
   '/event/$eventId': typeof AuthenticatedEventEventIdRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
@@ -134,9 +149,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/avisos': typeof AuthenticatedAvisosRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
+  '/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
   '/culture/$cultureId': typeof AuthenticatedCultureCultureIdRoute
   '/event/$eventId': typeof AuthenticatedEventEventIdRoute
   '/invite/$token': typeof AuthenticatedInviteTokenRoute
@@ -153,9 +170,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/avisos': typeof AuthenticatedAvisosRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
+  '/_authenticated/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
   '/_authenticated/culture/$cultureId': typeof AuthenticatedCultureCultureIdRoute
   '/_authenticated/event/$eventId': typeof AuthenticatedEventEventIdRoute
   '/_authenticated/invite/$token': typeof AuthenticatedInviteTokenRoute
@@ -172,9 +191,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/avisos'
     | '/friends'
     | '/profile'
     | '/search'
+    | '/betty/$searchId'
     | '/culture/$cultureId'
     | '/event/$eventId'
     | '/invite/$token'
@@ -189,9 +210,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/avisos'
     | '/friends'
     | '/profile'
     | '/search'
+    | '/betty/$searchId'
     | '/culture/$cultureId'
     | '/event/$eventId'
     | '/invite/$token'
@@ -207,9 +230,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/reset-password'
+    | '/_authenticated/avisos'
     | '/_authenticated/friends'
     | '/_authenticated/profile'
     | '/_authenticated/search'
+    | '/_authenticated/betty/$searchId'
     | '/_authenticated/culture/$cultureId'
     | '/_authenticated/event/$eventId'
     | '/_authenticated/invite/$token'
@@ -259,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/avisos': {
+      id: '/_authenticated/avisos'
+      path: '/avisos'
+      fullPath: '/avisos'
+      preLoaderRoute: typeof AuthenticatedAvisosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/friends': {
       id: '/_authenticated/friends'
       path: '/friends'
@@ -278,6 +310,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof AuthenticatedSearchRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/betty/$searchId': {
+      id: '/_authenticated/betty/$searchId'
+      path: '/betty/$searchId'
+      fullPath: '/betty/$searchId'
+      preLoaderRoute: typeof AuthenticatedBettySearchIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/culture/$cultureId': {
@@ -347,9 +386,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAvisosRoute: typeof AuthenticatedAvisosRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
+  AuthenticatedBettySearchIdRoute: typeof AuthenticatedBettySearchIdRoute
   AuthenticatedCultureCultureIdRoute: typeof AuthenticatedCultureCultureIdRoute
   AuthenticatedEventEventIdRoute: typeof AuthenticatedEventEventIdRoute
   AuthenticatedInviteTokenRoute: typeof AuthenticatedInviteTokenRoute
@@ -361,9 +402,11 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAvisosRoute: AuthenticatedAvisosRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
+  AuthenticatedBettySearchIdRoute: AuthenticatedBettySearchIdRoute,
   AuthenticatedCultureCultureIdRoute: AuthenticatedCultureCultureIdRoute,
   AuthenticatedEventEventIdRoute: AuthenticatedEventEventIdRoute,
   AuthenticatedInviteTokenRoute: AuthenticatedInviteTokenRoute,

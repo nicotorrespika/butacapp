@@ -1,0 +1,3 @@
+import {it,expect} from "vitest";
+import {musicSearchLinks} from "./music-links";
+it("opens a title and artist search, never fabricates a Spotify content ID",()=>{const links=musicSearchLinks("OK Computer","Radiohead");expect(decodeURIComponent(new URL(links.spotify).pathname)).toBe("/search/OK Computer Radiohead");expect(new URL(links.apple).searchParams.get("term")).toBe("OK Computer Radiohead");});

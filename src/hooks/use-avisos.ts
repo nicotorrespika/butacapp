@@ -1,0 +1,5 @@
+import {useEffect} from "react";
+import {useQuery,useQueryClient} from "@tanstack/react-query";
+import {supabase} from "@/integrations/supabase/client";
+import {useAuth} from "./use-auth";
+export function useAvisos(){const {user}=useAuth();const qc=useQueryClient();useEffect(()=>{if(!user)return;const channel=supabase.channel(`avisos-${crypto.randomUUID()}`).on("postgres_changes",{event:"*",schema:"public",table:"direct_messages",filter:`recipient_id=eq.${user.id}`},()=>qc.invalidateQueries({queryKey:["avisos"]})).on("postgres_changes",{event:"*",schema:"public",table:"user_notifications",filter:`user_id=eq.${user.id}`},()=>qc.invalidateQueries({queryKey:["avisos"]})).subscribe();return ()=>{void supabase.removeChannel(channel);};},[user?.id,qc]);return useQuery({queryKey:["avisos","count",user?.id],enabled:!!user,queryFn:async()=>{const [n,m]=await Promise.all([supabase.from("user_notifications").select("id",{count:"exact",head:true}).eq("user_id",user?.id ?? "").is("read_at",null),supabase.from("direct_messages").select("id",{count:"exact",head:true}).eq("recipient_id",user?.id ?? "").is("read_at",null)]);return (n.count ?? 0)+(m.count ?? 0);}});}

@@ -1,0 +1,4 @@
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+/** Per-session view state, retained in the shared query cache and hydrated from storage. */
+export function useScreenState<T>(key:string,initial:T):[T,Dispatch<SetStateAction<T>>]{const qc=useQueryClient();const queryKey=["screen-state",key];const [value,setValue]=useState<T>(()=>qc.getQueryData<T>(queryKey) ?? initial);const [ready,setReady]=useState(false);useEffect(()=>{try{const stored=sessionStorage.getItem(`butacapp:${key}`);if(stored&&!qc.getQueryData(queryKey))setValue(JSON.parse(stored));}catch{/* unavailable storage */}setReady(true);},[key]);useEffect(()=>{if(!ready)return;qc.setQueryData(queryKey,value);try{sessionStorage.setItem(`butacapp:${key}`,JSON.stringify(value));}catch{/* storage full */}},[key,value,ready,qc]);return [value,setValue];}

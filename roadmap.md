@@ -1,9 +1,15 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Read and implement uploaded Spotify integration requirements
-- [ ] Movie criticism: real IMDb/Rotten Tomatoes/Metacritic links and Argentine media short cited summaries; Betty recounts them as chisme
-- [ ] Show each friend movie poster beside its feed title
+- [x] Social navigation: four tabs, Avisos/Mensajes/Amigos, private friend messaging, sharing and count
+- [ ] Social completion: message requests, reactions/typing, grouped content notifications, block/mute/report, QR and mutual-friend suggestions; remaining implementation not verified
+- [x] Saved Betty result routes and history; cached/session screen state; app/browser Back verified
+- [ ] Verify native phone back gesture and fresh AI round trip plus scroll equality; no native-device session
+- [x] Event images/fallbacks, private community photo upload, stored cinema venues, cinema sections and cached commercial TMDB listings
+- [ ] Confirm new scheduled cinema research results across every venue; Village/current chain URL pending confirmation
+- [x] Spotify: user chose title/artist search links instead of direct catalog/Odesli integration; stage two stays unimplemented pending confirmation
+- [x] Real cited movie criticism and Betty enrichment; Stalker source links verified, scores omitted unless explicitly found
+- [x] Show each friend movie poster beside its feed title
 
 
 ## Cultural expansion requested November 10, 2026
