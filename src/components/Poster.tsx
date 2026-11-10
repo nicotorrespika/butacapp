@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Disc3, Film, Palette } from "lucide-react";
+import { BookOpen, Disc3, Film, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MediaType } from "@/lib/media";
 
@@ -7,10 +7,11 @@ import type { MediaType } from "@/lib/media";
 export const ASPECT: Record<MediaType, string> = {
   movie: "aspect-[2/3]",
   music: "aspect-square",
+  book: "aspect-[2/3]",
   art: "aspect-[4/5]",
 };
 
-const ICON = { movie: Film, music: Disc3, art: Palette };
+const ICON = { movie: Film, music: Disc3, book: BookOpen, art: Palette };
 
 interface PosterProps {
   src: string | null | undefined;

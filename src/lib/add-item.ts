@@ -27,6 +27,7 @@ export async function addResultToList(result: SearchResult, listId: string, user
 export function filterForListKind(kind: ListKind): SearchFilter {
   if (kind === "movies") return "movie";
   if (kind === "music") return "music";
+  if (kind === "books") return "book";
   if (kind === "art") return "art";
   return "all";
 }

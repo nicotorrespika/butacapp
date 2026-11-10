@@ -3,8 +3,8 @@
  * Browser-safe (no server imports).
  */
 
-export type MediaType = "movie" | "music" | "art";
-export type ListKind = "movies" | "music" | "art" | "mixed";
+export type MediaType = "movie" | "music" | "book" | "art";
+export type ListKind = "movies" | "music" | "books" | "art" | "mixed";
 export type SearchFilter = "all" | MediaType;
 
 /** A normalized search result coming from any external provider. */
@@ -60,6 +60,7 @@ export interface SearchResponse {
   people: PersonResult[];
   movie: SearchResult[];
   music: SearchResult[];
+  book: SearchResult[];
   art: SearchResult[];
   /** Which provider served movies (tmdb when the key is configured). */
   movieProvider: "tmdb" | "basic";
@@ -69,13 +70,15 @@ export interface SearchResponse {
 export const LIST_KIND_LABEL: Record<ListKind, string> = {
   movies: "Películas",
   music: "Música",
+  books: "Libros",
   art: "Arte",
   mixed: "Mixta",
 };
 
 export const MEDIA_LABEL: Record<MediaType, string> = {
-  movie: "Películas",
+  movie: "Cine",
   music: "Música",
+  book: "Libros",
   art: "Arte",
 };
 
@@ -83,6 +86,7 @@ export const MEDIA_LABEL: Record<MediaType, string> = {
 export const DONE_LABEL: Record<MediaType, { done: string; todo: string }> = {
   movie: { done: "Visto", todo: "Marcar visto" },
   music: { done: "Escuchado", todo: "Marcar escuchado" },
+  book: { done: "Leído", todo: "Lo leí" },
   art: { done: "Visitado", todo: "Marcar visitado" },
 };
 
@@ -92,6 +96,7 @@ export function listAccepts(kind: ListKind, media: MediaType): boolean {
   return (
     (kind === "movies" && media === "movie") ||
     (kind === "music" && media === "music") ||
+    (kind === "books" && media === "book") ||
     (kind === "art" && media === "art")
   );
 }
