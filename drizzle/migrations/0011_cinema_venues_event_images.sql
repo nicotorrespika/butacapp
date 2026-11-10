@@ -1,0 +1,10 @@
+CREATE TABLE public.cinema_venues (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), name text NOT NULL UNIQUE, neighborhood text, official_url text NOT NULL, kind text NOT NULL DEFAULT 'independent', data_source text NOT NULL DEFAULT 'official_search', enabled boolean NOT NULL DEFAULT true, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT ON public.cinema_venues TO authenticated;
+GRANT ALL ON public.cinema_venues TO service_role;
+ALTER TABLE public.cinema_venues ENABLE ROW LEVEL SECURITY;
+CREATE POLICY cinema_venues_read ON public.cinema_venues FOR SELECT TO authenticated USING (true);
+ALTER TABLE public.cultural_events ADD COLUMN image_credit text;
+ALTER TABLE public.cultural_events ADD COLUMN cinema_section text DEFAULT 'independent';
+CREATE POLICY event_photos_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'event-photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY event_photos_delete ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'event-photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY event_photos_read ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'event-photos');

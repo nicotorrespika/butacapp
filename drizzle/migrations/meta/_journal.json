@@ -78,6 +78,13 @@
       "when": 1794329596716,
       "tag": "0010_culture_job_lease",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794331986271,
+      "tag": "0011_cinema_venues_event_images",
+      "breakpoints": true
     }
   ]
 }

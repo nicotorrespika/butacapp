@@ -191,6 +191,39 @@ export type Database = {
           },
         ]
       }
+      cinema_venues: {
+        Row: {
+          data_source: string
+          enabled: boolean
+          id: string
+          kind: string
+          name: string
+          neighborhood: string | null
+          official_url: string
+          updated_at: string
+        }
+        Insert: {
+          data_source?: string
+          enabled?: boolean
+          id?: string
+          kind?: string
+          name: string
+          neighborhood?: string | null
+          official_url: string
+          updated_at?: string
+        }
+        Update: {
+          data_source?: string
+          enabled?: boolean
+          id?: string
+          kind?: string
+          name?: string
+          neighborhood?: string | null
+          official_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           body: string
@@ -336,6 +369,7 @@ export type Database = {
       cultural_events: {
         Row: {
           address: string | null
+          cinema_section: string | null
           city: string
           community: boolean
           created_by: string | null
@@ -343,6 +377,7 @@ export type Database = {
           description: string
           ends_at: string | null
           id: string
+          image_credit: string | null
           image_url: string | null
           interest: string
           neighborhood: string | null
@@ -357,6 +392,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          cinema_section?: string | null
           city: string
           community?: boolean
           created_by?: string | null
@@ -364,6 +400,7 @@ export type Database = {
           description?: string
           ends_at?: string | null
           id?: string
+          image_credit?: string | null
           image_url?: string | null
           interest: string
           neighborhood?: string | null
@@ -378,6 +415,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          cinema_section?: string | null
           city?: string
           community?: boolean
           created_by?: string | null
@@ -385,6 +423,7 @@ export type Database = {
           description?: string
           ends_at?: string | null
           id?: string
+          image_credit?: string | null
           image_url?: string | null
           interest?: string
           neighborhood?: string | null
