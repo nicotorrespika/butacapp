@@ -42,8 +42,8 @@ export function MediaRow({
   if (!items.length) return null;
   return (
     <section className="animate-rise">
-      <div className="mb-3 flex items-baseline justify-between gap-3 px-4">
-        <h2 className="font-display text-2xl leading-tight">{title}</h2>
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3 px-4">
+        <h2 className="min-w-0 break-words font-display text-2xl leading-tight">{title}</h2>
         {action}
       </div>
       <div className="flex snap-x gap-3 overflow-x-auto px-4 pb-2 scrollbar-none">
