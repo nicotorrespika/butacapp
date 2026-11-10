@@ -109,7 +109,7 @@ function SearchPage() {
   return (
     <div>
       {/* Sticky search header */}
-      <header className="sticky top-0 z-30 bg-background/85 px-4 pb-3 pt-[max(env(safe-area-inset-top),1rem)] backdrop-blur-xl">
+      <header className="sticky top-0 z-30 bg-background px-4 pb-3 pt-[max(env(safe-area-inset-top),2rem)]">
         {targetList ? (
           <div className="mb-3 flex items-center gap-2">
             <Button asChild variant="ghost" size="icon" aria-label="Volver a la lista">
@@ -138,40 +138,40 @@ function SearchPage() {
             onChange={(e) => setQ(e.target.value)}
             placeholder="Título, autor, año…"
             aria-label="Buscar películas, música y arte"
-            className="h-12 w-full rounded-full border border-input bg-secondary pl-12 pr-12 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+            className="h-12 w-full rounded-sm border border-input bg-transparent pl-12 pr-12 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
           />
           {(query.isFetching || typing) && q.length >= 2 ? (
             <Loader2 className="absolute right-4 top-1/2 size-5 -translate-y-1/2 animate-spin text-primary" />
           ) : (
             text && (
-              <button
+              <Button variant="ghost" size="icon"
                 type="button"
                 aria-label="Borrar búsqueda"
                 onClick={() => setQ("")}
                 className="absolute right-0.5 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center text-muted-foreground"
               >
                 <X className="size-5" />
-              </button>
+              </Button>
             )
           )}
         </div>
         <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 scrollbar-none" role="tablist">
           {CHIPS.map((c) => (
-            <button
+            <Button variant="ghost"
               key={c.id}
               type="button"
               role="tab"
               aria-selected={filter === c.id}
               onClick={() => setFilter(c.id)}
               className={cn(
-                "h-11 shrink-0 rounded-full border px-5 text-sm font-semibold transition-all duration-200 ease-cine",
+                "h-11 shrink-0 rounded-none border-b px-4 text-sm font-medium transition-colors",
                 filter === c.id
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-transparent text-muted-foreground",
+                  ? "border-primary text-foreground"
+                  : "border-transparent text-muted-foreground",
               )}
             >
               {c.label}
-            </button>
+            </Button>
           ))}
         </div>
       </header>
@@ -182,14 +182,14 @@ function SearchPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Probá con</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {SUGGESTIONS.map((s) => (
-                <button
+                <Button variant="ghost"
                   key={s}
                   type="button"
                   onClick={() => setQ(s)}
-                  className="h-11 rounded-full border border-border bg-secondary/60 px-4 font-display text-lg italic text-foreground"
+                  className="h-11 rounded-sm px-3 font-display text-lg font-normal text-muted-foreground"
                 >
                   {s}
-                </button>
+                </Button>
               ))}
             </div>
             <p className="mt-8 max-w-sm text-sm text-muted-foreground">
