@@ -1082,6 +1082,63 @@ export type Database = {
           },
         ]
       }
+      movie_soundtracks: {
+        Row: {
+          artist: string | null
+          confidence: string
+          created_at: string
+          external_id: string
+          hidden: boolean
+          id: string
+          image_url: string | null
+          kind: string
+          movie_id: string
+          movie_poster: string | null
+          movie_title: string
+          source: string
+          source_url: string | null
+          submitted_by: string | null
+          title: string
+          year: number | null
+        }
+        Insert: {
+          artist?: string | null
+          confidence?: string
+          created_at?: string
+          external_id: string
+          hidden?: boolean
+          id?: string
+          image_url?: string | null
+          kind: string
+          movie_id: string
+          movie_poster?: string | null
+          movie_title: string
+          source: string
+          source_url?: string | null
+          submitted_by?: string | null
+          title: string
+          year?: number | null
+        }
+        Update: {
+          artist?: string | null
+          confidence?: string
+          created_at?: string
+          external_id?: string
+          hidden?: boolean
+          id?: string
+          image_url?: string | null
+          kind?: string
+          movie_id?: string
+          movie_poster?: string | null
+          movie_title?: string
+          source?: string
+          source_url?: string | null
+          submitted_by?: string | null
+          title?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1292,6 +1349,53 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      soundtrack_reports: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string
+          soundtrack_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason: string
+          soundtrack_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string
+          soundtrack_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "soundtrack_reports_soundtrack_id_fkey"
+            columns: ["soundtrack_id"]
+            isOneToOne: false
+            referencedRelation: "movie_soundtracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      soundtrack_updates: {
+        Row: {
+          movie_id: string
+          updated_at: string
+        }
+        Insert: {
+          movie_id: string
+          updated_at?: string
+        }
+        Update: {
+          movie_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_notifications: {
         Row: {
