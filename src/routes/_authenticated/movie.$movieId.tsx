@@ -1,5 +1,6 @@
 import {ShareButton} from "@/components/ShareButton";
 import {shareResult} from "@/lib/sharing";
+import {SimilarRecommendations} from "@/components/SimilarRecommendations";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -110,6 +111,7 @@ function MoviePage() {
         )}
       </div>
 
+      <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/></section>
       {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
       <div className="mt-10 space-y-10">
         {m.trailerKey && <MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} />}
@@ -128,7 +130,7 @@ function MoviePage() {
 
       <MovieReviews id={m.routeId}/>
       <div className="mt-8 space-y-8">
-        {m.sections.map((s) => (
+        {m.sections.filter(s=>s.id!=="recommended").map((s) => (
           <MediaRow
             key={s.id}
             title={s.title}

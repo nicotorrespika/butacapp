@@ -56,3 +56,4 @@ use the editor.
 - Cinema venue records drive official-link discovery and scheduled event research; commercial listings reuse persisted Argentine TMDB releases. Why: viewing the agenda must not trigger research or invent showtimes.
 - Private messages are participant-readable and only recipients can change read timestamps, enforced by a trigger. Why: client edits must never alter another person’s message or recipients.
 - Content sharing uses one sheet and stable public SSR summary links; narrow summary RPCs expose only explicitly public data, and chat-card triggers check both participants' access. Why: social previews must work without exposing private lists or personal history.
+- Similar recommendations are lazy, cached per work for three days, and catalog-verified; movie regional discovery uses TMDB origin filters, while cultural origin estimates are labeled. Why: recommendations must not invent works or confuse Spain with Latin America.
