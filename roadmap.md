@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Recomendaciones por búsquedas: señales privadas de consultas estables y fichas abiertas desde resultados, con actualización del orden de Para vos y respeto de pausa/borrado.
+- [x] Recomendaciones por búsquedas: consultas estables y fichas abiertas desde resultados alimentan intereses privados, reutilizan controles de pausa/borrado y el orden de Para vos; Rayuela y apertura de ficha verificados con sesión real, 14 pruebas pasan.
 - [x] Top 5 por categoría: películas, artistas/discos/canciones (MusicBrainz + iTunes) y autores/libros (Open Library), tabla top_five_entries con posiciones, selector en perfil, buscador acotado por tipo y textos por categoría; verificado agregar 5 artistas, mensaje de Top lleno y perfil
 - [x] Textos centralizados en src/lib/copy.ts (Top 5, verbos y estados por categoría); CulturalProfile y TasteEditor los usan
 - [ ] Barrido fino de textos: quedan menciones de "película/peli" solo en contextos de cine (Betty cinéfila, listas de pelis, SEO); ListRecommendations habla de pelis porque solo se muestra en listas de cine

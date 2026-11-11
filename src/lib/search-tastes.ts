@@ -7,7 +7,7 @@ export function searchTaste(query: string, filter: SearchFilter, response?: Sear
   if (title.length < 2) return null;
   const normalized = normalizeTaste(title);
   const matches = response ? [...response.movie, ...response.music, ...response.book]
-    .filter(r => normalizeTaste(r.title) === normalized || r.creator?.split(' · ').some(c => normalizeTaste(c) === normalized)) : [];
+    .filter(r => normalizeTaste(r.title) === normalized || r.creator?.split(' · ').some(c => normalizeTaste(c) === normalized)).slice(0, 1) : [];
   const people = response?.people.filter(p => normalizeTaste(p.name) === normalized) ?? [];
   return {
     k: `search:${filter}:${normalized}`,
