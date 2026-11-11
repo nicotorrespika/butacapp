@@ -8,11 +8,12 @@ import { friendsQuery } from "@/lib/social";
 import { shareUrl, whatsappUrl, type ShareContent } from "@/lib/sharing";
 import { Button, type ButtonProps } from "./ui/button";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "./ui/drawer";
+import { ConfirmDialog } from "./AppDialog";
 import { UserAvatar } from "./UserAvatar";
 
 export function ShareButton({ content, compact=false, label="Compartir", variant="ghost", icon }: { content: ShareContent; compact?: boolean; label?: string; variant?: ButtonProps["variant"]; icon?: ReactNode }) {
   const {user}=useAuth(); const qc=useQueryClient();
-  const [open,setOpen]=useState(false), [term,setTerm]=useState(""), [message,setMessage]=useState(""), [selected,setSelected]=useState<string[]>([]), [busy,setBusy]=useState(false);
+  const [open,setOpen]=useState(false), [term,setTerm]=useState(""), [message,setMessage]=useState(""), [selected,setSelected]=useState<string[]>([]), [busy,setBusy]=useState(false), [confirmPublic,setConfirmPublic]=useState(false);
   const friends=useQuery({...friendsQuery(user?.id ?? ""),enabled:open && !!user});
   const permissions=useQuery({queryKey:["share","access",content.kind,content.id,user?.id],enabled:open && !!user,queryFn:async()=>{
     const [access,publicData]=await Promise.all([supabase.rpc("share_access",{k:content.kind,cid:content.id,viewer:user?.id ?? ""}),supabase.rpc("public_share_summary",{k:content.kind,cid:content.id})]);
@@ -65,11 +66,11 @@ export function ShareButton({ content, compact=false, label="Compartir", variant
         {!people.length&&<p className="text-sm text-muted-foreground">{recipients.isLoading?"Buscando a tu gente…":"No hay amigos para enviar por acá todavía."}</p>}
         <textarea aria-label="Mensaje opcional" value={message} onChange={e=>setMessage(e.target.value)} maxLength={1000} rows={2} placeholder="Agregá un mensaje (opcional)" className="w-full border border-input bg-card p-3"/>
         <Button className="w-full" disabled={!selected.length||busy||permissions.data?.allowed!==true} onClick={send}>{busy?<Loader2 className="animate-spin"/>:<Send/>}Enviar{selected.length?` (${selected.length})`:""}</Button>
-        {locked&&<div className="border-t border-border pt-4"><p role="status" className="text-sm text-muted-foreground">{content.kind==="list"?"Esta lista es privada. Solo la ven quienes tengan acceso.":"Este contenido es privado. Solo lo ven quienes tengan acceso."}</p>{content.ownerId===user?.id&&(content.kind==="list"||content.kind==="profile")&&<Button variant="outline" className="mt-3" onClick={async()=>{
-          if(!confirm("¿Hacer público este contenido para que cualquiera con el link pueda verlo?"))return;
-          const r=content.kind==="list"?await supabase.from("lists").update({visibility:"public"}).eq("id",content.id):await supabase.from("profiles").update({share_visibility:"public"}).eq("id",content.id);
-          if(r.error)toast.error("No se pudo cambiar la visibilidad.");else{qc.invalidateQueries();toast.success("Ahora es público");}
-        }}>Cambiar a público</Button>}</div>}
+        {locked&&<div className="border-t border-border pt-4"><p role="status" className="text-sm text-muted-foreground">{content.kind==="list"?"Esta lista es privada. Solo la ven quienes tengan acceso.":"Este contenido es privado. Solo lo ven quienes tengan acceso."}</p>{content.ownerId===user?.id&&(content.kind==="list"||content.kind==="profile")&&<Button variant="outline" className="mt-3" onClick={()=>setConfirmPublic(true)}>Cambiar a público</Button>}</div>}
         <div className="grid grid-cols-3 gap-1 border-t border-border pt-4 pb-6"><Button variant="ghost" className="h-auto min-h-16 flex-col px-1" disabled={locked||permissions.isLoading} onClick={()=>external("whatsapp")}><MessageCircle/>WhatsApp</Button><Button variant="ghost" className="h-auto min-h-16 flex-col px-1" disabled={locked||permissions.isLoading} onClick={()=>external("copy")}><Copy/>Copiar link</Button><Button variant="ghost" className="h-auto min-h-16 flex-col px-1" disabled={locked||permissions.isLoading} onClick={()=>external("native")}><MoreHorizontal/>Más…</Button></div>
-      </div></DrawerContent></Drawer></>;
+      </div></DrawerContent></Drawer>
+    <ConfirmDialog open={confirmPublic} onOpenChange={setConfirmPublic} title="¿Hacer público este contenido?" description="Cualquiera con el link va a poder verlo." confirmLabel="Hacer público" onConfirm={async()=>{
+      const r=content.kind==="list"?await supabase.from("lists").update({visibility:"public"}).eq("id",content.id):await supabase.from("profiles").update({share_visibility:"public"}).eq("id",content.id);
+      if(r.error)toast.error("No se pudo cambiar la visibilidad.");else{qc.invalidateQueries();toast.success("Ahora es público");}
+    }}/></>;
 }
