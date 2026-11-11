@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Cambiar «Preguntale a Betty» por invitaciones por categoría: ver, leer y escuchar.
 - [ ] Acomodar libros y música como películas: portada compacta, acciones leído/escuchado, favorito y pendientes arriba, reseña pequeña, datos/canciones desplegables y recomendaciones por obra.
 - [x] Recomendaciones latinas por género/temática, animación conservada y relevancia antes que país; caché renovada, 9 pruebas pasan y Coraline verificada con sesión real: Soy Frankelda, La casa lobo y otras animaciones.
 - [x] Compactar encabezado, acciones, estrellas y promedios de película; títulos de cruces con la película y Reparto/Ficha técnica/Soundtrack desplegables debajo del tráiler. Rocky verificado con sesión real a 390 y 834 px, sin desborde; los tres despliegan y cierran.
