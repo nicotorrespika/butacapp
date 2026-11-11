@@ -213,7 +213,25 @@ function SearchPage() {
       </header>
 
       <div className="px-4 pt-2">
-        {q.length < 2 ? (
+        {params.top && topCopy ? (
+          q.length < 2 ? (
+            <p className="pt-6 text-sm text-muted-foreground">{topCopy.empty}. Escribí para buscar.</p>
+          ) : topQuery.isError ? (
+            <ErrorState message="El buscador no respondió." onRetry={() => topQuery.refetch()} />
+          ) : !topQuery.data ? (
+            <PosterGridSkeleton />
+          ) : !topQuery.data.length ? (
+            <EmptyState icon={<SearchX />} title="Sin resultados">
+              No encontramos {topCopy.plural} para «{q}». Probá con otra palabra.
+            </EmptyState>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
+              {topQuery.data.map((r) => (
+                <ResultCard key={resultKey(r)} {...cardProps(r)} />
+              ))}
+            </div>
+          )
+        ) : q.length < 2 ? (
           <div className="pt-6 animate-rise">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Probá con</p>
             <div className="mt-3 flex flex-wrap gap-2">
