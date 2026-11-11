@@ -82,22 +82,22 @@ function MoviePage() {
         </div>}
         <div className="relative px-4 pt-[max(env(safe-area-inset-top),0.75rem)]">
           <div className="flex flex-wrap items-center justify-between gap-2"><BackButton /><ShareButton content={shareResult(m.result)}/></div>
-          <div className="mt-10 flex flex-col items-start gap-6 sm:flex-row sm:items-end">
-            <Poster src={m.posterUrl} alt={m.title} media="movie" className="w-44 shrink-0 sm:w-48" />
+          <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] items-start gap-4 sm:items-center">
+            <Poster src={m.posterUrl} alt={m.title} media="movie" className="w-24 shrink-0 sm:w-32" />
             <div className="min-w-0 pb-1 animate-rise">
               <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
                 {m.type === "tv" ? "Serie" : "Película"}
               </p>
-              <h1 className="mt-2 break-words font-display text-5xl leading-tight text-primary">{m.title}</h1>
+              <h1 className="mt-1 break-words font-display text-3xl leading-tight text-primary sm:text-4xl">{m.title}</h1>
               {m.originalTitle && <p className="mt-1 text-xs italic text-muted-foreground">{m.originalTitle}</p>}
               {m.directors.length > 0 && <div className="mt-2"><PeopleLine people={m.directors} listId={list} /></div>}
-              <dl className="mt-5 grid grid-cols-2 gap-x-8 gap-y-4">{[["AÑO",m.year],["DURACIÓN",m.runtime?`${m.runtime} min`:null],["GÉNERO",m.genres.join(" · ")]].filter(([,value])=>value).map(([label,value])=><div key={label}><dt className="cinema-meta text-muted-foreground">{label}</dt><dd className="mt-1 text-sm">{value}</dd></div>)}</dl>
+              <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1">{[["AÑO",m.year],["DURACIÓN",m.runtime?`${m.runtime} min`:null],["GÉNERO",m.genres.join(" · ")]].filter(([,value])=>value).map(([label,value])=><div key={label} className="min-w-0"><dt className="sr-only">{label}</dt><dd className="text-xs text-muted-foreground">{value}</dd></div>)}</dl>
             </div>
           </div>
         </div>
       </header>
 
-      <section className="mt-6 px-4"><MovieActions key={m.routeId} section="controls" result={m.result} genres={m.genres} extra={m.countries} onAddPending={()=>void adder.add(m.result)}/><div className="mt-5"><Scores scores={m.scores}/></div></section>
+      <section className="mt-4 px-4"><MovieActions key={m.routeId} section="controls" result={m.result} genres={m.genres} extra={m.countries} onAddPending={()=>void adder.add(m.result)}/><div className="mt-2"><Scores scores={m.scores}/></div></section>
       <div className="mt-6 space-y-8 px-4">
 
         {(m.overview || m.genres.length > 0) && (
@@ -196,12 +196,12 @@ const SCORE_STYLE: Record<CriticScore["source"], string> = {
 
 function Scores({ scores }: { scores: CriticScore[] }) {
   const publicScore = scores.find(s => s.source === "tmdb");
-  return <section aria-label="Promedios del público y la crítica" className="max-w-2xl border-y border-border py-4">
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><h2 className="cinema-meta text-muted-foreground">Promedio del público</h2><span className="cinema-meta text-muted-foreground">{publicScore?.votes ? `${publicScore.votes.toLocaleString("es-AR")} votos · TMDB` : "TMDB"}</span></div>
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{(["tmdb","imdb","rt","metacritic"] as const).map(source => {
+  return <section aria-label="Promedios del público y la crítica" className="max-w-2xl border-y border-border py-2">
+    <div className="mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2"><h2 className="cinema-meta text-muted-foreground">Promedio del público</h2><span className="text-[10px] text-muted-foreground">{publicScore?.votes ? `${publicScore.votes.toLocaleString("es-AR")} votos` : "TMDB"}</span></div>
+    <div className="grid grid-cols-4 gap-1.5 sm:gap-2">{(["tmdb","imdb","rt","metacritic"] as const).map(source => {
       const score = scores.find(s => s.source === source);
-      const value = <><p className="cinema-meta text-muted-foreground">{source === "tmdb" ? "Público · TMDB" : source === "imdb" ? "IMDb" : source === "rt" ? "Rotten Tomatoes" : "Metacritic"}</p><p className="my-2 font-heading text-3xl text-foreground">{score?.value ?? "—"}{score && (source === "tmdb" || source === "imdb") && <span className="text-sm text-muted-foreground">/10</span>}</p>{score && (source === "tmdb" || source === "imdb") ? <StarRating value={score.percent / 10} size="sm"/> : <p className="text-xs text-muted-foreground">{score ? "Crítica" : "Sin dato disponible"}</p>}</>;
-      return score?.url ? <a key={source} href={score.url} target="_blank" rel="noreferrer" className="min-w-0 rounded-sm border border-border bg-card p-3">{value}</a> : <div key={source} className="min-w-0 rounded-sm border border-border bg-card p-3">{value}</div>;
+      const value = <><p className="flex min-h-7 items-center font-mono text-[9px] uppercase leading-tight text-muted-foreground sm:text-[10px]">{source === "tmdb" ? "Público · TMDB" : source === "imdb" ? "IMDb" : source === "rt" ? "Rotten Tomatoes" : "Metacritic"}</p><p className="mt-1 font-heading text-2xl leading-none text-foreground">{score?.value ?? "—"}{score && (source === "tmdb" || source === "imdb") && <span className="text-xs text-muted-foreground">/10</span>}</p></>;
+      return score?.url ? <a key={source} href={score.url} target="_blank" rel="noreferrer" className="min-w-0 rounded-sm border border-border bg-card px-2 py-2">{value}</a> : <div key={source} className="min-w-0 rounded-sm border border-border bg-card px-2 py-2">{value}</div>;
     })}</div>
   </section>;
 }
