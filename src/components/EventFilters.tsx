@@ -1,0 +1,17 @@
+import { useState } from "react";
+import type { ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
+import { es } from "date-fns/locale";
+import { interests } from "@/lib/culture";
+import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+
+export function EventFilters({mode,chosen,onDate,selected,onType,city,cityContent}:{mode:string;chosen:string;onDate:(mode:string,date?:string)=>void;selected:string[];onType:(types:string[])=>void;city:string;cityContent:ReactNode}) {
+ const [dateOpen,setDateOpen]=useState(false);
+ return <div className="grid grid-cols-3 border-y border-border py-1">
+  <Popover open={dateOpen} onOpenChange={setDateOpen}><PopoverTrigger asChild><Button variant="ghost" className="h-auto min-h-14 min-w-0 flex-col gap-1 px-1" aria-label="Fecha"><span className="flex items-center gap-1 text-xs">Fecha<ChevronDown className="size-3"/></span><span className="max-w-full truncate text-[10px] text-muted-foreground">{mode==="date"?chosen || "Elegir fecha":mode==="today"?"Hoy":mode==="weekend"?"Este finde":"Esta semana"}</span></Button></PopoverTrigger><PopoverContent align="start" className="w-auto max-w-[calc(100vw-2rem)] p-2 pointer-events-auto"><div className="flex flex-col">{[["today","Hoy"],["weekend","Este finde"],["week","Esta semana"]].map(([value,label])=><Button key={value} variant="ghost" className="justify-start" onClick={()=>{onDate(value ?? "week");setDateOpen(false);}}>{label}</Button>)}</div><Calendar locale={es} mode="single" selected={chosen?new Date(`${chosen}T12:00:00`):undefined} onSelect={date=>{if(!date)return;onDate("date",`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`);setDateOpen(false);}} className="pointer-events-auto"/></PopoverContent></Popover>
+  <Popover><PopoverTrigger asChild><Button variant="ghost" className="h-auto min-h-14 min-w-0 flex-col gap-1 px-1" aria-label="Tipo de evento"><span className="flex items-center gap-1 text-xs">Tipo de evento<ChevronDown className="size-3"/></span><span className="max-w-full truncate text-[10px] text-muted-foreground">{selected.length?selected.map(key=>interests[key as keyof typeof interests]).join(", "):"Todos"}</span></Button></PopoverTrigger><PopoverContent className="max-w-[calc(100vw-2rem)] p-2"><Button variant="ghost" className="w-full justify-start" aria-pressed={!selected.length} onClick={()=>onType([])}>Todos</Button>{Object.entries(interests).map(([key,label])=><Button key={key} variant="ghost" className="w-full justify-between" aria-pressed={selected.includes(key)} onClick={()=>onType(selected.includes(key)?selected.filter(v=>v!==key):[...selected,key])}>{label}<span aria-hidden>{selected.includes(key)?"✓":""}</span></Button>)}</PopoverContent></Popover>
+  <Popover><PopoverTrigger asChild><Button variant="ghost" className="h-auto min-h-14 min-w-0 flex-col gap-1 px-1" aria-label="Ciudad"><span className="flex items-center gap-1 text-xs">Ciudad<ChevronDown className="size-3"/></span><span className="max-w-full truncate text-[10px] text-muted-foreground">{city}</span></Button></PopoverTrigger><PopoverContent align="end" className="max-h-[70dvh] max-w-[calc(100vw-2rem)] overflow-y-auto">{cityContent}</PopoverContent></Popover>
+ </div>;
+}

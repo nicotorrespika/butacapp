@@ -51,6 +51,7 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
+  --color-event-free: var(--event-free);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -100,6 +101,7 @@
   --destructive: var(--foreground);
   --destructive-foreground: var(--background);
   --success: var(--primary);
+  --event-free: oklch(0.76 0.13 150);
   --border: oklch(0.94 0.012 80 / 9%);
   --input: oklch(0.94 0.012 80 / 12%);
   --ring: var(--primary);
