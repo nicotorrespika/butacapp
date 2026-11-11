@@ -105,8 +105,8 @@ function MoviePage() {
             {m.genres.length > 0 && (
               <ul className="flex flex-wrap gap-2">
                 {m.genres.map((g) => (
-                  <li key={g} className="rounded-sm bg-card px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {g}
+                  <li key={g}>
+                    <Button asChild variant="ghost" size="sm"><Link to="/explore/$type/$genre" params={{type:"movie",genre:g}}>{g}</Link></Button>
                   </li>
                 ))}
               </ul>

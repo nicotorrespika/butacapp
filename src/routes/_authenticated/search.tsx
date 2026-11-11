@@ -32,6 +32,7 @@ import { CultureDiscovery } from "@/components/CultureDiscovery";
 import { CultureBetty } from "@/components/CultureBetty";
 import { cultureRouteId, isCulture } from "@/lib/culture";
 import { recordSearchTaste, recordSearchOpenTaste } from "@/lib/tastes-client";
+import { musicKind, type MusicKind } from "@/lib/music-search";
 
 export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: z.object({
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/_authenticated/search")({
     list: z.string().uuid().optional(),
     top: z.enum(["movie", "artist", "album", "song", "author", "book"]).optional(),
     mode:z.enum(["search","discover","betty"]).optional(),
+    musicKind:z.enum(["all","artist","album","song"]).optional(),
   }),
   head: () => ({
     meta: [
@@ -71,7 +73,7 @@ function SearchPage() {
   const qc = useQueryClient();
   const [text, setText] = useState(params.q ?? "");
   const filter: SearchFilter = params.f ?? "all";
-  const q = useDebouncedValue(text.trim(), 350);
+  const q = useDebouncedValue(text.trim(), 300);
   const search = useServerFn(searchMedia);
   const topSearch = useServerFn(searchTopEntries);
   const adder = useAddToList(params.list);
@@ -80,6 +82,7 @@ function SearchPage() {
 
   // Movies with a TMDB/IMDb id open their page (synopsis, scores, similar titles).
   function openMovie(r: SearchResult) {
+    if(r.externalId.startsWith("artist:")||r.externalId.startsWith("author:")){void navigate({to:"/creator/$type/$name",params:{type:r.mediaType==="book"?"book":"music",name:r.title}});return;}
     void recordSearchOpenTaste(r).then(() => qc.invalidateQueries({queryKey:['tastes']})).catch(() => {});
     if(isCulture(r.mediaType)){void navigate({to:"/culture/$cultureId",params:{cultureId:cultureRouteId(r.source,r.externalId)},search:{list:params.list}});return;}
     if (!hasMoviePage(r.source, r.mediaType)) return;
@@ -232,6 +235,7 @@ function SearchPage() {
       </header>
 
       <div className="px-4 pt-2">
+        {filter==="music"&&!params.top&&<div role="tablist" aria-label="Tipo de música" className="mb-4 flex flex-wrap gap-2">{([["all","Todo"],["artist","Artistas"],["album","Discos"],["song","Canciones"]] as const).map(([id,label])=><Button key={id} role="tab" aria-selected={(params.musicKind??"all")===id} variant={(params.musicKind??"all")===id?"secondary":"ghost"} onClick={()=>navigate({search:s=>({...s,musicKind:id}),replace:true})}>{label}</Button>)}</div>}
         {params.top && topCopy ? (
           q.length < 2 ? (
             <p className="pt-6 text-sm text-muted-foreground">{topCopy.empty}. Escribí para buscar.</p>
@@ -308,7 +312,7 @@ function SearchPage() {
               </section>;
             })}
             {sections.map((m) => {
-              const items = data[m];
+              const items = data[m].filter(r=>m!=="music"||!params.musicKind||params.musicKind==="all"||musicKind(r)===params.musicKind);
               if (!items.length) return null;
               // "Todo" → horizontal carousels; filtered → full grid.
               return filter === "all" ? (
@@ -334,10 +338,11 @@ function SearchPage() {
                   </div>
                 </section>
               ) : (
-                <section key={m} className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
-                  {items.map((r) => (
-                    <ResultCard key={resultKey(r)} {...cardProps(r)} />
-                  ))}
+                <section key={m} className="space-y-6">
+                  {m==="music"?(["artist","album","song"] as const).map(kind=>{
+                    const group=items.filter(r=>musicKind(r)===kind);if(!group.length)return null;
+                    return <section key={kind}><h2 className="cinema-heading mb-3 text-2xl">{kind==="artist"?"Artistas":kind==="album"?"Discos":"Canciones"}</h2><div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">{group.map(r=><ResultCard key={resultKey(r)} {...cardProps(r)}/>)}</div></section>;
+                  }):<div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">{items.map(r=><ResultCard key={resultKey(r)} {...cardProps(r)}/>)}</div>}
                 </section>
               );
             })}
