@@ -5,6 +5,12 @@ import { createLovableAiGatewayRunIdFetch } from "./ai/run-id";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 type DB=SupabaseClient<Database>;
+/** Reads only the persisted review cache; never triggers a paid external search. */
+export async function cachedMovieResearch(db:DB,id:string):Promise<MovieReview[]>{
+ const cache=await db.from("culture_cache").select("payload,expires_at").eq("key",`movie-reviews-v2:${id}`).maybeSingle();
+ if(cache.data&&Date.parse(cache.data.expires_at)>Date.now()){const parsed=researchSchema.safeParse(cache.data.payload);if(parsed.success)return parsed.data.reviews;}
+ return [];
+}
 export async function movieResearch(db:DB,id:string,title:string,year:number|null,original:string|null,keys:{ai:string;parallel:string}):Promise<MovieReview[]>{
  const cacheKey=`movie-reviews-v2:${id}`;const cache=await db.from("culture_cache").select("payload,expires_at").eq("key",cacheKey).maybeSingle();
  if(cache.data&&Date.parse(cache.data.expires_at)>Date.now()){const parsed=researchSchema.safeParse(cache.data.payload);if(parsed.success)return parsed.data.reviews;}
