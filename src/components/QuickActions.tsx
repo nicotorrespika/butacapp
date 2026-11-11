@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Clock, Ear, Eye, Heart } from "lucide-react";
@@ -16,7 +15,7 @@ import { Poster } from "@/components/Poster";
 import { cn } from "@/lib/utils";
 
 type Entry = { favorite: boolean; done: boolean } | null;
-const isMovie = (r: SearchResult) => r.mediaType === "movie" || r.mediaType === "tv";
+const isMovie = (r: SearchResult) => r.mediaType === "movie";
 
 /** Personal favorite/consumed state for one work, loaded only when quick actions are shown. */
 function useQuickEntry(result: SearchResult, enabled: boolean) {
@@ -55,7 +54,7 @@ function ActionIcons({ result, entry, toggle, onSave, large = false }: { result:
 /** Desktop hover overlay: darkens the cover and shows the three shortcuts. */
 export function HoverActions({ result, onSave, active }: { result: SearchResult; onSave: () => void; active: boolean }) {
   const { entry, toggle } = useQuickEntry(result, active);
-  return <div className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-background/0 opacity-0 transition duration-200 [@media(hover:hover)]:flex group-hover/cover:bg-background/60 group-hover/cover:opacity-100 group-focus-within/cover:opacity-100 [&>div]:pointer-events-auto">
+  return <div className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-background/0 opacity-0 transition duration-200 [@media(hover:hover)]:flex group-hover/cover:bg-background/60 group-hover/cover:opacity-100 group-focus-within/cover:opacity-100 group-hover/cover:[&>div]:pointer-events-auto">
     <ActionIcons result={result} entry={entry} toggle={toggle} onSave={onSave} />
   </div>;
 }

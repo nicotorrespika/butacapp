@@ -33,7 +33,7 @@ export function ResultCard({
 }) {
   const [quick, setQuick] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const quickable = result.mediaType === "movie" || result.mediaType === "tv" || result.mediaType === "book" || result.mediaType === "music";
+  const quickable = result.mediaType === "movie" || result.mediaType === "book" || result.mediaType === "music";
   return (
     <article className={cn("group relative animate-rise", className)}>
       <div className="group/cover relative" onMouseEnter={() => setHovered(true)}>
