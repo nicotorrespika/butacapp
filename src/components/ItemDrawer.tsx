@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from "@/components/ui/drawer";
+import { ConfirmDialog } from "@/components/AppDialog";
 import { Poster } from "@/components/Poster";
 import { StarRating } from "@/components/StarRating";
 import { UserAvatar } from "@/components/UserAvatar";
@@ -40,6 +41,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
   const [sending, setSending] = useState(false);
   const [reviewDraft, setReviewDraft] = useState<string | null>(null);
   const [savingReview, setSavingReview] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
   const movieCall=useServerFn(getMovie);
   const metadata=useQuery({queryKey:["movie", "sheet",item?.external_id],enabled:!!item&&!inline&&hasMoviePage(item.source,item.media_type as MediaType),queryFn:()=>movieCall({data:{id:movieRouteId(item?.external_id ?? "")}})});
 
@@ -122,7 +124,7 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
   }
 
   async function removeItem() {
-    if (!item || !confirm(`¿Quitar «${item.title}» de la lista?`)) return;
+    if (!item) return;
     const { error } = await supabase.from("list_items").delete().eq("id", item.id);
     if (error) return void toast.error("No se pudo quitar", { description: error.message });
     onOpenChange(false);
@@ -275,11 +277,12 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
               </Button>
             )}
             {canRemove && (
-              <Button variant="ghost" size="sm" className="text-destructive" onClick={removeItem}>
+              <Button variant="ghost" size="sm" className="text-destructive" onClick={() => setConfirmRemove(true)}>
                 <Trash2 /> Quitar de la lista
               </Button>
             )}
           </div>}
+          <ConfirmDialog open={confirmRemove} onOpenChange={setConfirmRemove} title={`¿Quitar «${item.title}» de la lista?`} confirmLabel="Quitar" destructive onConfirm={removeItem} />
         </div>
   );
   if (inline) return content;
