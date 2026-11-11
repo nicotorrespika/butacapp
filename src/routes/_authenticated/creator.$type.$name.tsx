@@ -1,8 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { getCreator } from "@/lib/culture.functions";
+import { getCreator, getSimilarCreators } from "@/lib/culture.functions";
 import { cultureRouteId } from "@/lib/culture";
 import { BackButton } from "@/components/BackButton";
 import { ErrorState } from "@/components/States";
@@ -28,6 +28,8 @@ function CreatorPage() {
   const navigate = useNavigate();
   const add = useAddToList(undefined);
   const [photoOk, setPhotoOk] = useState(true);
+  const relCall = useServerFn(getSimilarCreators);
+  const rel = useQuery({ queryKey: ["creator-similar", kind, name], staleTime: 86400000, queryFn: () => relCall({ data: { type: kind, name } }) });
   const q = useQuery({ queryKey: ["creator", kind, name], staleTime: 86400000, queryFn: () => call({ data: { type: kind, name } }) });
   if (q.isError || q.data?.ok === false) return <div className="px-4 py-5"><BackButton /><ErrorState onRetry={() => q.refetch()} /></div>;
   if (!q.data) return <div className="px-4 py-5"><BackButton /><p className="py-12 text-muted-foreground">Buscando la obra de {name}…</p></div>;
@@ -48,6 +50,21 @@ function CreatorPage() {
       {!c.works.length ? <p className="text-sm text-muted-foreground">No encontramos obra verificada, che.</p> :
         <div className="grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4">{c.works.map(w => <ResultCard key={w.externalId} result={w} onAdd={add.add} busy={add.isBusy(w)} added={add.isAdded(w)} onOpen={r => navigate({ to: "/culture/$cultureId", params: { cultureId: cultureRouteId(r.source, r.externalId) } })} />)}</div>}
     </section>
+    {rel.isLoading && <p className="cinema-meta text-muted-foreground">Betty está pensando a quién más te puede gustar…</p>}
+    {rel.data?.ok && <CreatorRow title={kind === "book" ? "AUTORES SIMILARES" : "ARTISTAS SIMILARES"} type={kind} items={rel.data.similar} />}
+    {rel.data?.ok && <CreatorRow title={kind === "book" ? "¿Y SI MEJOR LEEMOS ALGO LATINO?" : "¿Y SI MEJOR ESCUCHAMOS ALGO LATINO?"} type={kind} items={rel.data.latin} />}
     {add.sheet}
   </div>;
+}
+
+function CreatorRow({ title, type, items }: { title: string; type: "book" | "music"; items: { name: string; reason: string; imageUrl: string | null }[] }) {
+  if (!items.length) return null;
+  return <section>
+    <h2 className="cinema-heading mb-5 text-2xl">{title}</h2>
+    <div className="flex snap-x gap-4 overflow-x-auto pb-3 scrollbar-none">{items.map(i => <Link key={i.name} to="/creator/$type/$name" params={{ type, name: i.name }} className="w-32 shrink-0 snap-start">
+      <div className="aspect-square overflow-hidden border border-border bg-secondary">{i.imageUrl ? <img src={i.imageUrl} alt="" loading="lazy" className="h-full w-full object-cover" /> : <span className="flex h-full items-center justify-center font-display text-3xl">{i.name.charAt(0)}</span>}</div>
+      <p className="mt-2 text-sm font-semibold leading-tight">{i.name}</p>
+      <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{i.reason}</p>
+    </Link>)}</div>
+  </section>;
 }
