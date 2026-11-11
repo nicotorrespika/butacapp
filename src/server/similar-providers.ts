@@ -16,16 +16,17 @@ export async function movieSimilar(id:string,key:string,page:number):Promise<Sim
   const seen=new Set<string>([`${type}:${ref}`]);const mapped=[...recommended.results,...similar.results].filter(i=>i.poster_path).flatMap(i=>{const r=mapTmdb(i,type);if(seen.has(r.externalId))return [];seen.add(r.externalId);return [{result:r,country:null,estimated:false,reason:""}];}).slice(0,10);
   if(!origin)return {similar:mapped,latin:[],origin,originEstimated:false};
   const countries=LATIN_COUNTRIES.filter(c=>c!==origin);const genres=(m.genres ?? []).map(g=>g.id).slice(0,2).join(",");const keywords=(m.keywords?.keywords ?? []).slice(0,4).map(k=>k.id).join("|");
-  const params={with_origin_country:countries.join("|"),with_genres:genres||undefined,"vote_count.gte":20,sort_by:"vote_average.desc",page};
-  let pool=await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,{...params,with_keywords:keywords||undefined}).catch(()=>({results:[]}));
-  if(pool.results.length<6)pool=await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,params).catch(()=>pool);
+  const params={with_origin_country:countries.join("|"),with_genres:genres||undefined,"vote_count.gte":20,sort_by:"vote_average.desc","vote_average.gte":6,page};
+  const kw=keywords?await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,{...params,sort_by:"popularity.desc",with_genres:undefined,with_keywords:keywords}).catch(()=>({results:[]})):{results:[]};
+  const byGenre=await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,{...params,sort_by:"popularity.desc"}).catch(()=>({results:[]}));
+  const pool={results:[...kw.results,...byGenre.results]};
   if(origin!=="AR"){
-    const ar=await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,{...params,with_origin_country:"AR",with_keywords:keywords||undefined}).catch(()=>({results:[]}));
-    const broad=ar.results.length?ar:await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,{...params,with_origin_country:"AR"}).catch(()=>({results:[]}));
-    pool.results=[...broad.results,...pool.results];
+    const ar=await tmdb<{results:MovieOrigin[]}>(`/discover/${type}`,{...params,sort_by:"popularity.desc",with_origin_country:"AR",with_genres:keywords?undefined:params.with_genres,with_keywords:keywords||undefined}).catch(()=>({results:[]}));
+    pool.results=[...ar.results.slice(0,3),...pool.results];
   }
+  const seenLatin=new Set<number>();pool.results=pool.results.filter(i=>!seenLatin.has(i.id)&&seenLatin.add(i.id));
   const latin=await Promise.all(pool.results.filter(i=>i.poster_path&&String(i.id)!==ref).slice(0,14).map(async i=>{
-    try{const d=await tmdb<MovieOrigin>(`/${type}/${i.id}`);const country=d.origin_country?.[0] ?? d.production_countries?.[0]?.iso_3166_1 ?? null;const label=(m.genres ?? [])[0]?.name.toLowerCase();return {result:mapTmdb(i,type),country,estimated:false,reason:label?`Otra vuelta al ${label}, desde la región.`:"Mismo clima, otra mirada de la región."};}catch{return null;}
+    try{const d=await tmdb<MovieOrigin>(`/${type}/${i.id}`,{append_to_response:"keywords"});const country=d.origin_country?.[0] ?? d.production_countries?.[0]?.iso_3166_1 ?? null;const shared=(d.genres ?? []).filter(g=>(m.genres ?? []).some(x=>x.id===g.id)).map(g=>g.name.toLowerCase());const themes=(d.keywords?.keywords ?? []).filter(k=>(m.keywords?.keywords ?? []).some(x=>x.id===k.id)).map(k=>k.name);return {result:mapTmdb(i,type),country,estimated:false,reason:themes.length?`Comparte temas: ${themes.slice(0,2).join(", ")}.`:shared.length?`Cruza ${shared.slice(0,2).join(" y ")} con mirada local.`:"Otra mirada de la región."};}catch{return null;}
   }));
   return {similar:mapped,latin:regionalOrder(latin.flatMap(i=>i?[i]:[]),isLatin(origin)?origin:null).slice(0,6),origin,originEstimated:false};
 }
