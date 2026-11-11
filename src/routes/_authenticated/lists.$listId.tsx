@@ -8,6 +8,7 @@ import { filterForListKind } from "@/lib/add-item";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/AppDialog";
 import { InviteDrawer } from "@/components/InviteDrawer";
 import { ItemDrawer } from "@/components/ItemDrawer";
 import { SocialComments } from "@/components/SocialComments";
@@ -68,6 +69,8 @@ function ListPage() {
   const {item:openId}=Route.useSearch();
   const setOpenId=(item:string|null)=>navigate({to:"/lists/$listId",params:{listId},search:{item:item ?? undefined},replace:true});
   const [inviting, setInviting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmLeave, setConfirmLeave] = useState(false);
 
   // Per-item aggregates: average score and comment count.
   const stats = useMemo(() => {
@@ -122,7 +125,7 @@ function ListPage() {
     : {};
 
   async function deleteList() {
-    if (!d || !confirm(`¿Borrar «${d.list.name}» para todos? No se puede deshacer.`)) return;
+    if (!d) return;
     const { error } = await supabase.from("lists").delete().eq("id", d.list.id);
     if (error) return void toast.error("No se pudo borrar", { description: error.message });
     qc.invalidateQueries({ queryKey: keys.myLists });
@@ -130,7 +133,7 @@ function ListPage() {
   }
 
   async function leaveList() {
-    if (!d || !confirm(`¿Salir de «${d.list.name}»?`)) return;
+    if (!d) return;
     const { error } = await supabase.from("list_members").delete().eq("list_id", d.list.id).eq("user_id", userId);
     if (error) return void toast.error("No se pudo salir", { description: error.message });
     qc.invalidateQueries({ queryKey: keys.myLists });
@@ -296,11 +299,11 @@ function ListPage() {
         {d && (
           <div className="mt-12 flex justify-center">
             {isOwner ? (
-              <Button variant="ghost" size="sm" className="text-destructive" onClick={deleteList}>
+              <Button variant="ghost" size="sm" className="text-destructive" onClick={() => setConfirmDelete(true)}>
                 <Trash2 /> Borrar lista
               </Button>
             ) : (
-              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={leaveList}>
+              <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => setConfirmLeave(true)}>
                 Salir de la lista
               </Button>
             )}
@@ -321,6 +324,8 @@ function ListPage() {
             isOwner={isOwner}
           />
           {isMember && <InviteDrawer open={inviting} onOpenChange={setInviting} detail={d} userId={userId} />}
+          <ConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title={`¿Borrar «${d.list.name}» para todos?`} description="No se puede deshacer." confirmLabel="Borrar lista" destructive onConfirm={deleteList} />
+          <ConfirmDialog open={confirmLeave} onOpenChange={setConfirmLeave} title={`¿Salir de «${d.list.name}»?`} confirmLabel="Salir" onConfirm={leaveList} />
           <section className="mt-8 px-4"><h2 className="mb-4 font-display text-2xl">En esta lista</h2><SocialComments listId={listId} canComment={isMember}/></section>
         </>
       )}
