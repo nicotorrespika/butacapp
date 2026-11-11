@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Celular: mover navegación Inicio / Buscar / Avisos / Perfil arriba, fija y sin tapar el contenido; conservar computadora.
 - [ ] Todas las películas: conexiones automáticas con libros y música, normalización de IDs de búsqueda/listas/links y verificación con otras películas.
 - [ ] Cruces recíprocos: discos recomiendan películas y libros; libros recomiendan películas y música, con ambos destinos verificados.
 - [x] Ficha Medianoche en París: cruces automáticos al llegar a la sección, IDs IMDb normalizados y cachés vacías rechazadas; sesión real muestra cuatro libros y cuatro discos, sin errores.
