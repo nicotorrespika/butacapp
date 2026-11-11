@@ -16,6 +16,7 @@ import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as AuthenticatedAvisosRouteImport } from './routes/_authenticated/avisos'
+import { Route as AuthenticatedBienvenidaRouteImport } from './routes/_authenticated/bienvenida'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedGustosRouteImport } from './routes/_authenticated/gustos'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -68,6 +69,11 @@ const TerminosRoute = TerminosRouteImport.update({
 const AuthenticatedAvisosRoute = AuthenticatedAvisosRouteImport.update({
   id: '/avisos',
   path: '/avisos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBienvenidaRoute = AuthenticatedBienvenidaRouteImport.update({
+  id: '/bienvenida',
+  path: '/bienvenida',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
   '/avisos': typeof AuthenticatedAvisosRoute
+  '/bienvenida': typeof AuthenticatedBienvenidaRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/gustos': typeof AuthenticatedGustosRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
   '/avisos': typeof AuthenticatedAvisosRoute
+  '/bienvenida': typeof AuthenticatedBienvenidaRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/gustos': typeof AuthenticatedGustosRoute
   '/profile': typeof AuthenticatedProfileRoute
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terminos': typeof TerminosRoute
   '/_authenticated/avisos': typeof AuthenticatedAvisosRoute
+  '/_authenticated/bienvenida': typeof AuthenticatedBienvenidaRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/gustos': typeof AuthenticatedGustosRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terminos'
     | '/avisos'
+    | '/bienvenida'
     | '/friends'
     | '/gustos'
     | '/profile'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terminos'
     | '/avisos'
+    | '/bienvenida'
     | '/friends'
     | '/gustos'
     | '/profile'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terminos'
     | '/_authenticated/avisos'
+    | '/_authenticated/bienvenida'
     | '/_authenticated/friends'
     | '/_authenticated/gustos'
     | '/_authenticated/profile'
@@ -408,6 +420,13 @@ declare module '@tanstack/react-router' {
       path: '/avisos'
       fullPath: '/avisos'
       preLoaderRoute: typeof AuthenticatedAvisosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/bienvenida': {
+      id: '/_authenticated/bienvenida'
+      path: '/bienvenida'
+      fullPath: '/bienvenida'
+      preLoaderRoute: typeof AuthenticatedBienvenidaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/friends': {
@@ -548,6 +567,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAvisosRoute: typeof AuthenticatedAvisosRoute
+  AuthenticatedBienvenidaRoute: typeof AuthenticatedBienvenidaRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedGustosRoute: typeof AuthenticatedGustosRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
@@ -566,6 +586,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAvisosRoute: AuthenticatedAvisosRoute,
+  AuthenticatedBienvenidaRoute: AuthenticatedBienvenidaRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedGustosRoute: AuthenticatedGustosRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
