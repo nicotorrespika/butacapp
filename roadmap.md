@@ -1,6 +1,11 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Personalization stage 1: private activity signals, weighted/decaying tastes, daily recalculation
+- [ ] Personalization stage 2: Mis gustos, instant feedback, pause/reset/export/delete and privacy terms
+- [ ] Personalization stage 3: cached Para vos on home/category tabs with exploration and exclusions
+- [ ] Personalization stage 4: verified Betty cross-category connections and Porque viste blocks
+- [ ] Personalization stage 5: taste-aware discovery, Betty, feeds/events and new-account taste onboarding; run the five acceptance flows
 - [x] Soundtrack persisted albums/tracks, progressive fill and daily schedule, platform searches, music/back links, existing audio previews, community suggestions/reports and profile collection; Midnight in Paris album/tracks and round trip verified
 - [ ] Soundtrack completeness: IMDb/Wikidata association, cited web song lookup through Betty, album report control and reliable release-year correction; source fallback verified but provider reports an inconsistent album date
 - [x] Similar blocks on movie/book/music details, lazy three-day cache, verified catalog results, origin estimates labeled, Argentina-first region alternatives; Hollywood horror and Argentine movie scenarios verified
