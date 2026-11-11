@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Fotos pequeñas de eventos en novedades; recomendaciones de eventos con días, horario y lugar reales junto a la descripción.
+- [x] Fotos pequeñas de eventos en novedades y recomendaciones; días, horario y lugar desde datos guardados. Die Walküre verificado en computadora y celular: 29/11, 17:00, Teatro Colón; sin desborde.
 - [x] Acción de pendientes junto a vista/favorita, tres iconos alineados como la captura; selector de listas verificado con sesión real en móvil y pruebas del guardado existentes pasan, sin agregar obras de prueba a las listas del usuario.
 - [x] Director debajo del título y ficha técnica con todos los créditos disponibles de TMDB, con fuente identificada.
 - [x] Ficha más compacta: estrellas sin título, promedios reales por fuente y reseña pequeña tras el tráiler; sin Comentarios de tu gente.
