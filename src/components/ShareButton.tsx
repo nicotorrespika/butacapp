@@ -11,7 +11,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "./ui/drawer";
 import { ConfirmDialog } from "./AppDialog";
 import { UserAvatar } from "./UserAvatar";
 
-export function ShareButton({ content, compact=false, label="Compartir", variant="ghost", icon }: { content: ShareContent; compact?: boolean; label?: string; variant?: ButtonProps["variant"]; icon?: ReactNode }) {
+export function ShareButton({ content, compact=false, label="Compartir", variant="ghost", icon, iconOnly=false }: { content: ShareContent; compact?: boolean; iconOnly?: boolean; label?: string; variant?: ButtonProps["variant"]; icon?: ReactNode }) {
   const {user}=useAuth(); const qc=useQueryClient();
   const [open,setOpen]=useState(false), [term,setTerm]=useState(""), [message,setMessage]=useState(""), [selected,setSelected]=useState<string[]>([]), [busy,setBusy]=useState(false), [confirmPublic,setConfirmPublic]=useState(false);
   const friends=useQuery({...friendsQuery(user?.id ?? ""),enabled:open && !!user});
@@ -58,7 +58,7 @@ export function ShareButton({ content, compact=false, label="Compartir", variant
       await log(channel);
     }catch(e){if(!(e instanceof Error&&e.name==="AbortError"))toast.error("No se pudo compartir. Probá copiar el link.");}
   }
-  return <><Button variant={variant} size={compact?"sm":"default"} aria-label={label==="Compartir"?`Compartir ${content.title}`:label} onClick={()=>setOpen(true)}>{icon ?? <Send/>}{label}</Button>
+  return <>{iconOnly?<Button variant="ghost" size="icon" className="size-11 text-muted-foreground hover:text-primary [&_svg]:size-4" aria-label={`Compartir ${content.title}`} onClick={()=>setOpen(true)}><Send/></Button>:<Button variant={variant} size={compact?"sm":"default"} aria-label={label==="Compartir"?`Compartir ${content.title}`:label} onClick={()=>setOpen(true)}>{icon ?? <Send/>}{label}</Button>}
     <Drawer open={open} onOpenChange={setOpen}><DrawerContent className="max-h-[88dvh]"><DrawerHeader><DrawerTitle>Compartir</DrawerTitle><p className="font-display text-xl text-primary">{content.title}</p></DrawerHeader>
       <div className="overflow-y-auto px-4 pb-6 space-y-4">
         <label className="flex items-center gap-2 border border-input bg-card px-3"><Search className="size-4 text-muted-foreground"/><input aria-label="Buscar amigos para compartir" value={term} onChange={e=>setTerm(e.target.value)} placeholder="Buscá un amigo" className="h-12 min-w-0 flex-1 bg-transparent outline-none"/></label>

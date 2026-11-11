@@ -5,6 +5,10 @@ import { Poster } from "@/components/Poster";
 import type { SearchResult } from "@/lib/media";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { HoverActions, QuickView } from "@/components/QuickActions";
+
+const canHover = () => typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
 
 /** One search result: cover, title, author, year and a 44px "+" button. */
 export function ResultCard({
@@ -27,13 +31,15 @@ export function ResultCard({
   /** When adding straight into one list, its name (for the button label). */
   targetName?: string | undefined;
 }) {
+  const [quick, setQuick] = useState(false);
+  const quickable = result.mediaType === "movie" || result.mediaType === "tv" || result.mediaType === "book" || result.mediaType === "music";
   return (
     <article className={cn("group relative animate-rise", className)}>
-      <div className="relative">
+      <div className="group/cover relative">
         {onOpen ? (
           <Button variant="ghost"
             type="button"
-            onClick={() => onOpen(result)}
+            onClick={() => quickable && !canHover() ? setQuick(true) : onOpen(result)}
             aria-label={`Ver ficha de ${result.title}`}
             className="block h-auto w-full rounded-sm p-0"
           >
@@ -42,6 +48,7 @@ export function ResultCard({
         ) : (
           <Poster src={result.imageUrl} alt={result.title} media={result.mediaType} />
         )}
+        {quickable && <HoverActions result={result} onSave={() => onAdd(result)} />}
         <Button variant="glass" size="icon"
           type="button"
           onClick={() => onAdd(result)}
@@ -66,7 +73,7 @@ export function ResultCard({
         </Button>
       </div>
       <div className="mt-2 px-0.5">
-        <ShareButton content={shareResult(result)} compact/>
+        <div className="float-right -mr-2"><ShareButton content={shareResult(result)} iconOnly/></div>
         {result.kindLabel==="Cine argentino"&&<p className="mb-1 text-[10px] uppercase text-primary">Cine argentino</p>}
         <h3 className="line-clamp-2 font-display text-xl leading-snug text-primary">
           {onOpen ? (
@@ -81,6 +88,7 @@ export function ResultCard({
           {[result.creator, result.year].filter(Boolean).join(" · ") || result.kindLabel}
         </p>
       </div>
+      {quickable && onOpen && <QuickView result={result} open={quick} onOpenChange={setQuick} onSave={() => onAdd(result)} onOpenFull={() => onOpen(result)} />}
     </article>
   );
 }
