@@ -38,6 +38,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!state.user) return;
+    const likes=state.user.user_metadata["initial_tastes"];
+    if(Array.isArray(likes))void supabase.from("taste_chips").upsert(likes.filter((t):t is string=>typeof t==="string").slice(0,6).map(t=>({user_id:state.user?.id ?? "",label:t.toLowerCase(),weight:8,manual:true})),{ignoreDuplicates:true}).then(({error})=>{if(!error)queryClient.invalidateQueries({queryKey:["tastes"]});});
     const invitedBy = sessionStorage.getItem("butacapp:invited-by");
     if (!invitedBy || invitedBy === state.user.id || !/^[0-9a-f-]{36}$/i.test(invitedBy)) return;
     void supabase.from("share_referrals").insert({user_id:state.user.id,invited_by:invitedBy}).then(({error})=>{

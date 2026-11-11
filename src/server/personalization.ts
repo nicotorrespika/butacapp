@@ -11,7 +11,7 @@ import { searchCulture,cultureDetail } from './culture-providers';
 import { mapTmdb,tmdbFetcher,type TmdbItem } from './search-providers';
 import { recommendationError } from './recommendations';
 type DB=SupabaseClient<Database>;
-type Candidate={result:SearchResult;tags:string[];reason:string;anchor?:{source:string;id:string;title:string};evidence?:string;score:number;id:string};
+type Candidate={result:SearchResult;tags:string[];reason:string;anchor?:{source:string;id:string;title:string};evidence?:string|undefined;score:number;id:string};
 function readResult(raw:unknown):SearchResult|null {
   if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
   const r=raw as Record<string,unknown>;
@@ -29,7 +29,7 @@ async function bootstrap(db:DB,uid:string) {
   if(rows.length){const write=await db.from('taste_signals').upsert(rows,{onConflict:'user_id,signal_key',ignoreDuplicates:true});if(write.error)throw write.error;}
   const rebuild=await db.rpc('rebuild_tastes',{uid});if(rebuild.error)throw rebuild.error;
 }
-export async function buildPersonalization(db:DB,uid:string,keys:{ai?:string;tmdb?:string}) {
+export async function buildPersonalization(db:DB,uid:string,keys:{ai?:string|undefined;tmdb?:string|undefined}) {
   try {
     const settings=await db.from('taste_settings').select('*').eq('user_id',uid).maybeSingle();
     if(settings.data?.paused||settings.data?.recording_enabled===false)return {ok:false,message:'La personalización está pausada.'};
