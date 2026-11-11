@@ -16,7 +16,7 @@ async function searchArtists(query: string): Promise<SearchResult[]> {
     title: a.name,
     creator: [a.disambiguation, a.country].filter(Boolean).join(" · ") || null,
     year: null,
-    imageUrl: `https://covers.openlibrary.org/a/olid/${a.key}-M.jpg?default=false`,
+    imageUrl: null,
     kindLabel: "Artista",
     externalUrl: `https://musicbrainz.org/artist/${a.id}`,
   }));
@@ -34,7 +34,7 @@ async function searchAuthors(query: string): Promise<SearchResult[]> {
     title: a.name,
     creator: a.top_work ?? null,
     year: null,
-    imageUrl: null,
+    imageUrl: `https://covers.openlibrary.org/a/olid/${a.key}-M.jpg?default=false`,
     kindLabel: "Autor",
     externalUrl: `https://openlibrary.org/authors/${a.key}`,
   }));
