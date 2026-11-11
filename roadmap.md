@@ -1,11 +1,13 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Personalization stage 1: private activity signals, weighted/decaying tastes, daily recalculation
-- [ ] Personalization stage 2: Mis gustos, instant feedback, pause/reset/export/delete and privacy terms
-- [ ] Personalization stage 3: cached Para vos on home/category tabs with exploration and exclusions
-- [ ] Personalization stage 4: verified Betty cross-category connections and Porque viste blocks
-- [ ] Personalization stage 5: taste-aware discovery, Betty, feeds/events and new-account taste onboarding; run the five acceptance flows
+- [x] Personalization foundation: private activity signals, weighted/decaying tastes, daily managed schedule and two-call creative budget
+- [x] Mis gustos, editable chips, feedback, pause/reset/export/delete and privacy/terms; add/remove chip and pause persistence verified with requesting account
+- [x] Cached Para vos on home/category tabs, varied ordering and exclusions; real cached music/movie/event recommendations and persistent rejection verified
+- [x] Catalog-verified Betty cross-category connections; Moon Palace → Bocanada/Smoke/Medianeras verified and saved; detail anchor blocks implemented
+- [ ] Film-high-rating → cross-category acceptance check: daily two-call creative budget reached during validation, retry after daily reset; no successful movie anchor output claimed
+- [ ] Complete personalization: close-friend weighted signals, richer theme/person/place metadata, cited adaptation/mentioned-work connections, topic matching for cross-category events and full five-flow verification; these requested pieces are not implemented yet
+- [ ] New-account onboarding verification: initial five/six tastes and Top 5 prompts implemented, but no new real account created or hosted signup settings checked
 - [x] Soundtrack persisted albums/tracks, progressive fill and daily schedule, platform searches, music/back links, existing audio previews, community suggestions/reports and profile collection; Midnight in Paris album/tracks and round trip verified
 - [ ] Soundtrack completeness: IMDb/Wikidata association, cited web song lookup through Betty, album report control and reliable release-year correction; source fallback verified but provider reports an inconsistent album date
 - [x] Similar blocks on movie/book/music details, lazy three-day cache, verified catalog results, origin estimates labeled, Argentina-first region alternatives; Hollywood horror and Argentine movie scenarios verified
