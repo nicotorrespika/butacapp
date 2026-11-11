@@ -53,10 +53,9 @@ function ActionIcons({ result, entry, toggle, onSave, large = false }: { result:
 }
 
 /** Desktop hover overlay: darkens the cover and shows the three shortcuts. */
-export function HoverActions({ result, onSave }: { result: SearchResult; onSave: () => void }) {
-  const [on, setOn] = useState(false);
-  const { entry, toggle } = useQuickEntry(result, on);
-  return <div onMouseEnter={() => setOn(true)} className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-background/0 opacity-0 transition duration-200 [@media(hover:hover)]:flex group-hover/cover:pointer-events-auto group-hover/cover:bg-background/60 group-hover/cover:opacity-100 group-focus-within/cover:pointer-events-auto group-focus-within/cover:opacity-100">
+export function HoverActions({ result, onSave, active }: { result: SearchResult; onSave: () => void; active: boolean }) {
+  const { entry, toggle } = useQuickEntry(result, active);
+  return <div className="pointer-events-none absolute inset-0 hidden items-center justify-center bg-background/0 opacity-0 transition duration-200 [@media(hover:hover)]:flex group-hover/cover:bg-background/60 group-hover/cover:opacity-100 group-focus-within/cover:opacity-100 [&>div]:pointer-events-auto">
     <ActionIcons result={result} entry={entry} toggle={toggle} onSave={onSave} />
   </div>;
 }

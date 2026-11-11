@@ -32,10 +32,11 @@ export function ResultCard({
   targetName?: string | undefined;
 }) {
   const [quick, setQuick] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const quickable = result.mediaType === "movie" || result.mediaType === "tv" || result.mediaType === "book" || result.mediaType === "music";
   return (
     <article className={cn("group relative animate-rise", className)}>
-      <div className="group/cover relative">
+      <div className="group/cover relative" onMouseEnter={() => setHovered(true)}>
         {onOpen ? (
           <Button variant="ghost"
             type="button"
@@ -48,7 +49,7 @@ export function ResultCard({
         ) : (
           <Poster src={result.imageUrl} alt={result.title} media={result.mediaType} />
         )}
-        {quickable && <HoverActions result={result} onSave={() => onAdd(result)} />}
+        {quickable && <HoverActions result={result} onSave={() => onAdd(result)} active={hovered} />}
         <Button variant="glass" size="icon"
           type="button"
           onClick={() => onAdd(result)}
