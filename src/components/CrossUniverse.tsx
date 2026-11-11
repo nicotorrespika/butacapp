@@ -16,7 +16,7 @@ const verbs={movie:"VISTE",music:"ESCUCHASTE",book:"LEÍSTE"} as const;
 export function CrossUniverse({kind,id,type,title}:{kind:"movie"|"culture";id:string;type:"movie"|"music"|"book";title:string}){
   const el=useRef<HTMLDivElement>(null);const [visible,setVisible]=useState(false);const call=useServerFn(getCrossUniverse);const navigate=useNavigate();const add=useAddToList(undefined);
   useEffect(()=>{setVisible(false);const node=el.current;if(!node)return;const o=new IntersectionObserver(e=>{if(e.some(x=>x.isIntersecting)){setVisible(true);o.disconnect();}},{rootMargin:"200px"});o.observe(node);return()=>o.disconnect();},[id]);
-  const q=useQuery({queryKey:["cross","v2",kind,id],enabled:visible,staleTime:7*86400000,queryFn:()=>call({data:{kind,id,generate:true}})});const data=q.data?.ok?q.data.data:null;
+  const q=useQuery({queryKey:["cross","v3",kind,type,id],enabled:visible,staleTime:7*86400000,queryFn:()=>call({data:{kind,type,id,generate:true}})});const data=q.data?.ok?q.data.data:null;
   const targets=(["movie","music","book"] as const).filter(t=>t!==type&&(data?.[t].length ?? 0)>0);
   return <div ref={el} className="space-y-6 py-4">
     <h2 className="cinema-heading text-2xl break-words">PORQUE {verbs[type]} <span className="font-display normal-case italic text-primary">{title}</span>…</h2>
