@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Fotos específicas de eventos y artistas: priorizar imágenes oficiales, sin repetir una portada genérica.
 - [x] Portadas de eventos: ilustraciones locales por categoría y título cuando falta o falla la foto original.
 - [x] Recomendaciones por búsquedas: consultas estables y fichas abiertas desde resultados alimentan intereses privados, reutilizan controles de pausa/borrado y el orden de Para vos; Rayuela y apertura de ficha verificados con sesión real, 14 pruebas pasan.
 - [x] Top 5 por categoría: películas, artistas/discos/canciones (MusicBrainz + iTunes) y autores/libros (Open Library), tabla top_five_entries con posiciones, selector en perfil, buscador acotado por tipo y textos por categoría; verificado agregar 5 artistas, mensaje de Top lleno y perfil
