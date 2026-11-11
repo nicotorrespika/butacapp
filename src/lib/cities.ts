@@ -44,7 +44,7 @@ export function normalizeCity(raw: string): string {
   if (ALIASES[f]) return ALIASES[f];
   const known = MAIN_CITIES.find((c) => fold(c) === f);
   if (known) return known;
-  return trimmed.replace(/\b\w/g, (c) => c.toUpperCase());
+  return trimmed.split(" ").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 
 /** Variantes aceptadas al filtrar, para convivir con filas guardadas antes de la normalización. */
