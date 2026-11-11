@@ -2,6 +2,7 @@ import {ShareButton} from "@/components/ShareButton";
 import {shareResult} from "@/lib/sharing";
 import {supabase} from "@/integrations/supabase/client";
 import {SimilarRecommendations} from "@/components/SimilarRecommendations";
+import {BookMentions} from "@/components/BookMentions";
 import {CrossUniverse} from "@/components/CrossUniverse";
 import {TasteRecommendations} from "@/components/TasteRecommendations";
 import { createFileRoute, Link } from "@tanstack/react-router";
@@ -37,6 +38,7 @@ function CulturePage(){const {cultureId}=Route.useParams();const {list,soundtrac
  {(d.pages||d.publisher||d.links.length>0)&&<AccordionItem value="details"><AccordionTrigger className="min-h-11 py-3 font-display text-xl">{type==="book"?"Ficha del libro":"Ficha del disco"}</AccordionTrigger><AccordionContent><dl className="space-y-3 text-sm">{d.pages&&<div><dt className="cinema-meta text-muted-foreground">Páginas · edición disponible</dt><dd>{d.pages}</dd></div>}{d.publisher&&<div><dt className="cinema-meta text-muted-foreground">Editorial</dt><dd>{d.publisher}</dd></div>}</dl><div className="mt-3 flex flex-wrap gap-4">{d.links.map(l=><a key={l.url} href={l.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-sm text-primary underline">{l.label} ↗</a>)}</div></AccordionContent></AccordionItem>}
  {!!d.tracks.length&&<AccordionItem value="tracks"><AccordionTrigger className="min-h-11 py-3 font-display text-xl">Canciones ({d.tracks.length})</AccordionTrigger><AccordionContent><ol className="space-y-4">{d.tracks.map((t,i)=><li key={`${t.title}-${i}`}><p className="text-sm"><span className="mr-3 cinema-meta text-muted-foreground">{i+1}</span>{t.title}{t.duration&&<span className="ml-3 text-xs text-muted-foreground">{Math.floor(t.duration/60)}:{String(t.duration%60).padStart(2,"0")}</span>}</p>{t.preview&&<audio controls preload="none" src={t.preview} className="mt-3 w-full" aria-label={`Fragmento de ${t.title}`}/>}</li>)}</ol></AccordionContent></AccordionItem>}
  </Accordion>
+ {type==="book"&&<BookMentions key={`mentions-${cultureId}`} id={cultureId} title={d.result.title}/>}
  <CultureActions key={`review-${cultureId}`} section="review" result={d.result} genres={d.genres}/>
  <SimilarRecommendations key={`similar-${cultureId}`} kind="culture" id={cultureId} type={type}/>
  <CrossUniverse kind="culture" id={cultureId} type={type} title={d.result.title}/>
