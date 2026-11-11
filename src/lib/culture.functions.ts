@@ -86,7 +86,7 @@ type Mention={result:import("@/lib/media").SearchResult;context:string};
 export const getBookMentions=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({id:z.string().max(200)}).parse(input)).handler(async({data,context})=>{
   const key=`mentions:v1:${data.id}`;
   const c=await context.supabase.from("similar_recommendations").select("payload,updated_at").eq("cache_key",key).maybeSingle();
-  if(c.data&&Date.now()-new Date(c.data.updated_at).getTime()<30*86400000)return {ok:true as const,...(c.data.payload as {movies:Mention[];music:Mention[]})};
+  if(c.data&&Date.now()-new Date(c.data.updated_at).getTime()<30*86400000)return {ok:true as const,...(c.data.payload as unknown as {movies:Mention[];music:Mention[]})};
   const ai=process.env['LOVABLE_API_KEY'];const tmdbKey=process.env['TMDB_API_KEY'];if(!ai)return {ok:false as const};
   try{
     const id=parseCultureId(data.id);const d=await cultureDetail(id.source,id.externalId);
