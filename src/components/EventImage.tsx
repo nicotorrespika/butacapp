@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { Film, Music, BookOpen, Palette, Drama, CalendarDays } from "lucide-react";
 import stageCover from "@/assets/event-stage.jpg";
 import musicCover from "@/assets/event-music.jpg";
 import cultureCover from "@/assets/event-culture.jpg";
 import { eventCover } from "@/lib/event-covers";
+import { signEventPhoto } from "@/lib/event-photos.functions";
 
 const icons = {
   movie: Film,
@@ -41,8 +41,8 @@ export function EventImage({ title, interest, url, compact = false }: { title: s
     enabled: !!url?.startsWith("storage:"),
     staleTime: 3000000,
     queryFn: async () => {
-      const r = await supabase.storage.from("event-photos").createSignedUrl(url?.slice(8) ?? "", 3600);
-      return r.data?.signedUrl ?? null;
+      const r = await signEventPhoto({ data: { path: url?.slice(8) ?? "" } });
+      return r.url;
     },
   });
 
