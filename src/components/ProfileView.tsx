@@ -7,8 +7,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUp, Check, Film, Heart, Plus, Save, Search, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { profileQuery, profileListsQuery, watchedQuery, topFive, viewingStats, friendsQuery } from "@/lib/social";
-import { movieRouteId, type SearchResult } from "@/lib/media";
+import { profileQuery, profileListsQuery, watchedQuery, viewingStats, friendsQuery } from "@/lib/social";
+import { movieRouteId } from "@/lib/media";
+import { CATEGORY_COPY, TOP_KINDS_BY_CATEGORY, type TopKind } from "@/lib/copy";
+import { TopFiveSection } from "./TopFiveSection";
 import { useAuth } from "@/hooks/use-auth";
 import { Poster } from "./Poster";
 import {ListCoverStrip} from "./ListCoverStrip";
@@ -24,13 +26,13 @@ import { ErrorState } from "./States";
 export function ProfileView({userId}:{userId:string}){
  const {user}=useAuth();const own=user?.id===userId;const qc=useQueryClient();const p=useQuery(profileQuery(userId));const watches=useQuery(watchedQuery(userId));const lists=useQuery(profileListsQuery(userId));const relations=useQuery({...friendsQuery(user?.id ?? ""),enabled:!!user});
  const [category,setCategory]=useScreenState<"movie"|"music"|"book">(`profile:${userId}:category`,"movie");
+ const [topKind,setTopKind]=useScreenState<TopKind>(`profile:${userId}:topkind`,"artist");
  const [tab,setTab]=useScreenState(`profile:${userId}:tab`,"Listas");const [editing,setEditing]=useState(false);const [name,setName]=useState("");const [username,setUsername]=useState("");const [bio,setBio]=useState("");const [avatar,setAvatar]=useState("");const [creating,setCreating]=useState(false);const [saving,setSaving]=useState(false);
  useEffect(()=>{if(p.data){setName(p.data.display_name);setUsername(p.data.username ?? "");setBio(p.data.bio);setAvatar(p.data.avatar_url ?? "");}},[p.data]);
  const refresh=()=>qc.invalidateQueries({queryKey:["social"]});
  async function save(e:React.FormEvent){e.preventDefault();setSaving(true);const r=await supabase.from("profiles").update({display_name:name.trim(),username:username.trim().toLowerCase(),bio,avatar_url:avatar||null}).eq("id",userId);setSaving(false);if(r.error)return void toast.error("No se pudo guardar. Usá un usuario único de 3 a 24 letras, números o guiones bajos.");setEditing(false);refresh();qc.invalidateQueries({queryKey:["profile"]});toast.success("Perfil actualizado");}
- async function saveTop(top:SearchResult[]){const r=await supabase.from("profiles").update({top_five:JSON.parse(JSON.stringify(top))}).eq("id",userId);if(r.error)toast.error("No se pudo guardar tu Top 5");else{refresh();toast.success("Top 5 actualizado");}}
  if(p.isError)return <ErrorState onRetry={()=>p.refetch()}/>;if(!p.data)return <p className="py-12 text-muted-foreground">Cargando…</p>;
- const top=topFive(p.data.top_five);const stats=viewingStats(watches.data?.filter(w=>w.watched) ?? []);const friend=relations.data?.some(f=>f.status==="accepted"&&(f.sender_id===userId||f.receiver_id===userId));
+ const stats=viewingStats(watches.data?.filter(w=>w.watched) ?? []);const friend=relations.data?.some(f=>f.status==="accepted"&&(f.sender_id===userId||f.receiver_id===userId));
  return <div className="space-y-8">
   <header className="flex flex-wrap items-center gap-4"><UserAvatar name={p.data.display_name} url={p.data.avatar_url} className="size-20 text-3xl"/><div className="min-w-0"><h1 className="break-words font-display text-3xl">{p.data.display_name}</h1><p className="text-sm text-muted-foreground">@{p.data.username ?? "sin_usuario"}</p></div>{own&&<Button variant="outline" onClick={()=>setEditing(!editing)}><Save/>Editar perfil</Button>}</header>
   {own?<Button asChild variant="outline"><Link to="/avisos"><UserPlus/>Agregar amigos</Link></Button>:<div className="flex flex-wrap gap-2"><Button variant="outline" onClick={async()=>{if(!user)return;const existing=relations.data?.find(f=>f.sender_id===userId||f.receiver_id===userId);const r=existing?await supabase.from("friendships").delete().eq("id",existing.id):await supabase.from("friendships").insert({sender_id:user.id,receiver_id:userId});if(r.error)toast.error("No pudimos cambiar la amistad.");else refresh();}}><UserPlus/>{friend?"Amigos · quitar":"Agregar amigo"}</Button>{friend&&<Button asChild variant="outline"><Link to="/avisos" onClick={()=>{sessionStorage.setItem("butacapp:messages:peer",JSON.stringify(userId));sessionStorage.setItem("butacapp:avisos:section",JSON.stringify("Mensajes"));qc.setQueryData(["screen-state","messages:peer"],userId);qc.setQueryData(["screen-state","avisos:section"],"Mensajes");}}>Mensaje</Link></Button>}</div>}
