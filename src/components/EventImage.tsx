@@ -5,6 +5,7 @@ import { Film, Music, BookOpen, Palette, Drama, CalendarDays } from "lucide-reac
 import stageCover from "@/assets/event-stage.jpg";
 import musicCover from "@/assets/event-music.jpg";
 import cultureCover from "@/assets/event-culture.jpg";
+import { eventCover } from "@/lib/event-covers";
 
 const icons = {
   movie: Film,
@@ -45,7 +46,9 @@ export function EventImage({ title, interest, url }: { title: string; interest: 
     },
   });
 
-  const customSrc = url?.startsWith("storage:") ? signed.data : url;
+  const related = eventCover(title);
+  const originalSrc = url?.startsWith("storage:") ? signed.data : url;
+  const customSrc = originalSrc && !failed.includes(originalSrc) ? originalSrc : related?.url;
   const isFallback = !customSrc || failed.includes(customSrc);
   const imageSrc = isFallback ? (FALLBACK_COVERS[interest] ?? stageCover) : customSrc;
   const imageFailed = failed.includes(imageSrc);
@@ -53,7 +56,7 @@ export function EventImage({ title, interest, url }: { title: string; interest: 
   const label = labels[interest] ?? "Evento cultural";
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-sm border border-border bg-card">
+    <div className="relative aspect-video w-full overflow-hidden rounded-sm border border-border bg-card" title={customSrc === related?.url ? related?.credit : undefined}>
       {!imageFailed && <img
         src={imageSrc}
         width={1536}
@@ -69,6 +72,7 @@ export function EventImage({ title, interest, url }: { title: string; interest: 
         <p className="line-clamp-3 break-words font-display text-xl leading-tight text-foreground sm:text-3xl">{title}</p>
         <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">Portada ilustrada</p>
       </div>}
+      {!isFallback && customSrc === related?.url && <p className="absolute inset-x-3 bottom-2 text-[10px] text-foreground">{related?.credit}</p>}
       <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] font-medium text-foreground backdrop-blur-md">
         <Icon className="size-3.5 text-primary" />
         <span>{label}</span>
