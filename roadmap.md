@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [x] Ficha más compacta: estrellas sin título, promedios reales por fuente y reseña pequeña tras el tráiler; sin Comentarios de tu gente.
 - [x] Ficha de película: soundtrack como disco navegable sin canciones desplegadas; tráiler después de sinopsis y nota personal más arriba.
 - [x] Fotos específicas para Favero, Félix San Martín, Santiago Alonso (disco), Lovro Pogorelić, La Tempestad y Die Walküre, con créditos; otros eventos conservan ilustración cuando falta foto.
 - [x] Portadas de eventos: ilustraciones locales por categoría y título cuando falta o falla la foto original.

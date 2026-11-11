@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useAddToList } from "@/hooks/use-add-to-list";
 import type { CreditPerson, CriticScore, MovieDetail } from "@/lib/movie-types";
 import { getMovie } from "@/lib/movies.functions";
-import { cn } from "@/lib/utils";
+import { StarRating } from "@/components/StarRating";
 
 export const Route = createFileRoute("/_authenticated/movie/$movieId")({
   validateSearch: z.object({ list: z.string().uuid().optional() }),
@@ -95,7 +95,7 @@ function MoviePage() {
         </div>
       </header>
 
-      <section className="mt-6 px-4"><MovieActions key={m.routeId} result={m.result} genres={m.genres} extra={m.countries}/></section>
+      <section className="mt-6 px-4"><MovieActions key={m.routeId} section="controls" result={m.result} genres={m.genres} extra={m.countries}/><div className="mt-5"><Scores scores={m.scores}/></div></section>
       <div className="mt-6 space-y-8 px-4">
         {m.directors.length > 0 && <PeopleLine people={m.directors} listId={list} />}
 
@@ -116,6 +116,7 @@ function MoviePage() {
       </div>
 
       {m.trailerKey && <div className="mt-8"><MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} /></div>}
+      <section className="mt-5 px-4"><MovieActions key={`review-${m.routeId}`} section="review" result={m.result} genres={m.genres} extra={m.countries}/></section>
       <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
       {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
       <Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/>
@@ -124,7 +125,6 @@ function MoviePage() {
         <TasteRecommendations anchor={{source:m.result.source,id:m.result.externalId,title:m.title,verb:'viste'}}/>
         <section className="px-4"><h2 className="mb-4 font-display text-2xl">Dónde verla en Argentina</h2>{m.watchProviders?.names.length?<><p className="mb-3 text-sm text-muted-foreground">{m.watchProviders.names.join(" · ")}</p><ExtLink href={m.watchProviders.link}>Ver opciones</ExtLink><p className="mt-3 text-xs text-muted-foreground">Disponibilidad: JustWatch vía TMDB.</p></>:<p className="text-sm text-muted-foreground">No hay opciones registradas acá todavía, che.</p>}</section>
         <div className="space-y-6 px-4">
-          <Scores scores={m.scores} />
           <div className="flex flex-wrap gap-2">
             {m.links.letterboxd && <ExtLink href={m.links.letterboxd}>Letterboxd</ExtLink>}
             {m.links.imdb && <ExtLink href={m.links.imdb}>IMDb</ExtLink>}
@@ -191,38 +191,15 @@ const SCORE_STYLE: Record<CriticScore["source"], string> = {
 };
 
 function Scores({ scores }: { scores: CriticScore[] }) {
-  if (!scores.length) return null;
-  return (
-    <section aria-label="Puntajes" className="grid grid-cols-2 gap-2">
-      {scores.map((s) => (
-        <a
-          key={s.source}
-          href={s.url ?? undefined}
-          target="_blank"
-          rel="noreferrer"
-          className="py-3 transition-colors active:bg-accent"
-        >
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            {SCORE_STYLE[s.source]}
-          </p>
-          <p
-            className={cn(
-              "mt-1 font-display text-4xl leading-none",
-              "text-foreground",
-            )}
-          >
-            {s.value}
-            {(s.source === "tmdb" || s.source === "imdb") && (
-              <span className="text-base text-muted-foreground">/10</span>
-            )}
-          </p>
-          {s.votes ? (
-            <p className="mt-1 text-[11px] text-muted-foreground">{s.votes.toLocaleString("es-AR")} votos</p>
-          ) : null}
-        </a>
-      ))}
-    </section>
-  );
+  const publicScore = scores.find(s => s.source === "tmdb");
+  return <section aria-label="Promedios del público y la crítica" className="max-w-2xl border-y border-border py-4">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><h2 className="cinema-meta text-muted-foreground">Promedio del público</h2><span className="cinema-meta text-muted-foreground">{publicScore?.votes ? `${publicScore.votes.toLocaleString("es-AR")} votos · TMDB` : "TMDB"}</span></div>
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{(["tmdb","imdb","rt","metacritic"] as const).map(source => {
+      const score = scores.find(s => s.source === source);
+      const value = <><p className="cinema-meta text-muted-foreground">{source === "tmdb" ? "Público · TMDB" : source === "imdb" ? "IMDb" : source === "rt" ? "Rotten Tomatoes" : "Metacritic"}</p><p className="my-2 font-heading text-3xl text-foreground">{score?.value ?? "—"}{score && (source === "tmdb" || source === "imdb") && <span className="text-sm text-muted-foreground">/10</span>}</p>{score && (source === "tmdb" || source === "imdb") ? <StarRating value={score.percent / 10} size="sm"/> : <p className="text-xs text-muted-foreground">{score ? "Crítica" : "Sin dato disponible"}</p>}</>;
+      return score?.url ? <a key={source} href={score.url} target="_blank" rel="noreferrer" className="min-w-0 rounded-sm border border-border bg-card p-3">{value}</a> : <div key={source} className="min-w-0 rounded-sm border border-border bg-card p-3">{value}</div>;
+    })}</div>
+  </section>;
 }
 
 function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
