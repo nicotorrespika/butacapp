@@ -29,6 +29,8 @@ function CulturePage(){const {cultureId}=Route.useParams();const {list,soundtrac
  {d.result.creator&&<div className="mt-2 flex flex-wrap items-center gap-x-2 text-sm"><span className="cinema-meta text-muted-foreground">{type==="book"?"Por":"Artista"}</span>{d.result.creator.split(" · ").map(n=><Link key={n} to="/creator/$type/$name" params={{type,name:n}} className="inline-flex min-h-11 items-center text-primary underline-offset-4 hover:underline">{n}</Link>)}</div>}
  <p className="mt-2 text-xs text-muted-foreground">{[d.result.year,...d.genres].filter(Boolean).join(" · ")}</p></div></header>
  <CultureActions key={`controls-${cultureId}`} section="controls" result={d.result} genres={d.genres}/>
+ {!!d.ratings?.length&&<section className="grid grid-cols-2 gap-2">{d.ratings.map(r=><div key={r.source} className="border border-border px-2 py-2"><p className="cinema-meta text-muted-foreground">{r.source}</p><p className="font-display text-2xl text-primary">{r.value.toFixed(1)}<span className="text-sm text-muted-foreground">/10</span></p><p className="text-xs text-muted-foreground">{r.count} {r.count===1?"voto":"votos"}</p></div>)}</section>}
+ {d.preview&&<a href={d.preview.url} target="_blank" rel="noopener noreferrer" className="flex min-h-11 items-center justify-center border border-primary px-4 text-sm font-semibold text-primary">{d.preview.label}</a>}
  {d.description&&<section><h2 className="mb-3 font-display text-2xl">{type==="book"?"Sinopsis":"Sobre el disco"}</h2><p className="max-w-2xl whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{d.description}</p></section>}
  {type==="music"&&<MusicLinks title={d.result.title} artist={d.result.creator}/>}
  <Accordion key={cultureId} type="multiple">
