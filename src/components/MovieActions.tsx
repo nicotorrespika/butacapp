@@ -7,7 +7,11 @@ import { useAuth } from "@/hooks/use-auth";
 import type { SearchResult } from "@/lib/media";
 import { Button } from "./ui/button";
 import { StarRating } from "./StarRating";
-export function MovieActions({result,favoriteOnly=false}:{result:SearchResult;favoriteOnly?:boolean}){
+import { recordWorkTaste } from '@/lib/tastes-client';
+import { refreshPersonalization } from '@/lib/personalization.functions';
+import { useServerFn } from '@tanstack/react-start';
+export function MovieActions({result,favoriteOnly=false,genres=[],extra=[]}:{result:SearchResult;favoriteOnly?:boolean;genres?:string[];extra?:string[]}){
+ const refreshTastes=useServerFn(refreshPersonalization);
  const {user}=useAuth();const qc=useQueryClient();const [draft,setDraft]=useState<string|null>(null);const [busy,setBusy]=useState(false);const [body,setBody]=useState("");
  const comments=useQuery({queryKey:["social","movie-comments",result.source,result.externalId],enabled:!!user&&!favoriteOnly,queryFn:async()=>{const r=await supabase.from("movie_comments").select("*, profile:profiles(display_name,username)").eq("source",result.source).eq("external_id",result.externalId).order("created_at");if(r.error)throw r.error;return r.data;}});
  async function send(e:React.FormEvent){e.preventDefault();if(!user||!body.trim())return;const r=await supabase.from("movie_comments").insert({user_id:user.id,source:result.source,external_id:result.externalId,body:body.trim()}).select("id").single();if(r.error)return void toast.error("No se pudo comentar. Probá otra vez.");const id=r.data.id;setBody("");qc.invalidateQueries({queryKey:["social","movie-comments"]});toast.success("Comentario enviado",{action:{label:"Deshacer",onClick:async()=>{await supabase.from("movie_comments").delete().eq("id",id);qc.invalidateQueries({queryKey:["social","movie-comments"]});}}});}
@@ -18,6 +22,7 @@ export function MovieActions({result,favoriteOnly=false}:{result:SearchResult;fa
   if(!user||busy)return;setBusy(true);const previous=entry.data;
   const r=await supabase.from("movie_entries").upsert({user_id:user.id,source:result.source,external_id:result.externalId,title:result.title,year:result.year,image_url:result.imageUrl,watched:previous?.watched ?? false,favorite:previous?.favorite ?? false,score_10:previous?.score_10 ?? null,review:previous?.review ?? "",...change},{onConflict:"user_id,source,external_id"}).select("id").single();setBusy(false);
   if(r.error){toast.error("No se pudo guardar. Probá otra vez.");return;}
+  try { await recordWorkTaste(result,{favorite:change.favorite ?? previous?.favorite,score:change.score_10 ?? previous?.score_10,consumed:change.watched ?? previous?.watched},genres,extra); await qc.invalidateQueries({queryKey:['tastes']}); if(change.watched===true||(change.score_10 ?? 0)>=8) { const updated=await refreshTastes(); if(!updated.ok)toast(updated.message); await qc.invalidateQueries({queryKey:['tastes']}); } } catch { toast.error('Tu película se guardó, pero no pudimos actualizar tus recomendaciones.'); }
   const savedId=r.data.id;qc.invalidateQueries({queryKey:["social"]});toast.success("Guardado",{action:{label:"Deshacer",onClick:async()=>{if(previous)await supabase.from("movie_entries").update({watched:previous.watched,favorite:previous.favorite,score_10:previous.score_10,review:previous.review}).eq("id",savedId);else await supabase.from("movie_entries").delete().eq("id",savedId);qc.invalidateQueries({queryKey:["social"]});}}});
  }
  return <div className="space-y-5">{entry.isError?<p className="text-sm text-muted-foreground">No pudimos cargar tus datos. <Button variant="link" onClick={()=>entry.refetch()}>Reintentar</Button></p>:<>

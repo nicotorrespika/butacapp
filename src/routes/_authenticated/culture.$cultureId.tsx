@@ -2,6 +2,7 @@ import {ShareButton} from "@/components/ShareButton";
 import {shareResult} from "@/lib/sharing";
 import {supabase} from "@/integrations/supabase/client";
 import {SimilarRecommendations} from "@/components/SimilarRecommendations";
+import {TasteRecommendations} from "@/components/TasteRecommendations";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";

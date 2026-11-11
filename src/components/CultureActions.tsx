@@ -9,7 +9,11 @@ import { cultureVerbs, type CultureType } from "@/lib/culture";
 import type { SearchResult } from "@/lib/media";
 import { Button } from "./ui/button";
 import { StarRating } from "./StarRating";
-export function CultureActions({result,favoriteOnly=false}:{result:SearchResult;favoriteOnly?:boolean}) {
+import { recordWorkTaste } from '@/lib/tastes-client';
+import { refreshPersonalization } from '@/lib/personalization.functions';
+import { useServerFn } from '@tanstack/react-start';
+export function CultureActions({result,favoriteOnly=false,genres=[]}:{result:SearchResult;favoriteOnly?:boolean;genres?:string[]}) {
+ const refreshTastes=useServerFn(refreshPersonalization);
  const {user}=useAuth();const qc=useQueryClient();const adder=useAddToList(undefined);const [review,setReview]=useState<string|null>(null);const [comment,setComment]=useState("");
  const key=["culture","entry",user?.id,result.source,result.externalId];
  const entry=useQuery({queryKey:key,enabled:!!user,queryFn:async()=>{const r=await supabase.from("cultural_entries").select("*").eq("user_id",user?.id ?? "").eq("source",result.source).eq("external_id",result.externalId).maybeSingle();if(r.error)throw r.error;return r.data;}});
