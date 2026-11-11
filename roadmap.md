@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Novedades: seis noticias iniciales por área, cargar más solamente con Ver más.
+- [ ] Novedades: cinco noticias iniciales por área, Ver más carga otras cinco; amigos antes de noticias.
 - [ ] Fotos en Top de artistas/autores/directores: resolver imágenes reales y fallback visual si no hay retrato disponible.
 - [ ] Betty en Inicio: encabezado PELI/DISCO/LIBRO y descripción breve debajo según categoría.
 - [ ] Inicio estilo filas laterales: última búsqueda, favoritos/consumo y opciones latinas por categoría, más actividad compacta de amigos al final.
