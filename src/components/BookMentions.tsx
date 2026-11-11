@@ -13,7 +13,7 @@ import type { SearchResult } from "@/lib/media";
 export function BookMentions({ id, title }: { id: string; title: string }) {
   const call = useServerFn(getBookMentions);
   const q = useQuery({ queryKey: ["book-mentions", id], staleTime: 86400000, queryFn: () => call({ data: { id } }) });
-  const add = useAddToList();
+  const add = useAddToList(undefined);
   const navigate = useNavigate();
   if (!q.data?.ok || (!q.data.movies.length && !q.data.music.length)) return null;
   const open = (r: SearchResult) => r.mediaType === "movie" ? navigate({ to: "/movie/$movieId", params: { movieId: movieRouteId(r.externalId) } }) : navigate({ to: "/culture/$cultureId", params: { cultureId: cultureRouteId(r.source, r.externalId) } });
