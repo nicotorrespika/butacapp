@@ -1,13 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { searchMedia } from "@/lib/search.functions";
-import { ResultCard } from "@/components/ResultCard";
-import { useAddToList } from "@/hooks/use-add-to-list";
-import { cultureRouteId } from "@/lib/culture";
-import { movieRouteId, type SearchResult } from "@/lib/media";
+import { type SearchResult } from "@/lib/media";
 import { tasteKey } from "@/lib/tastes";
 import { RecommendationShelf } from "./RecommendationShelf";
 
@@ -24,8 +20,6 @@ const VERB: Record<Cat, string> = { movie: "buscaste", book: "buscaste", music: 
 export function SearchPicks({ category }: { category: Cat }) {
   const { user } = useAuth();
   const search = useServerFn(searchMedia);
-  const add = useAddToList(undefined);
-  const navigate = useNavigate();
   const q = useQuery({
     queryKey: ["tastes", "search-picks-v2", user?.id, category],
     enabled: !!user,
@@ -51,8 +45,5 @@ export function SearchPicks({ category }: { category: Cat }) {
     },
   });
   if (!user || !q.data?.items.length) return null;
-  const open = (r: SearchResult) => r.mediaType === "movie"
-    ? navigate({ to: "/movie/$movieId", params: { movieId: movieRouteId(r.externalId) } })
-    : navigate({ to: "/culture/$cultureId", params: { cultureId: cultureRouteId(r.source, r.externalId) } });
   return <RecommendationShelf title={q.data.personal ? `Porque ${VERB[category]} ${q.data.queries[0]}` : "Para arrancar"} items={q.data.items} />;
 }

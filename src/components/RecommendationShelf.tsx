@@ -8,7 +8,7 @@ import { movieRouteId, type SearchResult } from '@/lib/media';
 import { cultureRouteId } from '@/lib/culture';
 import { tasteKey } from '@/lib/tastes';
 
-export function RecommendationShelf({ title, subtitle, items, loading = false }: { title: string; subtitle?: string; items: SearchResult[]; loading?: boolean }) {
+export function RecommendationShelf({ title, subtitle, items, loading = false }: { title: string; subtitle?: string | undefined; items: SearchResult[]; loading?: boolean }) {
   const row = useRef<HTMLDivElement>(null); const navigate = useNavigate(); const add = useAddToList(undefined);
   return <section className="min-w-0 px-4 py-5">
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
