@@ -24,7 +24,6 @@ import { searchTopEntries } from "@/lib/top-five.functions";
 import { TOP_KIND_COPY } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { topFive } from "@/lib/social";
 import { toast } from "sonner";
 import { BackButton } from "@/components/BackButton";
 import { BettySearch } from "@/components/BettySearch";
