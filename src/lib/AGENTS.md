@@ -1,0 +1,1 @@
+- Event cover overrides match named artists/productions to inspected CDN assets with source credits; unknown titles keep illustrated fallbacks. Why: avoid unrelated portraits and repeated generic covers.

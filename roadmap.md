@@ -1,6 +1,9 @@
 # Roadmap
 
 ## Latest requests
+- [x] Ficha de película: soundtrack como disco navegable sin canciones desplegadas; tráiler después de sinopsis y nota personal más arriba.
+- [x] Fotos específicas para Favero, Félix San Martín, Santiago Alonso (disco), Lovro Pogorelić, La Tempestad y Die Walküre, con créditos; otros eventos conservan ilustración cuando falta foto.
+- [x] Portadas de eventos: ilustraciones locales por categoría y título cuando falta o falla la foto original.
 - [x] Recomendaciones por búsquedas: consultas estables y fichas abiertas desde resultados alimentan intereses privados, reutilizan controles de pausa/borrado y el orden de Para vos; Rayuela y apertura de ficha verificados con sesión real, 14 pruebas pasan.
 - [x] Top 5 por categoría: películas, artistas/discos/canciones (MusicBrainz + iTunes) y autores/libros (Open Library), tabla top_five_entries con posiciones, selector en perfil, buscador acotado por tipo y textos por categoría; verificado agregar 5 artistas, mensaje de Top lleno y perfil
 - [x] Textos centralizados en src/lib/copy.ts (Top 5, verbos y estados por categoría); CulturalProfile y TasteEditor los usan

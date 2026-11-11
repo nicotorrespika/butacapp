@@ -30,6 +30,7 @@ import { Route as AuthenticatedMovieMovieIdRouteImport } from './routes/_authent
 import { Route as AuthenticatedPeopleUserIdRouteImport } from './routes/_authenticated/people.$userId'
 import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
 import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_authenticated/recibido.$searchId'
+import { Route as AuthenticatedSoundtrackMovieIdRouteImport } from './routes/_authenticated/soundtrack.$movieId'
 import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
 import { Route as AuthenticatedCreatorTypeNameRouteImport } from './routes/_authenticated/creator.$type.$name'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
@@ -150,6 +151,12 @@ const AuthenticatedRecibidoSearchIdRoute =
     path: '/recibido/$searchId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSoundtrackMovieIdRoute =
+  AuthenticatedSoundtrackMovieIdRouteImport.update({
+    id: '/soundtrack/$movieId',
+    path: '/soundtrack/$movieId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const CompartirKindIdRoute = CompartirKindIdRouteImport.update({
   id: '/compartir/$kind/$id',
   path: '/compartir/$kind/$id',
@@ -204,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/soundtrack/$movieId': typeof AuthenticatedSoundtrackMovieIdRoute
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
   '/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
@@ -232,6 +240,7 @@ export interface FileRoutesByTo {
   '/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/soundtrack/$movieId': typeof AuthenticatedSoundtrackMovieIdRoute
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
   '/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
@@ -262,6 +271,7 @@ export interface FileRoutesById {
   '/_authenticated/people/$userId': typeof AuthenticatedPeopleUserIdRoute
   '/_authenticated/person/$personId': typeof AuthenticatedPersonPersonIdRoute
   '/_authenticated/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
+  '/_authenticated/soundtrack/$movieId': typeof AuthenticatedSoundtrackMovieIdRoute
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
   '/_authenticated/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/people/$userId'
     | '/person/$personId'
     | '/recibido/$searchId'
+    | '/soundtrack/$movieId'
     | '/compartir/$kind/$id'
     | '/lists/'
     | '/creator/$type/$name'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/people/$userId'
     | '/person/$personId'
     | '/recibido/$searchId'
+    | '/soundtrack/$movieId'
     | '/compartir/$kind/$id'
     | '/lists'
     | '/creator/$type/$name'
@@ -349,6 +361,7 @@ export interface FileRouteTypes {
     | '/_authenticated/people/$userId'
     | '/_authenticated/person/$personId'
     | '/_authenticated/recibido/$searchId'
+    | '/_authenticated/soundtrack/$movieId'
     | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
     | '/_authenticated/creator/$type/$name'
@@ -521,6 +534,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRecibidoSearchIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/soundtrack/$movieId': {
+      id: '/_authenticated/soundtrack/$movieId'
+      path: '/soundtrack/$movieId'
+      fullPath: '/soundtrack/$movieId'
+      preLoaderRoute: typeof AuthenticatedSoundtrackMovieIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/compartir/$kind/$id': {
       id: '/compartir/$kind/$id'
       path: '/compartir/$kind/$id'
@@ -581,6 +601,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPeopleUserIdRoute: typeof AuthenticatedPeopleUserIdRoute
   AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
   AuthenticatedRecibidoSearchIdRoute: typeof AuthenticatedRecibidoSearchIdRoute
+  AuthenticatedSoundtrackMovieIdRoute: typeof AuthenticatedSoundtrackMovieIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
   AuthenticatedCreatorTypeNameRoute: typeof AuthenticatedCreatorTypeNameRoute
 }
@@ -600,6 +621,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPeopleUserIdRoute: AuthenticatedPeopleUserIdRoute,
   AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
   AuthenticatedRecibidoSearchIdRoute: AuthenticatedRecibidoSearchIdRoute,
+  AuthenticatedSoundtrackMovieIdRoute: AuthenticatedSoundtrackMovieIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
   AuthenticatedCreatorTypeNameRoute: AuthenticatedCreatorTypeNameRoute,
 }

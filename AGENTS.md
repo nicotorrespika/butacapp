@@ -52,7 +52,7 @@ use the editor.
 - Music platform buttons use clearly labeled title/artist searches unless a catalog link has been verified. Why: search URLs must never masquerade as direct album or track IDs.
 
 - Betty result screens use saved history IDs, with per-screen React Query and session storage state; view scroll uses router restoration. Why: returning from details must not rerun recommendations or discard refinements.
-- Event images resolve private community photos with signed URLs and use a category/title plate on missing or broken images. Why: image failures must not leave blank agenda cards.
+- Event images use signed photos, curated covers or titled illustrations; soundtrack tracks expand only on music/soundtrack pages. Why: avoid blank covers and long movie pages.
 - Cinema venue records drive official-link discovery and scheduled event research; commercial listings reuse persisted Argentine TMDB releases. Why: viewing the agenda must not trigger research or invent showtimes.
 - Private messages are participant-readable and only recipients can change read timestamps, enforced by a trigger. Why: client edits must never alter another person’s message or recipients.
 - Content sharing uses one sheet and stable public SSR summary links; narrow summary RPCs expose only explicitly public data, and chat-card triggers check both participants' access. Why: social previews must work without exposing private lists or personal history.

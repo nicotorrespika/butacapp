@@ -95,6 +95,7 @@ function MoviePage() {
         </div>
       </header>
 
+      <section className="mt-6 px-4"><MovieActions key={m.routeId} result={m.result} genres={m.genres} extra={m.countries}/></section>
       <div className="mt-6 space-y-8 px-4">
         {m.directors.length > 0 && <PeopleLine people={m.directors} listId={list} />}
 
@@ -114,13 +115,12 @@ function MoviePage() {
         )}
       </div>
 
+      {m.trailerKey && <div className="mt-8"><MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} /></div>}
       <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
       {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
       <Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/>
       <div className="mt-10 space-y-10">
-        {m.trailerKey && <MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} />}
         <MovieListActivity key={m.routeId} movie={m} listId={list} />
-        <section className="px-4"><MovieActions key={m.routeId} result={m.result} genres={m.genres} extra={m.countries}/></section>
         <TasteRecommendations anchor={{source:m.result.source,id:m.result.externalId,title:m.title,verb:'viste'}}/>
         <section className="px-4"><h2 className="mb-4 font-display text-2xl">Dónde verla en Argentina</h2>{m.watchProviders?.names.length?<><p className="mb-3 text-sm text-muted-foreground">{m.watchProviders.names.join(" · ")}</p><ExtLink href={m.watchProviders.link}>Ver opciones</ExtLink><p className="mt-3 text-xs text-muted-foreground">Disponibilidad: JustWatch vía TMDB.</p></>:<p className="text-sm text-muted-foreground">No hay opciones registradas acá todavía, che.</p>}</section>
         <div className="space-y-6 px-4">
