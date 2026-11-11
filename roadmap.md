@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Betty: botón visible para enviar y Enter en computadora.
 - [ ] Diagnosticar Bryan Adams / Summer of 69 y reconstruir búsqueda musical compartida con Deezer, respaldo MusicBrainz, filtros artistas/discos/canciones y caché.
 - [ ] Verificar recomendaciones de búsquedas en una sola fila horizontal en computadora y celular.
 - [x] Cambiar «Preguntale a Betty» por invitaciones por categoría: ver, leer y escuchar.
