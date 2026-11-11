@@ -32,7 +32,7 @@ export function ListRecommendations({ listId }: { listId: string }) {
       <p className="text-sm leading-relaxed text-muted-foreground">Soy Betty. Miro las pelis, notas y reseñas de esta lista y te busco algo por ese lado.</p>
       <form onSubmit={submit} className="space-y-3">
         <textarea aria-label="Contale a Betty qué querés ver en esta lista" placeholder="Contale a Betty qué querés ver…" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={2000} rows={3} className="w-full rounded-sm border border-input bg-card px-4 py-3 text-base text-foreground outline-none focus:ring-2 focus:ring-ring" />
-        <Button type="submit" disabled={busy || !description.trim()}>{busy ? <Loader2 className="animate-spin" /> : <Glasses />} {busy ? "Betty está revolviendo la videoteca…" : error ? "Probar de nuevo" : "Preguntale a Betty"}</Button>
+        <Button type="submit" disabled={busy || !description.trim()}>{busy ? <Loader2 className="animate-spin" /> : <Glasses />} {busy ? "Betty está revolviendo la videoteca…" : error ? "Probar de nuevo" : "¿Indeciso? Describile a Betty qué te gustaría ver"}</Button>
       </form>
       <p className="text-xs text-muted-foreground">Betty es una IA y a veces se equivoca.</p>
       {error && <p role="alert" className="text-sm text-muted-foreground">{error}</p>}
