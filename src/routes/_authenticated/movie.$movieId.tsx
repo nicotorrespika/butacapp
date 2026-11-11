@@ -89,6 +89,7 @@ function MoviePage() {
               </p>
               <h1 className="mt-2 break-words font-display text-5xl leading-tight text-primary">{m.title}</h1>
               {m.originalTitle && <p className="mt-1 text-xs italic text-muted-foreground">{m.originalTitle}</p>}
+              {m.directors.length > 0 && <div className="mt-2"><PeopleLine people={m.directors} listId={list} /></div>}
               <dl className="mt-5 grid grid-cols-2 gap-x-8 gap-y-4">{[["AÑO",m.year],["DURACIÓN",m.runtime?`${m.runtime} min`:null],["GÉNERO",m.genres.join(" · ")]].filter(([,value])=>value).map(([label,value])=><div key={label}><dt className="cinema-meta text-muted-foreground">{label}</dt><dd className="mt-1 text-sm">{value}</dd></div>)}</dl>
             </div>
           </div>
@@ -97,7 +98,6 @@ function MoviePage() {
 
       <section className="mt-6 px-4"><MovieActions key={m.routeId} section="controls" result={m.result} genres={m.genres} extra={m.countries}/><div className="mt-5"><Scores scores={m.scores}/></div></section>
       <div className="mt-6 space-y-8 px-4">
-        {m.directors.length > 0 && <PeopleLine people={m.directors} listId={list} />}
 
         {(m.overview || m.genres.length > 0) && (
           <section>
@@ -119,6 +119,7 @@ function MoviePage() {
       <section className="mt-5 px-4"><MovieActions key={`review-${m.routeId}`} section="review" result={m.result} genres={m.genres} extra={m.countries}/></section>
       <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
       {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
+      {!!m.crew?.length && <TechnicalCredits crew={m.crew} listId={list} />}
       <Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/>
       <div className="mt-10 space-y-10">
         <MovieListActivity key={m.routeId} movie={m} listId={list} />
@@ -210,6 +211,40 @@ function ExtLink({ href, children }: { href: string; children: React.ReactNode }
       </a>
     </Button>
   );
+}
+
+const CREW_LABELS: Record<string, string> = {
+  Director: "Dirección", "Director of Photography": "Dirección de fotografía",
+  "Art Direction": "Dirección de arte", "Production Design": "Diseño de producción",
+  Editor: "Montaje", Screenplay: "Guion", Writer: "Guion", Story: "Historia",
+  "Original Music Composer": "Música original", Producer: "Producción",
+  "Executive Producer": "Producción ejecutiva", "Co-Producer": "Coproducción",
+  "Costume Design": "Vestuario", "Set Decoration": "Decoración",
+  "Sound Designer": "Diseño de sonido", "Sound Director": "Dirección de sonido",
+  "Sound Mixer": "Mezcla de sonido", "Sound Recordist": "Grabación de sonido",
+  "Sound Re-Recording Mixer": "Mezcla final", "Sound Editor": "Edición de sonido",
+  "Makeup Artist": "Maquillaje", "Hair Designer": "Peluquería", Hairstylist: "Peluquería",
+  Casting: "Casting", "Visual Effects Supervisor": "Supervisión de efectos visuales",
+  "Special Effects Supervisor": "Supervisión de efectos especiales",
+  "First Assistant Director": "Primera asistencia de dirección", "Assistant Director": "Asistencia de dirección",
+  "Second Assistant Director": "Segunda asistencia de dirección", "Camera Operator": "Cámara",
+  "Still Photographer": "Fotografía fija", Gaffer: "Iluminación", "Script Supervisor": "Continuidad",
+  "Production Manager": "Jefatura de producción", "Production Assistant": "Asistencia de producción",
+  "Stunt Coordinator": "Coordinación de dobles", Stunts: "Dobles de riesgo",
+  "Music Supervisor": "Supervisión musical", "Original Story": "Historia original", Novel: "Novela original",
+};
+
+function TechnicalCredits({ crew, listId }: { crew: CreditPerson[]; listId: string | undefined }) {
+  const groups = new Map<string, CreditPerson[]>();
+  for (const person of crew) {
+    const role = person.role ?? "Equipo";
+    const group = groups.get(role) ?? [];
+    if (!group.some(p => p.id === person.id)) group.push(person);
+    groups.set(role, group);
+  }
+  const priority = ["Director", "Director of Photography", "Art Direction", "Production Design", "Editor", "Screenplay", "Writer", "Original Music Composer"];
+  const rank = (role: string) => { const index = priority.indexOf(role); return index < 0 ? priority.length : index; };
+  return <section className="mt-8 px-4"><h2 className="mb-5 font-display text-2xl">Ficha técnica</h2><dl className="grid gap-x-8 sm:grid-cols-2">{[...groups].sort(([a], [b]) => rank(a) - rank(b)).map(([role, people]) => <div key={role} className="min-w-0 border-b border-border/50 py-3"><dt className="cinema-meta break-words text-muted-foreground">{CREW_LABELS[role] ?? role}</dt><dd className="mt-1 flex flex-wrap gap-x-3">{people.map(person => <Link key={person.id} to="/person/$personId" params={{ personId: String(person.id) }} search={{ list: listId }} className="min-h-11 py-3 text-sm text-primary">{person.name}</Link>)}</dd></div>)}</dl><p className="mt-4 text-xs text-muted-foreground">Créditos: TMDB · <a className="text-primary" href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">Fuente ↗</a></p></section>;
 }
 
 function CastRow({ cast, listId }: { cast: CreditPerson[]; listId: string | undefined }) {

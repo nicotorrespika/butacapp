@@ -306,6 +306,7 @@ export async function fetchMovieDetail(
     trailerKey: selectTrailer(d.videos?.results ?? []),
     directors,
     cast,
+    crew: crew.map(c => ({ id: c.id, name: c.name, role: c.job, photoUrl: c.profile_path ? `${TMDB_PROFILE}${c.profile_path}` : null })),
     scores,
     links: {
       tmdb: `https://www.themoviedb.org/${ref.type}/${ref.id}`,
