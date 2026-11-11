@@ -26,7 +26,7 @@ export function SearchPicks({ category }: { category: Cat }) {
   const add = useAddToList(undefined);
   const navigate = useNavigate();
   const q = useQuery({
-    queryKey: ["tastes", "search-picks", user?.id, category],
+    queryKey: ["tastes", "search-picks-v2", user?.id, category],
     enabled: !!user,
     staleTime: 5 * 60_000,
     queryFn: async () => {
@@ -34,11 +34,11 @@ export function SearchPicks({ category }: { category: Cat }) {
         .eq("user_id", user?.id ?? "").order("occurred_at", { ascending: false }).limit(200);
       const signals = s.data ?? [];
       const excluded = new Set(signals.filter(x => x.excluded).map(x => tasteKey(x.source, x.external_id)));
-      const searched = signals.filter(x => x.signal_key.startsWith("search:") && (x.category === category || x.category === "all"))
+      const searched = signals.filter(x => x.signal_key.startsWith("search:") && x.category === category)
         .map(x => x.title).filter((t, i, a) => t && a.indexOf(t) === i).slice(0, 3);
       const personal = searched.length > 0;
       const queries = personal ? searched : DEFAULTS[category];
-      const lists = await Promise.all(queries.map(t => search({ data: { q: t, filter: category } }).then(r => r[category]).catch(() => [] as SearchResult[])));
+      const lists = await Promise.all(queries.map(t => search({ data: { q: t, filter: category } }).then(r => (r[category] ?? []).filter(x => x.mediaType === category)).catch(() => [] as SearchResult[])));
       const seen = new Set<string>(); const out: SearchResult[] = [];
       for (let i = 0; out.length < 8 && i < 12; i++) for (const l of lists) {
         const r = l[i]; if (!r || out.length >= 8) continue;
