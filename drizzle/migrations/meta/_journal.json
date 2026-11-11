@@ -120,6 +120,13 @@
       "when": 1794357484754,
       "tag": "0016_tighten_social_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794358443338,
+      "tag": "0017_taste_storage",
+      "breakpoints": true
     }
   ]
 }
