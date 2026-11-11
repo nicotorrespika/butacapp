@@ -1,3 +1,4 @@
+import { normalizeTitle } from "@/lib/culture";
 import type { SearchResult } from "@/lib/media";
 import type { CultureDetail, CultureType } from "@/lib/culture";
 import { getJson, searchMusic } from "./search-providers";
@@ -14,7 +15,20 @@ export async function cultureDetail(source: string, id: string): Promise<Culture
     const b = await getJson<{title:string;description?:unknown;subjects?:string[];covers?:number[];authors?:{author:{key:string}}[]}>(`https://openlibrary.org${id}.json`);
     const [authors, editions] = await Promise.all([Promise.all((b.authors ?? []).slice(0,5).map(async a => { try { return (await getJson<{name:string}>(`https://openlibrary.org${a.author.key}.json`)).name; } catch { return null; } })), getJson<{entries:{publish_date?:string;number_of_pages?:number;publishers?:string[];key:string}[]}>(`https://openlibrary.org${id}/editions.json?limit=20`).catch(()=>({entries:[]}))]);
     const edition = editions.entries.find(e => !!e.number_of_pages) ?? editions.entries[0];
-    return {result:{source,externalId:id,mediaType:"book",title:b.title,creator:authors.filter(Boolean).join(" · ") || null,year:null,imageUrl:b.covers?.[0]?`https://covers.openlibrary.org/b/id/${b.covers[0]}-L.jpg`:null,kindLabel:"Libro",externalUrl:`https://openlibrary.org${id}`},description:text(b.description),genres:(b.subjects ?? []).slice(0,8),pages:edition?.number_of_pages ?? null,publisher:edition?.publishers?.join(" · ") ?? null,tracks:[],links:[{label:"Open Library · ediciones y acceso",url:`https://openlibrary.org${edition?.key ?? id}`} ]};
+    const author = authors.filter(Boolean)[0] ?? "";
+    const [olr, gb] = await Promise.all([
+      getJson<{summary?:{average?:number|null;count?:number}}>(`https://openlibrary.org${id}/ratings.json`).catch(()=>null),
+      getJson<{items?:{volumeInfo?:{title?:string;authors?:string[];averageRating?:number;ratingsCount?:number};accessInfo?:{viewability?:string;embeddable?:boolean;webReaderLink?:string}}[]}>(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(`intitle:${b.title} inauthor:${author}`)}&maxResults=5`).catch(()=>null),
+    ]);
+    // Only exact title/author matches count; previews are publisher-authorized Google Books samples.
+    const gbMatch = (gb?.items ?? []).filter(i => normalizeTitle(i.volumeInfo?.title ?? "") === normalizeTitle(b.title) && (i.volumeInfo?.authors ?? []).some(a => normalizeTitle(a) === normalizeTitle(author)));
+    const readable = gbMatch.find(i => i.accessInfo?.embeddable && (i.accessInfo.viewability === "PARTIAL" || i.accessInfo.viewability === "ALL_PAGES") && i.accessInfo.webReaderLink);
+    const rated = gbMatch.find(i => i.volumeInfo?.averageRating && i.volumeInfo.ratingsCount);
+    const ratings: {source:string;value:number;count:number}[] = [];
+    if (olr?.summary?.average && olr.summary.count) ratings.push({source:"Open Library",value:Math.round(olr.summary.average*20)/10,count:olr.summary.count});
+    if (rated) ratings.push({source:"Google Books",value:Math.round(rated.volumeInfo!.averageRating!*20)/10,count:rated.volumeInfo!.ratingsCount!});
+    const preview = readable ? {label: readable.accessInfo!.viewability === "ALL_PAGES" ? "Leer gratis (Google Books)" : "Leer las primeras páginas (Google Books)", url: readable.accessInfo!.webReaderLink!} : null;
+    return {preview,ratings,result:{source,externalId:id,mediaType:"book",title:b.title,creator:authors.filter(Boolean).join(" · ") || null,year:null,imageUrl:b.covers?.[0]?`https://covers.openlibrary.org/b/id/${b.covers[0]}-L.jpg`:null,kindLabel:"Libro",externalUrl:`https://openlibrary.org${id}`},description:text(b.description),genres:(b.subjects ?? []).slice(0,8),pages:edition?.number_of_pages ?? null,publisher:edition?.publishers?.join(" · ") ?? null,tracks:[],links:[{label:"Open Library · ediciones y acceso",url:`https://openlibrary.org${edition?.key ?? id}`} ]};
   }
   if (source === "itunes" && /^(album|song):\d+$/.test(id)) {
     const data = await getJson<{results:{wrapperType?:string;collectionId?:number;collectionName?:string;trackName?:string;artistName?:string;releaseDate?:string;artworkUrl100?:string;primaryGenreName?:string;collectionViewUrl?:string;trackViewUrl?:string;trackTimeMillis?:number;previewUrl?:string}[]}>(`https://itunes.apple.com/lookup?id=${id.split(":")[1]}&entity=song&country=AR`);

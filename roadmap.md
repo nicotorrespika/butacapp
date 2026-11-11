@@ -114,3 +114,5 @@
 - [x] Autor/artista en ficha de libro/música abre su perfil con obra (como directores)
 - [x] Similares visibles automáticamente en libros y música
 - [x] Cruce de universos "Porque viste/escuchaste/leíste…" en fichas
+- [x] Autores similares, latinos en libros, descripciones en español
+- [x] Libros: leer primeras páginas (Google Books/Open Library legal) y puntaje del público

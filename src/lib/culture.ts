@@ -16,7 +16,7 @@ export function availableCulture(results: SearchResult[], entries: { source: str
   const excluded = new Set([...entries.filter(e => e.consumed || e.queued || e.dismissed), ...items].map(e => `${e.source}:${e.external_id}`));
   return results.filter(r => !excluded.has(`${r.source}:${r.externalId}`));
 }
-export interface CultureDetail { result: SearchResult; description: string | null; genres: string[]; pages: number | null; publisher: string | null; tracks: { title: string; duration: number | null; preview: string | null }[]; links: { label: string; url: string }[]; }
+export interface CultureDetail { result: SearchResult; description: string | null; genres: string[]; pages: number | null; publisher: string | null; tracks: { title: string; duration: number | null; preview: string | null }[]; links: { label: string; url: string }[]; preview?: { label: string; url: string } | null; ratings?: { source: string; value: number; count: number }[]; }
 export function isCulture(media: MediaType): media is CultureType { return media === "book" || media === "music"; }
 export const cultureCompatible = (kind: Parameters<typeof listAccepts>[0], type: CultureType) => listAccepts(kind, type);
 export const eventSchema = z.object({ title: z.string().min(1).max(200), description: z.string().max(3000), starts_at: z.string().datetime({ offset: true }), ends_at: z.string().datetime({ offset: true }).nullable(), venue: z.string().min(1), address: z.string().nullable(), neighborhood: z.string().nullable(), interest: z.enum(["music", "movie", "art", "theater", "book", "festival"]), price: z.number().min(0).nullable(), source_name: z.string(), source_url: z.string().url(), image_url: z.string().url().nullable() });
