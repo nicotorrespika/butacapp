@@ -4,6 +4,7 @@ import { getJson, searchMusic, tmdbFetcher, mapTmdb, type TmdbItem } from "./sea
 import { parseQuery } from "@/lib/search-query";
 import { searchBooks } from "./culture-providers";
 import { musicBrainz } from "./music-providers";
+import { searchDeezer } from './music-providers';
 
 /** Artistas verificados en MusicBrainz. */
 async function searchArtists(query: string): Promise<SearchResult[]> {
@@ -33,7 +34,7 @@ async function searchAuthors(query: string): Promise<SearchResult[]> {
     title: a.name,
     creator: a.top_work ?? null,
     year: null,
-    imageUrl: null,
+    imageUrl: `https://covers.openlibrary.org/a/olid/${a.key}-M.jpg?default=false`,
     kindLabel: "Autor",
     externalUrl: `https://openlibrary.org/authors/${a.key}`,
   }));
@@ -47,7 +48,7 @@ export async function searchTopKind(kind: TopKind, query: string, tmdbKey: strin
     return r.results.map((m) => mapTmdb(m, "movie"));
   }
   if (kind === "artist") {
-    const music = await searchMusic(parseQuery(query));
+    const music = await searchDeezer(query);
     const artists = music.filter(m => m.externalId.startsWith("artist:"));
     return artists.length ? artists : searchArtists(query);
   }

@@ -1,6 +1,10 @@
 # Roadmap
 
 ## Latest requests
+- [x] Novedades: cinco iniciales, Ver más hasta cinco adicionales; amigos antes. Cine 5→10, música/libros 5→9 (restantes), probado.
+- [x] Fotos Top: Deezer para artistas, Open Library/enciclopedia para autores y resolver TMDB para directores; tres artistas y Paul Auster probados. No existe Top de directores en el perfil actual; sin inventar retratos cuando no hay fuente.
+- [x] Betty: encabezado PELI/DISCO/LIBRO y descripción por categoría, comprobados en móvil.
+- [x] Inicio: filas horizontales por última búsqueda y favorito/consumo, latinos relacionados desde caché (Betty bajo demanda si faltan), amigos antes de noticias; categorías y scroll probados a 390/843px.
 - [x] Random junto a Betty con textos/descripción por categoría; cine usa similares de última búsqueda, libros/música la consulta reciente; tres sugerencias verificadas en móvil.
 - [x] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos; Cine verificado a 390px sin desborde.
 - [x] Mis gustos: collage visual, listado opcional cerrado y datos preservados; abrir/cerrar verificado.
