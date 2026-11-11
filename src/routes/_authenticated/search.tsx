@@ -162,7 +162,7 @@ function SearchPage() {
             </Button>
           </div>
         ) : (
-          <div className="mb-4"><BackButton/><h1 className="mt-4 font-display text-4xl">{params.top?"Elegí tu Top 5":"Buscar"}</h1></div>
+          <div className="mb-4"><BackButton/><h1 className="mt-4 font-display text-4xl">{topCopy?topCopy.searchTitle:"Buscar"}</h1></div>
         )}
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -172,8 +172,8 @@ function SearchPage() {
             enterKeyHint="search"
             value={text}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Título, autor, año…"
-            aria-label="Buscar películas, música y libros"
+            placeholder={topCopy?topCopy.searchPlaceholder:"Título, autor, año…"}
+            aria-label={topCopy?topCopy.searchTitle:"Buscar películas, música y libros"}
             className="h-12 w-full rounded-sm border border-input bg-transparent pl-12 pr-12 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
           />
           {(query.isFetching || typing) && q.length >= 2 ? (
@@ -191,7 +191,7 @@ function SearchPage() {
             )
           )}
         </div>
-        <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 scrollbar-none" role="tablist">
+        {!params.top&&<div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 scrollbar-none" role="tablist">
           {CHIPS.map((c) => (
             <Button variant="ghost"
               key={c.id}
@@ -209,7 +209,7 @@ function SearchPage() {
               {c.label}
             </Button>
           ))}
-        </div>
+        </div>}
       </header>
 
       <div className="px-4 pt-2">
