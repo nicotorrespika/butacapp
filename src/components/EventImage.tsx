@@ -55,13 +55,13 @@ const FALLBACK_COVERS: Record<string, string[]> = {
 };
 
 function getFallback(interest: string, title: string) {
-  const pool = FALLBACK_COVERS[interest] ?? FALLBACK_COVERS.festival;
+  const pool = FALLBACK_COVERS[interest] ?? FALLBACK_COVERS["festival"]!;
   let hash = 0;
   for (let i = 0; i < title.length; i++) {
     hash = (hash << 5) - hash + title.charCodeAt(i);
     hash |= 0;
   }
-  return pool[Math.abs(hash) % pool.length];
+  return pool[Math.abs(hash) % pool.length]!;
 }
 
 export function EventImage({ title, interest, url }: { title: string; interest: string; url: string | null }) {

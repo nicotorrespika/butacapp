@@ -1,0 +1,2 @@
+GRANT EXECUTE ON FUNCTION public.share_access(text, text, uuid) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.public_share_summary(text, text) TO anon, authenticated, service_role;

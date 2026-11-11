@@ -141,6 +141,20 @@
       "when": 1794359201623,
       "tag": "0019_personalization_budget_and_controls",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794375079139,
+      "tag": "0020_share_community_events",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794375091256,
+      "tag": "0021_grant_share_functions_execute",
+      "breakpoints": true
     }
   ]
 }
