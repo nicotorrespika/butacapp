@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Loader2, Search, SearchX, X } from "lucide-react";
 import { z } from "zod";
@@ -31,6 +31,7 @@ import {DiscoveryDeck} from "@/components/DiscoveryDeck";
 import { CultureDiscovery } from "@/components/CultureDiscovery";
 import { CultureBetty } from "@/components/CultureBetty";
 import { cultureRouteId, isCulture } from "@/lib/culture";
+import { recordSearchTaste, recordSearchOpenTaste } from "@/lib/tastes-client";
 
 export const Route = createFileRoute("/_authenticated/search")({
   validateSearch: z.object({
@@ -67,6 +68,7 @@ function SearchPage() {
   const params = Route.useSearch();
   const mode=params.mode ?? "search";
   const navigate = Route.useNavigate();
+  const qc = useQueryClient();
   const [text, setText] = useState(params.q ?? "");
   const filter: SearchFilter = params.f ?? "all";
   const q = useDebouncedValue(text.trim(), 350);
@@ -78,6 +80,7 @@ function SearchPage() {
 
   // Movies with a TMDB/IMDb id open their page (synopsis, scores, similar titles).
   function openMovie(r: SearchResult) {
+    void recordSearchOpenTaste(r).then(() => qc.invalidateQueries({queryKey:['tastes']})).catch(() => {});
     if(isCulture(r.mediaType)){void navigate({to:"/culture/$cultureId",params:{cultureId:cultureRouteId(r.source,r.externalId)},search:{list:params.list}});return;}
     if (!hasMoviePage(r.source, r.mediaType)) return;
     void navigate({
@@ -117,11 +120,28 @@ function SearchPage() {
   });
   const topQuery = useQuery({
     queryKey: ["search", "top", params.top, q],
-    queryFn: () => topSearch({ data: { kind: params.top!, q } }),
+    queryFn: () => {
+      if (!params.top) return [];
+      return topSearch({ data: { kind: params.top, q } });
+    },
     enabled: !!params.top && q.length >= 2,
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
   });
+
+  // Record only settled searches, including cached results; never every keystroke.
+  useEffect(() => {
+    if (mode !== 'search' || q.length < 2 || text.trim() !== q) return;
+    const waiting = params.top ? topQuery.isFetching : query.isFetching;
+    const placeholder = params.top ? topQuery.isPlaceholderData : query.isPlaceholderData;
+    if (waiting || placeholder) return;
+    const searchFilter = params.top ? (params.top === 'movie' ? 'movie' : params.top === 'author' || params.top === 'book' ? 'book' : 'music') : filter;
+    const timer = setTimeout(() => {
+      void recordSearchTaste(q, searchFilter, params.top ? undefined : query.data)
+        .then(() => qc.invalidateQueries({queryKey:['tastes']})).catch(() => {});
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [q, text, filter, mode, params.top, query.isFetching, query.isPlaceholderData, query.data, topQuery.isFetching, topQuery.isPlaceholderData, qc]);
 
   // Keep the URL in sync so a search can be shared or survives reloads.
   function setFilter(f: SearchFilter) {

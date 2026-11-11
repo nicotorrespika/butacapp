@@ -22,6 +22,6 @@ export function diverseOrder<T extends { score: number; id: string }>(rows: T[],
   return [...familiar, ...exploration];
 }
 export function workTags(result: SearchResult, genres: string[] = [], extra: string[] = []) {
-  return [...new Set([...genres, ...extra, result.creator, result.year ? `${Math.floor(result.year / 10) * 10}s` : null].filter((v): v is string => !!v).map(s => s.trim()).filter(Boolean))].slice(0, 30);
+  return [...new Set([...genres, ...extra, result.title, result.creator, result.year ? `${Math.floor(result.year / 10) * 10}s` : null].filter((v): v is string => !!v).map(s => s.trim()).filter(Boolean))].slice(0, 30);
 }
 export const initialTastes = ['Jazz', 'Rock argentino', 'Cine argentino', 'Terror', 'Drama', 'Cine de los 70', 'Literatura latinoamericana', 'Poesía', 'Ciencia ficción', 'Música en vivo', 'Teatro', 'Festivales'];
