@@ -18,9 +18,11 @@ import { ErrorState } from "@/components/States";
 import { MusicLinks } from "@/components/MusicLinks";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { useDetailPreview } from "@/lib/detail-preview";
+import { DetailPreview } from "@/components/DetailPreview";
 export const Route=createFileRoute("/_authenticated/culture/$cultureId")({validateSearch:z.object({list:z.string().uuid().optional(),soundtrack:z.string().regex(/^movie-\d+$/).optional()}),head:()=>({meta:[{title:"Discos y libros — BUTACAPP"},{name:"description",content:"Fichas de discos y libros, notas, reseñas y listas compartidas."},{property:"og:title",content:"Discos y libros — BUTACAPP"},{property:"og:description",content:"Descubrí un título y compartí lo que te pareció."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:CulturePage});
-function CulturePage(){const {cultureId}=Route.useParams();const {list,soundtrack}=Route.useSearch();const origin=useQuery({queryKey:["soundtrack","origin",soundtrack],enabled:!!soundtrack,queryFn:async()=>{const r=await supabase.from("movie_soundtracks").select("movie_title,movie_poster").eq("movie_id",soundtrack ?? "").limit(1).maybeSingle();return r.data;}});const call=useServerFn(getCultureDetail);const q=useQuery({queryKey:["culture","detail",cultureId],queryFn:()=>call({data:{id:cultureId}})});
- if(q.isError||q.data?.ok===false)return <div className="px-4 py-5"><BackButton/><ErrorState onRetry={()=>q.refetch()}/></div>;if(!q.data)return <p className="px-4 py-12 text-muted-foreground">Abriendo la ficha…</p>;
+function CulturePage(){const {cultureId}=Route.useParams();const preview=useDetailPreview(cultureId);const {list,soundtrack}=Route.useSearch();const origin=useQuery({queryKey:["soundtrack","origin",soundtrack],enabled:!!soundtrack,queryFn:async()=>{const r=await supabase.from("movie_soundtracks").select("movie_title,movie_poster").eq("movie_id",soundtrack ?? "").limit(1).maybeSingle();return r.data;}});const call=useServerFn(getCultureDetail);const q=useQuery({queryKey:["culture","detail",cultureId],queryFn:()=>call({data:{id:cultureId}}),staleTime:30*60_000});
+ if(q.isError||q.data?.ok===false)return <div className="px-4 py-5"><BackButton/><ErrorState onRetry={()=>q.refetch()}/></div>;if(!q.data)return <DetailPreview result={preview}/>;
  const d=q.data.detail;const type=d.result.mediaType==="book"?"book":"music";
  return <div className="space-y-5 px-4 py-5">
  <div className="flex flex-wrap items-center justify-between gap-2"><BackButton/><ShareButton content={shareResult(d.result)}/></div>

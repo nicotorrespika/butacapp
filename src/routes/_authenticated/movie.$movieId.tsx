@@ -24,6 +24,8 @@ import type { CreditPerson, CriticScore, MovieDetail } from "@/lib/movie-types";
 import { getMovie } from "@/lib/movies.functions";
 import { StarRating } from "@/components/StarRating";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { useDetailPreview } from "@/lib/detail-preview";
+import { DetailPreview } from "@/components/DetailPreview";
 
 export const Route = createFileRoute("/_authenticated/movie/$movieId")({
   validateSearch: z.object({ list: z.string().uuid().optional() }),
@@ -42,6 +44,7 @@ export const Route = createFileRoute("/_authenticated/movie/$movieId")({
 
 function MoviePage() {
   const { movieId } = Route.useParams();
+  const preview=useDetailPreview(movieId);
   const { list } = Route.useSearch();
   const fetchMovie = useServerFn(getMovie);
   const q = useQuery({
@@ -52,7 +55,7 @@ function MoviePage() {
   const adder = useAddToList(list);
   const cardProps = useCardProps(adder, list);
 
-  if (q.isLoading) return <MovieSkeleton />;
+  if (q.isLoading) return <DetailPreview result={preview} />;
   if (q.isError || !q.data || !q.data.ok) return (
     <div>
       <FetchProblem reason={q.data && !q.data.ok ? q.data.reason : "provider"} onRetry={() => q.refetch()} />

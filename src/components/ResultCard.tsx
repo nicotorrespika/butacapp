@@ -7,6 +7,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { HoverActions, QuickView } from "@/components/QuickActions";
+import { useRememberPreview } from "@/lib/detail-preview";
+import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
+import { getMovie } from "@/lib/movies.functions";
+import { getCultureDetail } from "@/lib/culture.functions";
+import { movieRouteId } from "@/lib/media";
+import { cultureRouteId } from "@/lib/culture";
 
 const canHover = () => typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
 
@@ -32,6 +39,14 @@ export function ResultCard({
   targetName?: string | undefined;
 }) {
   const [quick, setQuick] = useState(false);
+  const remember=useRememberPreview();const qc=useQueryClient();const movie=useServerFn(getMovie);const culture=useServerFn(getCultureDetail);
+  const prefetch=()=>{
+    remember(result);
+    if(result.externalId.startsWith("artist:")||result.externalId.startsWith("author:"))return;
+    if(result.mediaType==="movie")void qc.prefetchQuery({queryKey:["movie",movieRouteId(result.externalId)],queryFn:()=>movie({data:{id:movieRouteId(result.externalId)}}),staleTime:30*60_000});
+    else if(result.mediaType==="book"||result.mediaType==="music")void qc.prefetchQuery({queryKey:["culture","detail",cultureRouteId(result.source,result.externalId)],queryFn:()=>culture({data:{id:cultureRouteId(result.source,result.externalId)}}),staleTime:30*60_000});
+  };
+  const open=()=>{remember(result);onOpen?.(result);};
   const [hovered, setHovered] = useState(false);
   const quickable = result.mediaType === "movie" || result.mediaType === "book" || result.mediaType === "music";
   return (
@@ -40,7 +55,9 @@ export function ResultCard({
         {onOpen ? (
           <Button variant="ghost"
             type="button"
-            onClick={() => quickable && !canHover() ? setQuick(true) : onOpen(result)}
+            onPointerDown={prefetch}
+            onFocus={prefetch}
+            onClick={() => quickable && !canHover() ? setQuick(true) : open()}
             aria-label={`Ver ficha de ${result.title}`}
             className="block h-auto w-full rounded-sm p-0"
           >
@@ -78,7 +95,7 @@ export function ResultCard({
         {result.kindLabel==="Cine argentino"&&<p className="mb-1 text-[10px] uppercase text-primary">Cine argentino</p>}
         <h3 className="line-clamp-2 font-display text-xl leading-snug text-primary">
           {onOpen ? (
-            <Button variant="ghost" type="button" onClick={() => onOpen(result)} className="h-auto min-h-11 justify-start whitespace-normal rounded-none p-0 text-left font-display text-xl font-normal text-primary hover:bg-transparent">
+            <Button variant="ghost" type="button" onPointerDown={prefetch} onClick={open} className="h-auto min-h-11 justify-start whitespace-normal rounded-none p-0 text-left font-display text-xl font-normal text-primary hover:bg-transparent">
               {result.title}
             </Button>
           ) : (
@@ -89,7 +106,7 @@ export function ResultCard({
           {[result.creator, result.year].filter(Boolean).join(" · ") || result.kindLabel}
         </p>
       </div>
-      {quickable && onOpen && <QuickView result={result} open={quick} onOpenChange={setQuick} onSave={() => onAdd(result)} onOpenFull={() => onOpen(result)} />}
+      {quickable && onOpen && <QuickView result={result} open={quick} onOpenChange={setQuick} onSave={() => onAdd(result)} onOpenFull={open} />}
     </article>
   );
 }
