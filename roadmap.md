@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Medir fichas de cine/música/libros/eventos en 4G lento; informar cinco cuellos de botella antes de optimizar caché, apertura y cargas diferidas. Dispositivo real requiere al usuario.
 - [ ] Betty: botón visible para enviar y Enter en computadora.
 - [ ] Diagnosticar Bryan Adams / Summer of 69 y reconstruir búsqueda musical compartida con Deezer, respaldo MusicBrainz, filtros artistas/discos/canciones y caché.
 - [ ] Verificar recomendaciones de búsquedas en una sola fila horizontal en computadora y celular.
