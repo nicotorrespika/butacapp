@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Ficha de película: soundtrack como disco navegable sin canciones desplegadas; tráiler después de sinopsis y nota personal más arriba.
 - [ ] Fotos específicas de eventos y artistas: priorizar imágenes oficiales, sin repetir una portada genérica.
 - [x] Portadas de eventos: ilustraciones locales por categoría y título cuando falta o falla la foto original.
 - [x] Recomendaciones por búsquedas: consultas estables y fichas abiertas desde resultados alimentan intereses privados, reutilizan controles de pausa/borrado y el orden de Para vos; Rayuela y apertura de ficha verificados con sesión real, 14 pruebas pasan.
