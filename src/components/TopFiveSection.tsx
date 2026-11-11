@@ -8,6 +8,9 @@ import { movieRouteId } from "@/lib/media";
 import { cultureRouteId } from "@/lib/culture";
 import { Button } from "./ui/button";
 import { Poster } from "./Poster";
+import { useServerFn } from '@tanstack/react-start';
+import { getTopPortraits } from '@/lib/portraits.functions';
+import { TopPortrait } from './TopPortrait';
 
 interface TopEntry {
   id: string;
@@ -40,6 +43,8 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
     },
   });
   const entries = q.data ?? [];
+  const portraitCall = useServerFn(getTopPortraits);
+  const portraits = useQuery({ queryKey: ['top-five', 'portraits', userId, kind, entries.map(e => e.id)], enabled: (kind === 'artist' || kind === 'author') && entries.length > 0, staleTime: 30 * 86400000, queryFn: () => portraitCall({ data: { userId, kind: kind === 'author' ? 'author' : 'artist' } }) });
 
   async function save(next: TopEntry[]) {
     const rows = next.map((e, i) => ({ id: e.id, position: i + 1 }));
@@ -49,6 +54,7 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
     for (const e of removed) await supabase.from("top_five_entries").delete().eq("id", e.id);
     for (const r of rows) await supabase.from("top_five_entries").update({ position: r.position }).eq("id", r.id);
     void qc.invalidateQueries({ queryKey: ["top-five", userId, kind] });
+    void qc.invalidateQueries({ queryKey: ['tastes'] });
     toast.success("Top 5 actualizado");
   }
 
@@ -67,9 +73,7 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
           {entries.map((e, i) => {
             const link = entryLink(e);
             const figure = round ? (
-              <span className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-full border border-border bg-secondary font-display text-3xl text-muted-foreground">
-                {e.image_url ? <img src={e.image_url} alt={e.title} loading="lazy" className="h-full w-full object-cover" /> : e.title.charAt(0)}
-              </span>
+              <TopPortrait name={e.title} url={portraits.data?.find(p => p.id === e.id)?.url ?? e.image_url} />
             ) : (
               <Poster src={e.image_url} alt={e.title} media={media} />
             );
