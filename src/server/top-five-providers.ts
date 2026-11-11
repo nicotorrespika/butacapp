@@ -48,7 +48,11 @@ export async function searchTopKind(kind: TopKind, query: string, tmdbKey: strin
     const r = await tmdbFetcher(tmdbKey)<{ results: TmdbItem[] }>("/search/movie", { query });
     return r.results.map((m) => mapTmdb(m, "movie"));
   }
-  if (kind === "artist") return searchArtists(query);
+  if (kind === "artist") {
+    const music = await searchMusic(parseQuery(query));
+    const artists = music.filter(m => m.externalId.startsWith("artist:"));
+    return artists.length ? artists : searchArtists(query);
+  }
   if (kind === "author") return searchAuthors(query);
   if (kind === "book") return searchBooks(query);
   const music = await searchMusic(parseQuery(query));
