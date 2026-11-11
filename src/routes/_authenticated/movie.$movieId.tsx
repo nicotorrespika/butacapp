@@ -23,6 +23,7 @@ import { useAddToList } from "@/hooks/use-add-to-list";
 import type { CreditPerson, CriticScore, MovieDetail } from "@/lib/movie-types";
 import { getMovie } from "@/lib/movies.functions";
 import { StarRating } from "@/components/StarRating";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/_authenticated/movie/$movieId")({
   validateSearch: z.object({ list: z.string().uuid().optional() }),
@@ -118,8 +119,10 @@ function MoviePage() {
       {m.trailerKey && <div className="mt-8"><MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} /></div>}
       <section className="mt-5 px-4"><MovieActions key={`review-${m.routeId}`} section="review" result={m.result} genres={m.genres} extra={m.countries}/></section>
       <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
-      {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
-      {!!m.crew?.length && <TechnicalCredits crew={m.crew} listId={list} />}
+      <Accordion key={m.routeId} type="multiple" className="mt-6 px-4">
+        {m.cast.length > 0 && <AccordionItem value="cast"><AccordionTrigger className="min-h-14 font-display text-2xl">Reparto</AccordionTrigger><AccordionContent><CastRow cast={m.cast} listId={list} /></AccordionContent></AccordionItem>}
+        {!!m.crew?.length && <AccordionItem value="crew"><AccordionTrigger className="min-h-14 font-display text-2xl">Ficha técnica</AccordionTrigger><AccordionContent><TechnicalCredits crew={m.crew} listId={list} /></AccordionContent></AccordionItem>}
+      </Accordion>
       <Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/>
       <div className="mt-10 space-y-10">
         <MovieListActivity key={m.routeId} movie={m} listId={list} />
@@ -244,14 +247,13 @@ function TechnicalCredits({ crew, listId }: { crew: CreditPerson[]; listId: stri
   }
   const priority = ["Director", "Director of Photography", "Art Direction", "Production Design", "Editor", "Screenplay", "Writer", "Original Music Composer"];
   const rank = (role: string) => { const index = priority.indexOf(role); return index < 0 ? priority.length : index; };
-  return <section className="mt-8 px-4"><h2 className="mb-5 font-display text-2xl">Ficha técnica</h2><dl className="grid gap-x-8 sm:grid-cols-2">{[...groups].sort(([a], [b]) => rank(a) - rank(b)).map(([role, people]) => <div key={role} className="min-w-0 border-b border-border/50 py-3"><dt className="cinema-meta break-words text-muted-foreground">{CREW_LABELS[role] ?? role}</dt><dd className="mt-1 flex flex-wrap gap-x-3">{people.map(person => <Link key={person.id} to="/person/$personId" params={{ personId: String(person.id) }} search={{ list: listId }} className="min-h-11 py-3 text-sm text-primary">{person.name}</Link>)}</dd></div>)}</dl><p className="mt-4 text-xs text-muted-foreground">Créditos: TMDB · <a className="text-primary" href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">Fuente ↗</a></p></section>;
+  return <section><dl className="grid gap-x-8 sm:grid-cols-2">{[...groups].sort(([a], [b]) => rank(a) - rank(b)).map(([role, people]) => <div key={role} className="min-w-0 border-b border-border/50 py-3"><dt className="cinema-meta break-words text-muted-foreground">{CREW_LABELS[role] ?? role}</dt><dd className="mt-1 flex flex-wrap gap-x-3">{people.map(person => <Link key={person.id} to="/person/$personId" params={{ personId: String(person.id) }} search={{ list: listId }} className="min-h-11 py-3 text-sm text-primary">{person.name}</Link>)}</dd></div>)}</dl><p className="mt-4 text-xs text-muted-foreground">Créditos: TMDB · <a className="text-primary" href="https://www.themoviedb.org/" target="_blank" rel="noreferrer">Fuente ↗</a></p></section>;
 }
 
 function CastRow({ cast, listId }: { cast: CreditPerson[]; listId: string | undefined }) {
   return (
-    <section className="mt-8">
-      <h2 className="mb-3 px-4 font-display text-2xl">Reparto</h2>
-      <div className="flex gap-4 overflow-x-auto px-4 pb-2 scrollbar-none">
+    <section>
+      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-none">
         {cast.map((c) => (
           <Link
             key={c.id}
