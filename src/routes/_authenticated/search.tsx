@@ -298,7 +298,7 @@ function SearchPage() {
                 </div>
               </section>
             )}
-            {(["book","music"] as const).filter(m=>filter==="all"||filter===m).map(m=>{
+            {(["book","music"] as const).filter(m=>(filter==="all"||filter===m)&&(m!=="music"||!data.music.some(r=>musicKind(r)==="artist"))).map(m=>{
               const norm=(x:string)=>x.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
               const words=norm(q).replace(/\b(18|19|20)\d{2}\b/g,"").split(/\s+/).filter(Boolean);
               const names=[...new Set(data[m].flatMap(r=>(r.creator??"").split(" · ")).map(n=>n.trim()).filter(n=>n&&words.length&&words.every(w=>norm(n).includes(w))))].slice(0,4);

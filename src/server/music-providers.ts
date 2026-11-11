@@ -1,6 +1,6 @@
 import type { SearchResult } from "@/lib/media";
 import type { CultureDetail } from "@/lib/culture";
-import { rankMusic } from "@/lib/music-search";
+import { rankMusic, musicText } from "@/lib/music-search";
 type DeezerItem = {id:number;name?:string;title?:string;link?:string;picture_medium?:string;cover_medium?:string;cover_big?:string;release_date?:string;duration?:number;preview?:string;artist?:{id:number;name:string;picture_medium?:string};album?:{id:number;title:string;cover_medium?:string};genres?:{data:{name:string}[]};label?:string;tracks?:{data:DeezerItem[]}};
 async function deezer<T>(path: string): Promise<T> {
   const r = await fetch(`https://api.deezer.com/${path}`,{signal:AbortSignal.timeout(6500)});
@@ -17,7 +17,16 @@ export async function searchDeezer(query:string):Promise<SearchResult[]> {
     try { const r=await deezer<{data:DeezerItem[]}>(`search/${type}?q=${encodeURIComponent(query)}&limit=18`);return (r.data??[]).map(x=>map(x,type==="track"?"song":type)); }
     catch(e){console.warn(`[music] Deezer ${type} unavailable`, e instanceof Error?e.message:"provider");return [];}
   }));
-  return rankMusic(pools.flat(),query);
+  const exact=pools[0]?.filter(r=>musicText(r.title)===musicText(query))??[];
+  const artists=exact.length?exact:pools[0]??[];
+  return rankMusic([...artists,...(pools[1]??[]),...(pools[2]??[])],query);
+}
+export async function musicGenre(genre:string):Promise<SearchResult[]> {
+  const genres=await deezer<{data:{id:number;name:string}[]}>("genre?lang=es");
+  const match=genres.data.find(g=>musicText(g.name)===musicText(genre));
+  if(!match)return [];
+  const chart=await deezer<{albums?:{data:DeezerItem[]};tracks?:{data:DeezerItem[]};artists?:{data:DeezerItem[]}}>(`chart/${match.id}`);
+  return [...(chart.albums?.data??[]).map(d=>map(d,"album")),...(chart.tracks?.data??[]).map(d=>map(d,"song"))];
 }
 // Serialize MusicBrainz requests within each Worker; no parallel requests to this provider.
 let mbQueue:Promise<unknown>=Promise.resolve(); let mbLast=0;
