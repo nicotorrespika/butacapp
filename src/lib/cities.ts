@@ -20,7 +20,7 @@ export const MAIN_CITIES = [
 ];
 
 const fold = (s: string) =>
-  s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
 
 
 const ALIASES: Record<string, string> = {
