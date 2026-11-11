@@ -1782,6 +1782,8 @@ export type Database = {
         }
         Returns: undefined
       }
+      reserve_taste_ai: { Args: { uid: string }; Returns: boolean }
+      resume_taste_job: { Args: never; Returns: boolean }
       search_people: {
         Args: { term: string }
         Returns: {
