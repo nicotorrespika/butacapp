@@ -13,6 +13,7 @@ import { refreshPersonalization } from '@/lib/personalization.functions';
 import type { Tables } from '@/integrations/supabase/types';
 import { Button } from './ui/button';
 import { Poster } from './Poster';
+import { EventImage } from './EventImage';
 export function TasteRecommendations({category='all',anchor}:{category?:HomeCategory;anchor?:{source:string;id:string;title:string;verb:string}}) {
   const {user}=useAuth();const {settings,chips,paused}=useTastes();const call=useServerFn(refreshPersonalization);const qc=useQueryClient();const [busy,setBusy]=useState(false);
   const q=useQuery({queryKey:['tastes','recommendations',user?.id,category,anchor?.id],enabled:!!user,queryFn:async()=>{let query=supabase.from('taste_recommendations').select('*').eq('user_id',user?.id ?? '').order('score',{ascending:false}).limit(100);if(category!=='all')query=query.eq('category',category);if(anchor)query=query.eq('anchor_source',anchor.source).eq('anchor_id',anchor.id);const r=await query;if(r.error)throw r.error;return r.data;}});
@@ -26,7 +27,7 @@ export function TasteRecommendations({category='all',anchor}:{category?:HomeCate
 }
 function TasteCard({row}:{row:Tables<'taste_recommendations'>}) {
   const {user}=useAuth();const qc=useQueryClient();const [menu,setMenu]=useState(false);const [busy,setBusy]=useState(false);
-  const content=<><Poster src={row.image_url} alt={row.title} media={row.category==='event'?'art':row.category==='book'?'book':row.category==='music'?'music':'movie'} aspect="aspect-[4/5]"/><p className="mt-3 cinema-meta text-muted-foreground">{({movie:'Cine',book:'Libros',music:'Música',event:'Eventos'})[row.category] ?? row.category}{row.exploration?' · Otra mirada':''}</p><h3 className="mt-1 break-words font-display text-xl text-primary">{row.title}</h3></>;
+  const content=<>{row.category==='event'?<EventImage title={row.title} interest="festival" url={row.image_url}/>:<Poster src={row.image_url} alt={row.title} media={row.category==='book'?'book':row.category==='music'?'music':'movie'} aspect="aspect-[4/5]"/>}<p className="mt-3 cinema-meta text-muted-foreground">{({movie:'Cine',book:'Libros',music:'Música',event:'Eventos'})[row.category] ?? row.category}{row.exploration?' · Otra mirada':''}</p><h3 className="mt-1 break-words font-display text-xl text-primary">{row.title}</h3></>;
   async function feedback(kind:'interested'|'seen'|'style') {
     if(!user||busy)return;setBusy(true);
     try{const r=await supabase.rpc('record_taste_signal',{k:`feedback:${row.source}:${row.external_id}`,cat:row.category,src:row.source,eid:row.external_id,work_title:row.title,work_tags:kind==='seen'?[]:row.tags.slice(0,30),points:kind==='interested'?5:kind==='seen'?1:-6,is_excluded:kind!=='interested',why:kind==='seen'?'Ya la vi':kind==='style'?'No es mi estilo':'Me interesa'});if(r.error)throw r.error;setMenu(false);await qc.invalidateQueries({queryKey:['tastes']});toast.success('Joya, gusto anotado');}catch{toast.error('No pudimos guardar tu elección.');}finally{setBusy(false);}
