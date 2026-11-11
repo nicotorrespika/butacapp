@@ -12,7 +12,7 @@ export const getSimilar=createServerFn({method:"POST"}).middleware([requireSupab
     const {movieSimilar,cultureSimilar}=await import("@/server/similar-providers");const result=data.kind==="movie"?await movieSimilar(data.id,key,data.page):await cultureSimilar(data.id,key,data.page);
     const {supabaseAdmin}=await import("@/integrations/supabase/client.server");await supabaseAdmin.from("similar_recommendations").upsert({cache_key:cacheKey,payload:JSON.parse(JSON.stringify(result)),updated_at:new Date().toISOString()});return {ok:true as const,data:result};
   }catch{return cached.data?{ok:true as const,data:cached.data.payload as unknown as SimilarData}:{ok:false as const};}
-});export const getCrossUniverse=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({kind:z.enum(["movie","culture"]),id:z.string().min(1).max(200),generate:z.boolean().default(false)}).parse(input)).handler(async({data,context})=>{
+});export const getCrossUniverse=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({kind:z.enum(["movie","culture"]),type:z.enum(["movie","music","book"]),id:z.string().min(1).max(200),generate:z.boolean().default(false)}).parse(input)).handler(async({data,context})=>{
   type Cross=import("@/server/similar-providers").CrossData;
   let id=data.id;
   if(data.kind==='movie'){
@@ -28,13 +28,13 @@ export const getSimilar=createServerFn({method:"POST"}).middleware([requireSupab
   }
   const cacheKey=`cross:${data.kind}:${id}`;const cached=await context.supabase.from("similar_recommendations").select("payload,updated_at").eq("cache_key",cacheKey).maybeSingle();
   const payload=cached.data?.payload as unknown as Cross|undefined;
-  const usable=hasCrossConnections(payload,data.kind);
+  const usable=hasCrossConnections(payload,data.kind==='movie'?'movie':data.type);
   if(usable&&cached.data&&Date.now()-new Date(cached.data.updated_at).getTime()<7*86400000)return {ok:true as const,data:payload as Cross};
   if(!data.generate)return usable?{ok:true as const,data:payload as Cross}:{ok:false as const};
   try{
     const ai=process.env["LOVABLE_API_KEY"];if(!ai)throw new Error("Unavailable");
     const {crossUniverse}=await import("@/server/similar-providers");const result=await crossUniverse(data.kind,id,ai,process.env["TMDB_API_KEY"]);
-    if(!hasCrossConnections(result,data.kind))return {ok:false as const};
+    if(!hasCrossConnections(result,data.kind==='movie'?'movie':data.type))return {ok:false as const};
     const {supabaseAdmin}=await import("@/integrations/supabase/client.server");await supabaseAdmin.from("similar_recommendations").upsert({cache_key:cacheKey,payload:JSON.parse(JSON.stringify(result)),updated_at:new Date().toISOString()});return {ok:true as const,data:result};
   }catch{return usable?{ok:true as const,data:payload as Cross}:{ok:false as const};}
 });

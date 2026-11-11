@@ -20,3 +20,11 @@ it('no inventa una película cuando el catálogo no la reconoce', async () => {
   expect(await crossMovieId('tt0000000', lookup)).toBeNull();
   expect(await crossMovieId('unknown', lookup)).toBeNull();
 });
+it('discos requieren libros y películas, no otros discos', () => {
+  expect(hasCrossConnections({movie:[{}],book:[{}]}, 'music')).toBe(true);
+  expect(hasCrossConnections({movie:[{}],music:[{}],book:[]}, 'music')).toBe(false);
+});
+it('libros requieren películas y música, no otros libros', () => {
+  expect(hasCrossConnections({movie:[{}],music:[{}]}, 'book')).toBe(true);
+  expect(hasCrossConnections({movie:[],music:[{}],book:[{}]}, 'book')).toBe(false);
+});

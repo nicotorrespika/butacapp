@@ -11,7 +11,8 @@ export async function crossMovieId(id: string, findImdb: (id: string) => Promise
   return tv ? `tv-${tv.id}` : null;
 }
 
-export function hasCrossConnections(data: { movie?: unknown[]; music?: unknown[]; book?: unknown[] } | null | undefined, kind: 'movie' | 'culture') {
+export function hasCrossConnections(data: { movie?: unknown[]; music?: unknown[]; book?: unknown[] } | null | undefined, kind: 'movie' | 'music' | 'book' | 'culture') {
   if (!data) return false;
-  return kind === 'movie' ? !!data.music?.length && !!data.book?.length : !!data.movie?.length || !!data.music?.length || !!data.book?.length;
+  if (kind === 'culture') return !!data.movie?.length || !!data.music?.length || !!data.book?.length;
+  return (['movie', 'music', 'book'] as const).filter(target => target !== kind).every(target => !!data[target]?.length);
 }
