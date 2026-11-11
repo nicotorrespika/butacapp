@@ -3,6 +3,7 @@ import type { Database } from '@/integrations/supabase/types';
 import type { SearchResult } from '@/lib/media';
 import { activityWeight,diverseOrder,tasteKey,tasteScore,workTags } from '@/lib/tastes';
 import { normalizeTitle,verifyCultureResult } from '@/lib/culture';
+import { cityVariants } from '@/lib/cities';
 import { createOpenAI } from '@ai-sdk/openai';
 import { APICallError,NoObjectGeneratedError,Output,streamText } from 'ai';
 import { z } from 'zod';
@@ -45,7 +46,7 @@ export async function buildPersonalization(db:DB,uid:string,keys:{ai?:string|und
       const match=tastes.find(t=>!t.suppressed&&t.weight>0&&tags.some(s=>s.toLowerCase().includes(t.label.toLowerCase())));
       candidates.push({result,tags,score,id:tasteKey(result.source,result.externalId),reason:match?`Por tu gusto por ${match.label}.`:'Una vuelta distinta: probá salir de la fila habitual.'});
     }
-    const events=await db.from('cultural_events').select('*').eq('verified',true).eq('city',profile.data?.city ?? 'Ciudad de Buenos Aires').gte('starts_at',new Date().toISOString()).order('starts_at').limit(60);
+    const events=await db.from('cultural_events').select('*').or('verified.eq.true,community.eq.true').in('city',cityVariants(profile.data?.city ?? 'Ciudad de Buenos Aires')).gte('starts_at',new Date().toISOString()).order('starts_at').limit(60);
     for(const e of events.data ?? []) {
       const tags=[e.interest,e.title,e.description,e.venue,e.city];
       candidates.push({result:{source:'events',externalId:e.id,mediaType:'art',title:e.title,creator:e.venue,year:null,imageUrl:e.image_url?.startsWith('https:')?e.image_url:null,externalUrl:e.source_url,kindLabel:'Evento'},tags,score:tasteScore(tags,tastes),id:`events:${e.id}`,reason:'Un plan en tu ciudad para seguir la conversación.'});
