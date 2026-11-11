@@ -24,7 +24,7 @@ interface PosterProps {
 
 /** Cover/poster image with a graceful fallback when missing or broken. */
 export function Poster({ src, alt, media, className, aspect }: PosterProps) {
-  const [failed, setFailed] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const Icon = ICON[media];
   return (
     <div
@@ -34,15 +34,23 @@ export function Poster({ src, alt, media, className, aspect }: PosterProps) {
         className,
       )}
     >
-      {src && !failed ? (
+      {src && src !== failedSrc ? (
         <img
           src={src}
           alt={alt}
           loading="lazy"
           decoding="async"
-          onError={() => setFailed(true)}
+          onError={() => setFailedSrc(src)}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-cine"
         />
+      ) : media === "book" ? (
+        <div role="img" aria-label={alt} className="book-cover">
+          <div className="book-cover-frame">
+            <BookOpen className="book-cover-mark" aria-hidden="true" />
+            <span className={cn("book-cover-title", alt.length > 70 && "book-cover-title-long")}>{alt}</span>
+            <span className="book-cover-rule" aria-hidden="true" />
+          </div>
+        </div>
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-3 text-center text-muted-foreground">
           <Icon className="size-7 opacity-60" />
