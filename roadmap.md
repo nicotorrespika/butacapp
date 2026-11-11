@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Random junto a Betty, textos y descripción por categoría, relacionado con búsquedas propias.
 - [x] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos; Cine verificado a 390px sin desborde.
 - [x] Mis gustos: collage visual, listado opcional cerrado y datos preservados; abrir/cerrar verificado.
 - [x] Géneros tocables y páginas de exploración: Drama, Rock, autores y novelas argentinos probados con resultados de catálogo.
