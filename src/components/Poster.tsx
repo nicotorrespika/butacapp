@@ -37,6 +37,8 @@ export function Poster({ src, alt, media, className, aspect }: PosterProps) {
       {src && src !== failedSrc ? (
         <img
           src={src}
+          srcSet={src.includes("image.tmdb.org/t/p/")?`${src.replace(/\/w\d+\//,"/w185/")} 185w, ${src.replace(/\/w\d+\//,"/w342/")} 342w, ${src.replace(/\/w\d+\//,"/w500/")} 500w`:undefined}
+          sizes="(max-width: 640px) 160px, 200px"
           alt={alt}
           loading="lazy"
           decoding="async"
