@@ -22,7 +22,7 @@ import {
 
 export class NotFoundError extends Error {}
 
-const BACKDROP = "https://image.tmdb.org/t/p/w1280";
+const BACKDROP = "https://image.tmdb.org/t/p/w780";
 const POSTER = "https://image.tmdb.org/t/p/w500";
 
 /** Parses "movie-123", "tv-123" or an IMDb id "tt0079944". */
@@ -63,6 +63,7 @@ interface TmdbDetail {
   similar?: { results: TmdbItem[] };
   keywords?: { keywords?: { id: number }[]; results?: { id: number }[] };
   videos?: { results: MovieVideo[] };
+  "watch/providers"?: { results: { AR?: {link:string;flatrate?:{provider_name:string}[];rent?:{provider_name:string}[];buy?:{provider_name:string}[]} } };
 }
 
 interface OmdbResponse {
@@ -171,7 +172,7 @@ export async function fetchMovieDetail(
   } else ref = parsed;
 
   const d = await tmdb<TmdbDetail>(`/${ref.type}/${ref.id}`, {
-    append_to_response: "credits,videos,recommendations,similar,keywords,external_ids",
+    append_to_response: "credits,videos,recommendations,similar,keywords,external_ids,watch/providers",
     include_video_language: "es,en,null",
   }).catch((e: unknown) => {
     if (e instanceof Error && e.message.includes("404")) throw new NotFoundError();
@@ -286,7 +287,7 @@ export async function fetchMovieDetail(
     directors.map((x) => x.name).join(", ") || null,
   );
   let watchProviders: {link:string;names:string[]}|null=null;
-  try{const providers=await tmdb<{results:{AR?:{link:string;flatrate?:{provider_name:string}[];rent?:{provider_name:string}[];buy?:{provider_name:string}[]}}}>(`/${ref.type}/${ref.id}/watch/providers`);const ar=providers.results.AR;if(ar)watchProviders={link:ar.link,names:[...new Set([...(ar.flatrate ?? []),...(ar.rent ?? []),...(ar.buy ?? [])].map(p=>p.provider_name))]};}catch{/* Availability is optional. */}
+  const ar=d["watch/providers"]?.results.AR;if(ar)watchProviders={link:ar.link,names:[...new Set([...(ar.flatrate??[]),...(ar.rent??[]),...(ar.buy??[])].map(p=>p.provider_name))]};
 
   return {
     routeId: `${ref.type}-${ref.id}`,

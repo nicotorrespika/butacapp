@@ -8,14 +8,19 @@ import { useAddToList } from "@/hooks/use-add-to-list";
 import { cultureRouteId } from "@/lib/culture";
 import { movieRouteId } from "@/lib/media";
 import type { SearchResult } from "@/lib/media";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 /** Collapsible lists of films and music named inside a book. */
 export function BookMentions({ id, title }: { id: string; title: string }) {
   const call = useServerFn(getBookMentions);
-  const q = useQuery({ queryKey: ["book-mentions", id], staleTime: 86400000, queryFn: () => call({ data: { id } }) });
+  const [requested,setRequested]=useState(false);
+  const q = useQuery({ queryKey: ["book-mentions", id], enabled:requested, staleTime: 86400000, queryFn: () => call({ data: { id } }) });
   const add = useAddToList(undefined);
   const navigate = useNavigate();
-  if (!q.data?.ok || (!q.data.movies.length && !q.data.music.length)) return null;
+  if (!requested) return <Button variant="ghost" onClick={()=>setRequested(true)}>Ver películas y música mencionadas</Button>;
+  if (q.isFetching) return <p role="status" className="text-sm text-muted-foreground">Betty está buscando las menciones…</p>;
+  if (!q.data?.ok || (!q.data.movies.length && !q.data.music.length)) return <p className="text-sm text-muted-foreground">No encontré menciones verificadas.</p>;
   const open = (r: SearchResult) => r.mediaType === "movie" ? navigate({ to: "/movie/$movieId", params: { movieId: movieRouteId(r.externalId) } }) : navigate({ to: "/culture/$cultureId", params: { cultureId: cultureRouteId(r.source, r.externalId) } });
   const list = (items: { result: SearchResult; context: string }[]) => <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4">{items.map(i => <div key={i.result.externalId}><ResultCard result={i.result} onAdd={add.add} busy={add.isBusy(i.result)} added={add.isAdded(i.result)} onOpen={open} /><p className="mt-2 line-clamp-3 text-xs leading-5 text-muted-foreground">{i.context}</p></div>)}</div>;
   return <section>

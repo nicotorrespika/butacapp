@@ -9,6 +9,7 @@
  */
 import type { PersonResult, SearchResult } from "@/lib/media";
 import { boostYear, extractYear, type ParsedQuery } from "@/lib/search-query";
+import { searchDeezer, searchMusicBrainz } from "./music-providers";
 
 const TIMEOUT_MS = 7000;
 
@@ -195,10 +196,13 @@ function itunes(params: Record<string, string | number>) {
 export async function searchMusic(q: ParsedQuery): Promise<SearchResult[]> {
   const term = q.text || String(q.year ?? "");
   if (!term) return [];
+  const primary = await searchDeezer(term);
+  if (primary.length) return primary;
+  try { const backup = await searchMusicBrainz(term); if (backup.length) return backup; } catch { /* iTunes remains a final fallback. */ }
   // When a year is given, fetch more albums so filtering by year still leaves results.
   const [albums, songs] = await Promise.all([
-    itunes({ term, media: "music", entity: "album", limit: q.year ? 60 : 18 }),
-    itunes({ term, media: "music", entity: "song", limit: q.year ? 40 : 12 }),
+    itunes({ term, media: "music", entity: "album", limit: q.year ? 60 : 18 }).catch(() => ({ results: [] })),
+    itunes({ term, media: "music", entity: "song", limit: q.year ? 40 : 12 }).catch(() => ({ results: [] })),
   ]);
   const mapped: SearchResult[] = [
     ...albums.results.map((a) => ({

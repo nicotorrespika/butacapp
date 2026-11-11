@@ -1,6 +1,15 @@
 # Roadmap
 
 ## Latest requests
+- [x] Random junto a Betty con textos/descripción por categoría; cine usa similares de última búsqueda, libros/música la consulta reciente; tres sugerencias verificadas en móvil.
+- [x] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos; Cine verificado a 390px sin desborde.
+- [x] Mis gustos: collage visual, listado opcional cerrado y datos preservados; abrir/cerrar verificado.
+- [x] Géneros tocables y páginas de exploración: Drama, Rock, autores y novelas argentinos probados con resultados de catálogo.
+- [x] Mediciones iniciales 4G simulado y mejoras de caché, previews de tarjetas, proveedores TMDB anexados y AI bajo demanda; primera vista de título desde tarjeta musical 79ms sin red limitada.
+- [ ] Verificar objetivos de velocidad y ajustar según mediciones publicadas; bloqueado para prueba en celular real porque requiere dispositivo del usuario. Preview recarga completa antes/después: cine 9.83/8.69s, libro 8.32/7.90s, disco 5.87/6.26s, evento 4.72/4.76s; no se alcanzan objetivos ni se confirman acciones usables/fin total.
+- [x] Betty: Enviar y Enter en todas las categorías; Shift+Enter e IME protegidos, 3 tests y envío desde UI observado sin consumir generación AI.
+- [x] Música: Deezer principal, respaldo MusicBrainz/iTunes, tres grupos y filtros, caché compartida; Bryan Adams y Summer of 69 verificados. Top y fichas comparten IDs, sin mutar listas durante pruebas.
+- [x] Recomendaciones en una sola fila horizontal: 8 portadas con misma coordenada vertical y scroll lateral comprobado a 843/390px.
 - [x] Cambiar «Preguntale a Betty» por invitaciones por categoría: ver, leer y escuchar.
 - [x] Acomodar libros y música como películas: portada compacta, acciones leído/escuchado, favorito y pendientes arriba, reseña pequeña, datos/canciones desplegables y recomendaciones por obra.
 - [x] Recomendaciones latinas por género/temática, animación conservada y relevancia antes que país; caché renovada, 9 pruebas pasan y Coraline verificada con sesión real: Soy Frankelda, La casa lobo y otras animaciones.

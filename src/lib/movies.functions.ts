@@ -8,6 +8,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Fetched, MovieDetail, PersonDetail } from "@/lib/movie-types";
 import { fetchMovieDetail, fetchPersonDetail, NotFoundError } from "@/server/tmdb-details";
+import { cachedCatalog } from "@/server/catalog-cache";
 
 function failure(e: unknown, label: string): Fetched<never> {
   if (e instanceof NotFoundError) return { ok: false, reason: "not_found" };
@@ -20,11 +21,12 @@ export const getMovie = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({ id: z.string().regex(/^((movie|tv)-\d+|tt\d{5,10})$/) }).parse(input),
   )
-  .handler(async ({ data }): Promise<Fetched<MovieDetail>> => {
+  .handler(async ({ data, context }): Promise<Fetched<MovieDetail>> => {
     const key = process.env["TMDB_API_KEY"];
     if (!key) return { ok: false, reason: "no_key" };
     try {
-      return { ok: true, data: await fetchMovieDetail(data.id, key, process.env["OMDB_API_KEY"]) };
+      const omdbKey = process.env["OMDB_API_KEY"];
+      return { ok: true, data: await cachedCatalog(context.supabase,`detail:movie:v2:${data.id}`,()=>fetchMovieDetail(data.id, key, omdbKey)) };
     } catch (e) {
       return failure(e, "movie");
     }

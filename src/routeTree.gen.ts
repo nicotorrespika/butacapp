@@ -33,6 +33,7 @@ import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_aut
 import { Route as AuthenticatedSoundtrackMovieIdRouteImport } from './routes/_authenticated/soundtrack.$movieId'
 import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
 import { Route as AuthenticatedCreatorTypeNameRouteImport } from './routes/_authenticated/creator.$type.$name'
+import { Route as AuthenticatedExploreTypeGenreRouteImport } from './routes/_authenticated/explore.$type.$genre'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
 import { Route as ApiPublicJobsPersonalizationRouteImport } from './routes/api/public/jobs/personalization'
 import { Route as ApiPublicJobsSoundtracksRouteImport } from './routes/api/public/jobs/soundtracks'
@@ -168,6 +169,12 @@ const AuthenticatedCreatorTypeNameRoute =
     path: '/creator/$type/$name',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedExploreTypeGenreRoute =
+  AuthenticatedExploreTypeGenreRouteImport.update({
+    id: '/explore/$type/$genre',
+    path: '/explore/$type/$genre',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
   id: '/api/public/jobs/culture',
   path: '/api/public/jobs/culture',
@@ -215,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
   '/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
+  '/explore/$type/$genre': typeof AuthenticatedExploreTypeGenreRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
   '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
@@ -244,6 +252,7 @@ export interface FileRoutesByTo {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
   '/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
+  '/explore/$type/$genre': typeof AuthenticatedExploreTypeGenreRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
   '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
@@ -275,6 +284,7 @@ export interface FileRoutesById {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
   '/_authenticated/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
+  '/_authenticated/explore/$type/$genre': typeof AuthenticatedExploreTypeGenreRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
   '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/lists/'
     | '/creator/$type/$name'
+    | '/explore/$type/$genre'
     | '/api/public/jobs/culture'
     | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
@@ -335,6 +346,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/lists'
     | '/creator/$type/$name'
+    | '/explore/$type/$genre'
     | '/api/public/jobs/culture'
     | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
@@ -365,6 +377,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
     | '/_authenticated/creator/$type/$name'
+    | '/_authenticated/explore/$type/$genre'
     | '/api/public/jobs/culture'
     | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
@@ -555,6 +568,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCreatorTypeNameRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/explore/$type/$genre': {
+      id: '/_authenticated/explore/$type/$genre'
+      path: '/explore/$type/$genre'
+      fullPath: '/explore/$type/$genre'
+      preLoaderRoute: typeof AuthenticatedExploreTypeGenreRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/jobs/culture': {
       id: '/api/public/jobs/culture'
       path: '/api/public/jobs/culture'
@@ -604,6 +624,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSoundtrackMovieIdRoute: typeof AuthenticatedSoundtrackMovieIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
   AuthenticatedCreatorTypeNameRoute: typeof AuthenticatedCreatorTypeNameRoute
+  AuthenticatedExploreTypeGenreRoute: typeof AuthenticatedExploreTypeGenreRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -624,6 +645,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSoundtrackMovieIdRoute: AuthenticatedSoundtrackMovieIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
   AuthenticatedCreatorTypeNameRoute: AuthenticatedCreatorTypeNameRoute,
+  AuthenticatedExploreTypeGenreRoute: AuthenticatedExploreTypeGenreRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
