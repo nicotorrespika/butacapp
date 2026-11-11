@@ -29,6 +29,7 @@ import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authe
 import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_authenticated/recibido.$searchId'
 import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
+import { Route as ApiPublicJobsPersonalizationRouteImport } from './routes/api/public/jobs/personalization'
 import { Route as ApiPublicJobsSoundtracksRouteImport } from './routes/api/public/jobs/soundtracks'
 import { Route as ApiPublicPortadaKindIdRouteImport } from './routes/api/public/portada.$kind.$id'
 
@@ -140,6 +141,12 @@ const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
   path: '/api/public/jobs/culture',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicJobsPersonalizationRoute =
+  ApiPublicJobsPersonalizationRouteImport.update({
+    id: '/api/public/jobs/personalization',
+    path: '/api/public/jobs/personalization',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicJobsSoundtracksRoute =
   ApiPublicJobsSoundtracksRouteImport.update({
     id: '/api/public/jobs/soundtracks',
@@ -172,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
   '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
@@ -195,6 +203,7 @@ export interface FileRoutesByTo {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
   '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
@@ -220,6 +229,7 @@ export interface FileRoutesById {
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
+  '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
   '/api/public/portada/$kind/$id': typeof ApiPublicPortadaKindIdRoute
 }
@@ -245,6 +255,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/lists/'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
     | '/api/public/portada/$kind/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -268,6 +279,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/lists'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
     | '/api/public/portada/$kind/$id'
   id:
@@ -292,6 +304,7 @@ export interface FileRouteTypes {
     | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
     | '/api/public/jobs/culture'
+    | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
     | '/api/public/portada/$kind/$id'
   fileRoutesById: FileRoutesById
@@ -303,6 +316,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   CompartirKindIdRoute: typeof CompartirKindIdRoute
   ApiPublicJobsCultureRoute: typeof ApiPublicJobsCultureRoute
+  ApiPublicJobsPersonalizationRoute: typeof ApiPublicJobsPersonalizationRoute
   ApiPublicJobsSoundtracksRoute: typeof ApiPublicJobsSoundtracksRoute
   ApiPublicPortadaKindIdRoute: typeof ApiPublicPortadaKindIdRoute
 }
@@ -449,6 +463,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicJobsCultureRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/jobs/personalization': {
+      id: '/api/public/jobs/personalization'
+      path: '/api/public/jobs/personalization'
+      fullPath: '/api/public/jobs/personalization'
+      preLoaderRoute: typeof ApiPublicJobsPersonalizationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/jobs/soundtracks': {
       id: '/api/public/jobs/soundtracks'
       path: '/api/public/jobs/soundtracks'
@@ -510,6 +531,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   CompartirKindIdRoute: CompartirKindIdRoute,
   ApiPublicJobsCultureRoute: ApiPublicJobsCultureRoute,
+  ApiPublicJobsPersonalizationRoute: ApiPublicJobsPersonalizationRoute,
   ApiPublicJobsSoundtracksRoute: ApiPublicJobsSoundtracksRoute,
   ApiPublicPortadaKindIdRoute: ApiPublicPortadaKindIdRoute,
 }

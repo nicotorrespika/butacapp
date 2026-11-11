@@ -1,0 +1,4 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { TasteEditor } from '@/components/TasteEditor';
+import { BackButton } from '@/components/BackButton';
+export const Route=createFileRoute('/_authenticated/gustos')({head:()=>({meta:[{title:'Mis gustos — BUTACAPP'},{name:'description',content:'Controlá tus gustos, pausá las recomendaciones y descargá tus datos privados.'},{property:'og:title',content:'Mis gustos — BUTACAPP'},{property:'og:description',content:'Tus gustos culturales, bajo tu control.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:()=> <main className="space-y-7 px-4 py-6"><BackButton/><TasteEditor/></main>});
