@@ -90,7 +90,7 @@ function SearchPage() {
     result: r,
     onAdd: params.top ? async (r: SearchResult) => {
       const { data: { user } } = await supabase.auth.getUser(); if (!user) return;
-      const kind = params.top; const copy = TOP_KIND_COPY[kind];
+      const kind = params.top; if (!kind) return; const copy = TOP_KIND_COPY[kind];
       const existing = await supabase.from("top_five_entries").select("id,source,external_id").eq("user_id", user.id).eq("kind", kind);
       const rows = existing.data ?? [];
       if (rows.length >= 5) return void toast.error(copy.full);

@@ -21,7 +21,7 @@ interface TopEntry {
   external_url: string | null;
 }
 
-function entryLink(e: TopEntry): { to: string; params?: Record<string, string>; external?: string } {
+function entryLink(e: TopEntry): { to: string; params?: Record<string, string> | undefined; external?: string | undefined } {
   if (e.kind === "movie") return { to: "/movie/$movieId", params: { movieId: movieRouteId(e.external_id) } };
   if (e.kind === "album" || e.kind === "song") return { to: "/culture/$cultureId", params: { cultureId: cultureRouteId(e.source, e.external_id) } };
   return { to: "", external: e.external_url ?? undefined };
@@ -79,7 +79,7 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
                 {link.external ? (
                   <a href={link.external} target="_blank" rel="noreferrer">{figure}</a>
                 ) : (
-                  <Link to={link.to} params={link.params}>{figure}</Link>
+                  <Link to={link.to} params={link.params ?? {}}>{figure}</Link>
                 )}
                 <p className="mt-2 line-clamp-2 text-xs font-semibold leading-tight">{e.title}</p>
                 {own && (
