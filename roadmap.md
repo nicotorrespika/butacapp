@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Todas las películas: conexiones automáticas con libros y música, normalización de IDs de búsqueda/listas/links y verificación con otras películas.
 - [x] Ficha Medianoche en París: cruces automáticos al llegar a la sección, IDs IMDb normalizados y cachés vacías rechazadas; sesión real muestra cuatro libros y cuatro discos, sin errores.
 - [x] Novedades: cinco iniciales, Ver más hasta cinco adicionales; amigos antes. Cine 5→10, música/libros 5→9 (restantes), probado.
 - [x] Fotos Top: Deezer para artistas, Open Library/enciclopedia para autores y resolver TMDB para directores; tres artistas y Paul Auster probados. No existe Top de directores en el perfil actual; sin inventar retratos cuando no hay fuente.
