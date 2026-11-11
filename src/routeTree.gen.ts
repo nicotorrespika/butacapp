@@ -31,6 +31,7 @@ import { Route as AuthenticatedPeopleUserIdRouteImport } from './routes/_authent
 import { Route as AuthenticatedPersonPersonIdRouteImport } from './routes/_authenticated/person.$personId'
 import { Route as AuthenticatedRecibidoSearchIdRouteImport } from './routes/_authenticated/recibido.$searchId'
 import { Route as CompartirKindIdRouteImport } from './routes/compartir.$kind.$id'
+import { Route as AuthenticatedCreatorTypeNameRouteImport } from './routes/_authenticated/creator.$type.$name'
 import { Route as ApiPublicJobsCultureRouteImport } from './routes/api/public/jobs/culture'
 import { Route as ApiPublicJobsPersonalizationRouteImport } from './routes/api/public/jobs/personalization'
 import { Route as ApiPublicJobsSoundtracksRouteImport } from './routes/api/public/jobs/soundtracks'
@@ -154,6 +155,12 @@ const CompartirKindIdRoute = CompartirKindIdRouteImport.update({
   path: '/compartir/$kind/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedCreatorTypeNameRoute =
+  AuthenticatedCreatorTypeNameRouteImport.update({
+    id: '/creator/$type/$name',
+    path: '/creator/$type/$name',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicJobsCultureRoute = ApiPublicJobsCultureRouteImport.update({
   id: '/api/public/jobs/culture',
   path: '/api/public/jobs/culture',
@@ -199,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists/': typeof AuthenticatedListsIndexRoute
+  '/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
   '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
@@ -226,6 +234,7 @@ export interface FileRoutesByTo {
   '/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/lists': typeof AuthenticatedListsIndexRoute
+  '/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
   '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
@@ -255,6 +264,7 @@ export interface FileRoutesById {
   '/_authenticated/recibido/$searchId': typeof AuthenticatedRecibidoSearchIdRoute
   '/compartir/$kind/$id': typeof CompartirKindIdRoute
   '/_authenticated/lists/': typeof AuthenticatedListsIndexRoute
+  '/_authenticated/creator/$type/$name': typeof AuthenticatedCreatorTypeNameRoute
   '/api/public/jobs/culture': typeof ApiPublicJobsCultureRoute
   '/api/public/jobs/personalization': typeof ApiPublicJobsPersonalizationRoute
   '/api/public/jobs/soundtracks': typeof ApiPublicJobsSoundtracksRoute
@@ -284,6 +294,7 @@ export interface FileRouteTypes {
     | '/recibido/$searchId'
     | '/compartir/$kind/$id'
     | '/lists/'
+    | '/creator/$type/$name'
     | '/api/public/jobs/culture'
     | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/recibido/$searchId'
     | '/compartir/$kind/$id'
     | '/lists'
+    | '/creator/$type/$name'
     | '/api/public/jobs/culture'
     | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
@@ -339,6 +351,7 @@ export interface FileRouteTypes {
     | '/_authenticated/recibido/$searchId'
     | '/compartir/$kind/$id'
     | '/_authenticated/lists/'
+    | '/_authenticated/creator/$type/$name'
     | '/api/public/jobs/culture'
     | '/api/public/jobs/personalization'
     | '/api/public/jobs/soundtracks'
@@ -515,6 +528,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompartirKindIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/creator/$type/$name': {
+      id: '/_authenticated/creator/$type/$name'
+      path: '/creator/$type/$name'
+      fullPath: '/creator/$type/$name'
+      preLoaderRoute: typeof AuthenticatedCreatorTypeNameRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/jobs/culture': {
       id: '/api/public/jobs/culture'
       path: '/api/public/jobs/culture'
@@ -562,6 +582,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPersonPersonIdRoute: typeof AuthenticatedPersonPersonIdRoute
   AuthenticatedRecibidoSearchIdRoute: typeof AuthenticatedRecibidoSearchIdRoute
   AuthenticatedListsIndexRoute: typeof AuthenticatedListsIndexRoute
+  AuthenticatedCreatorTypeNameRoute: typeof AuthenticatedCreatorTypeNameRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -580,6 +601,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPersonPersonIdRoute: AuthenticatedPersonPersonIdRoute,
   AuthenticatedRecibidoSearchIdRoute: AuthenticatedRecibidoSearchIdRoute,
   AuthenticatedListsIndexRoute: AuthenticatedListsIndexRoute,
+  AuthenticatedCreatorTypeNameRoute: AuthenticatedCreatorTypeNameRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
