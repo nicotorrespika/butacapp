@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cultureRouteId,type CultureType } from "@/lib/culture";
 import { CATEGORY_COPY } from "@/lib/copy";
 import { Poster } from "./Poster";
-export function CulturalProfile({userId,type,own,tab}:{userId:string;type:CultureType;own:boolean;tab:string}) {
+export function CulturalProfile({userId,type,tab}:{userId:string;type:CultureType;tab:string}) {
  const copy=CATEGORY_COPY[type];
  const q=useQuery({queryKey:["culture","profile",userId,type],queryFn:async()=>{const r=await supabase.from("cultural_entries").select("*").eq("user_id",userId).eq("media_type",type).order("updated_at",{ascending:false});return r.data ?? [];}});
  const rows=(q.data ?? []).filter(e=>tab==="Pendientes"?e.queued&&!e.consumed:tab==="Favoritas"?e.favorite:tab==="Reseñas"?!!e.review:tab===copy.doneTab?e.consumed:true);
