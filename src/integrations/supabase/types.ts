@@ -1632,6 +1632,59 @@ export type Database = {
           },
         ]
       }
+      top_five_entries: {
+        Row: {
+          created_at: string
+          creator: string | null
+          external_id: string
+          external_url: string | null
+          id: string
+          image_url: string | null
+          kind: string
+          position: number
+          source: string
+          title: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          creator?: string | null
+          external_id: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          kind: string
+          position: number
+          source: string
+          title: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          creator?: string | null
+          external_id?: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          kind?: string
+          position?: number
+          source?: string
+          title?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "top_five_entries_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notifications: {
         Row: {
           actor_id: string
