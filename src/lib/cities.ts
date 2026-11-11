@@ -22,6 +22,7 @@ export const MAIN_CITIES = [
 const fold = (s: string) =>
   s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
 
+
 const ALIASES: Record<string, string> = {
   "caba": "Ciudad de Buenos Aires",
   "buenos aires": "Ciudad de Buenos Aires",
