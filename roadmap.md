@@ -1,13 +1,14 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos.
-- [ ] Mis gustos: collage visual en vez de listado largo; listado opcional cerrado, conservando información para recomendaciones.
-- [ ] Géneros y categorías tocables en cine/libros/música con páginas de exploración, incluyendo autores y novelas argentinos.
-- [ ] Medir fichas de cine/música/libros/eventos en 4G lento; informar cinco cuellos de botella antes de optimizar caché, apertura y cargas diferidas. Dispositivo real requiere al usuario.
-- [ ] Betty: botón visible para enviar y Enter en computadora.
-- [ ] Diagnosticar Bryan Adams / Summer of 69 y reconstruir búsqueda musical compartida con Deezer, respaldo MusicBrainz, filtros artistas/discos/canciones y caché.
-- [ ] Verificar recomendaciones de búsquedas en una sola fila horizontal en computadora y celular.
+- [x] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos; Cine verificado a 390px sin desborde.
+- [x] Mis gustos: collage visual, listado opcional cerrado y datos preservados; abrir/cerrar verificado.
+- [x] Géneros tocables y páginas de exploración: Drama, Rock, autores y novelas argentinos probados con resultados de catálogo.
+- [x] Mediciones iniciales 4G simulado y mejoras de caché, previews de tarjetas, proveedores TMDB anexados y AI bajo demanda; primera vista de título desde tarjeta musical 79ms sin red limitada.
+- [ ] Verificar objetivos de velocidad y ajustar según mediciones publicadas; bloqueado para prueba en celular real porque requiere dispositivo del usuario. Preview recarga completa antes/después: cine 9.83/8.69s, libro 8.32/7.90s, disco 5.87/6.26s, evento 4.72/4.76s; no se alcanzan objetivos ni se confirman acciones usables/fin total.
+- [x] Betty: Enviar y Enter en todas las categorías; Shift+Enter e IME protegidos, 3 tests y envío desde UI observado sin consumir generación AI.
+- [x] Música: Deezer principal, respaldo MusicBrainz/iTunes, tres grupos y filtros, caché compartida; Bryan Adams y Summer of 69 verificados. Top y fichas comparten IDs, sin mutar listas durante pruebas.
+- [x] Recomendaciones en una sola fila horizontal: 8 portadas con misma coordenada vertical y scroll lateral comprobado a 843/390px.
 - [x] Cambiar «Preguntale a Betty» por invitaciones por categoría: ver, leer y escuchar.
 - [x] Acomodar libros y música como películas: portada compacta, acciones leído/escuchado, favorito y pendientes arriba, reseña pequeña, datos/canciones desplegables y recomendaciones por obra.
 - [x] Recomendaciones latinas por género/temática, animación conservada y relevancia antes que país; caché renovada, 9 pruebas pasan y Coraline verificada con sesión real: Soy Frankelda, La casa lobo y otras animaciones.
