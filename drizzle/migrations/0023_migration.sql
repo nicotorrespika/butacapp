@@ -1,0 +1,3 @@
+DROP POLICY IF EXISTS "Top fives are readable by members" ON public.top_five_entries;
+CREATE POLICY "Top fives readable by owner, friends or public profiles" ON public.top_five_entries FOR SELECT TO authenticated
+USING (user_id = auth.uid() OR public.are_friends(user_id, auth.uid()) OR EXISTS (SELECT 1 FROM public.profiles p WHERE p.id = top_five_entries.user_id AND p.share_visibility = 'public'));
