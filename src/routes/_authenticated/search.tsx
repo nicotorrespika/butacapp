@@ -20,9 +20,10 @@ import {
   type SearchResult,
 } from "@/lib/media";
 import { searchMedia } from "@/lib/search.functions";
+import { searchTopEntries } from "@/lib/top-five.functions";
+import { TOP_KIND_COPY } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { topFive } from "@/lib/social";
 import { toast } from "sonner";
 import { BackButton } from "@/components/BackButton";
 import { BettySearch } from "@/components/BettySearch";
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/_authenticated/search")({
     f: z.enum(["all", "movie", "music", "book", "art"]).optional(),
     /** When set, "+" adds straight into this list (opened from a list's "Agregar" button). */
     list: z.string().uuid().optional(),
-    top: z.boolean().optional(),
+    top: z.enum(["movie", "artist", "album", "song", "author", "book"]).optional(),
     mode:z.enum(["search","discover","betty"]).optional(),
   }),
   head: () => ({
@@ -70,8 +71,10 @@ function SearchPage() {
   const filter: SearchFilter = params.f ?? "all";
   const q = useDebouncedValue(text.trim(), 350);
   const search = useServerFn(searchMedia);
+  const topSearch = useServerFn(searchTopEntries);
   const adder = useAddToList(params.list);
   const targetList = adder.targetList;
+  const topCopy = params.top ? TOP_KIND_COPY[params.top] : null;
 
   // Movies with a TMDB/IMDb id open their page (synopsis, scores, similar titles).
   function openMovie(r: SearchResult) {
@@ -87,14 +90,13 @@ function SearchPage() {
     result: r,
     onAdd: params.top ? async (r: SearchResult) => {
       const { data: { user } } = await supabase.auth.getUser(); if (!user) return;
-      const p = await supabase.from("profiles").select("top_five").eq("id",user.id).single();
-      const profile=await supabase.from("profiles").select("cultural_top_five").eq("id",user.id).single();
-      const cultural=profile.data?.cultural_top_five;const group=cultural&&typeof cultural==="object"&&!Array.isArray(cultural)?cultural:{};
-      const top = r.mediaType==="movie"?topFive(p.data?.top_five):topFive(group[r.mediaType]);
-      if(top.length>=5) return void toast.error("Tu Top 5 está completo. Quitá una película desde Perfil.");
-      if(top.some(m=>m.externalId===r.externalId)) return void toast("Ya está en tu Top 5");
-      const result=await supabase.from("profiles").update(r.mediaType==="movie"?{top_five:JSON.parse(JSON.stringify([...top,r]))}:{cultural_top_five:JSON.parse(JSON.stringify({...group,[r.mediaType]:[...top,r]}))}).eq("id",user.id);
-      if(result.error)toast.error("No se pudo guardar");else toast.success("Agregada a tu Top 5");
+      const kind = params.top; if (!kind) return; const copy = TOP_KIND_COPY[kind];
+      const existing = await supabase.from("top_five_entries").select("id,source,external_id").eq("user_id", user.id).eq("kind", kind);
+      const rows = existing.data ?? [];
+      if (rows.length >= 5) return void toast.error(copy.full);
+      if (rows.some((e) => e.source === r.source && e.external_id === r.externalId)) return void toast(copy.duplicate);
+      const result = await supabase.from("top_five_entries").insert({ user_id: user.id, kind, position: rows.length + 1, source: r.source, external_id: r.externalId, title: r.title, creator: r.creator, year: r.year, image_url: r.imageUrl, external_url: r.externalUrl });
+      if (result.error) toast.error("No se pudo guardar"); else toast.success(copy.added);
     } : adder.add,
     added: adder.isAdded(r),
     busy: adder.isBusy(r),
@@ -109,7 +111,14 @@ function SearchPage() {
   const query = useQuery({
     queryKey: ["search", q, filter],
     queryFn: () => search({ data: { q, filter } }),
-    enabled: q.length >= 2 && mode!=="betty",
+    enabled: q.length >= 2 && mode!=="betty" && !params.top,
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60_000,
+  });
+  const topQuery = useQuery({
+    queryKey: ["search", "top", params.top, q],
+    queryFn: () => topSearch({ data: { kind: params.top!, q } }),
+    enabled: !!params.top && q.length >= 2,
     placeholderData: keepPreviousData,
     staleTime: 5 * 60_000,
   });
@@ -152,7 +161,7 @@ function SearchPage() {
             </Button>
           </div>
         ) : (
-          <div className="mb-4"><BackButton/><h1 className="mt-4 font-display text-4xl">{params.top?"Elegí tu Top 5":"Buscar"}</h1></div>
+          <div className="mb-4"><BackButton/><h1 className="mt-4 font-display text-4xl">{topCopy?topCopy.searchTitle:"Buscar"}</h1></div>
         )}
         <div className="relative">
           <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -162,8 +171,8 @@ function SearchPage() {
             enterKeyHint="search"
             value={text}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Título, autor, año…"
-            aria-label="Buscar películas, música y libros"
+            placeholder={topCopy?topCopy.searchPlaceholder:"Título, autor, año…"}
+            aria-label={topCopy?topCopy.searchTitle:"Buscar películas, música y libros"}
             className="h-12 w-full rounded-sm border border-input bg-transparent pl-12 pr-12 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
           />
           {(query.isFetching || typing) && q.length >= 2 ? (
@@ -181,7 +190,7 @@ function SearchPage() {
             )
           )}
         </div>
-        <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 scrollbar-none" role="tablist">
+        {!params.top&&<div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 scrollbar-none" role="tablist">
           {CHIPS.map((c) => (
             <Button variant="ghost"
               key={c.id}
@@ -199,11 +208,29 @@ function SearchPage() {
               {c.label}
             </Button>
           ))}
-        </div>
+        </div>}
       </header>
 
       <div className="px-4 pt-2">
-        {q.length < 2 ? (
+        {params.top && topCopy ? (
+          q.length < 2 ? (
+            <p className="pt-6 text-sm text-muted-foreground">{topCopy.empty}. Escribí para buscar.</p>
+          ) : topQuery.isError ? (
+            <ErrorState message="El buscador no respondió." onRetry={() => topQuery.refetch()} />
+          ) : !topQuery.data ? (
+            <PosterGridSkeleton />
+          ) : !topQuery.data.length ? (
+            <EmptyState icon={<SearchX />} title="Sin resultados">
+              No encontramos {topCopy.plural} para «{q}». Probá con otra palabra.
+            </EmptyState>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
+              {topQuery.data.map((r) => (
+                <ResultCard key={resultKey(r)} {...cardProps(r)} />
+              ))}
+            </div>
+          )
+        ) : q.length < 2 ? (
           <div className="pt-6 animate-rise">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Probá con</p>
             <div className="mt-3 flex flex-wrap gap-2">

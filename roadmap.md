@@ -1,6 +1,9 @@
 # Roadmap
 
 ## Latest requests
+- [x] Top 5 por categoría: películas, artistas/discos/canciones (MusicBrainz + iTunes) y autores/libros (Open Library), tabla top_five_entries con posiciones, selector en perfil, buscador acotado por tipo y textos por categoría; verificado agregar 5 artistas, mensaje de Top lleno y perfil
+- [x] Textos centralizados en src/lib/copy.ts (Top 5, verbos y estados por categoría); CulturalProfile y TasteEditor los usan
+- [ ] Barrido fino de textos: quedan menciones de "película/peli" solo en contextos de cine (Betty cinéfila, listas de pelis, SEO); ListRecommendations habla de pelis porque solo se muestra en listas de cine
 - [x] Onboarding de gustos también para login con Google (taste_settings.onboarding_done, sin parpadeo) y gustos iniciales sin recorte de 6
 - [x] confirm()/prompt() nativos reemplazados por diálogos propios (ShareButton, ItemDrawer, lista, reporte de evento y de canción)
 - [x] Ciudades normalizadas (tildes/mayúsculas/alias) con selector rápido en EventAgenda, EventForm y personalization; eventos community incluidos en "Para vos"
