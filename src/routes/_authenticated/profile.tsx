@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/profile")({
   }),
   component: NewProfile,
 });
-function NewProfile(){const {user}=useAuth();const qc=useQueryClient();const navigate=useNavigate();return <div className="px-4 py-6"><BackButton/>{user&&<div className="mt-8"><ProfileView userId={user.id}/></div>}<Button variant="ghost" className="mt-10" onClick={async()=>{await qc.cancelQueries();qc.clear();await supabase.auth.signOut();navigate({to:"/auth",replace:true});}}><LogOut/>Cerrar sesión</Button></div>;}
+function NewProfile(){const {user}=useAuth();const qc=useQueryClient();const navigate=useNavigate();return <div className="px-4 py-3"><BackButton/>{user&&<div className="mt-3"><ProfileView userId={user.id}/></div>}<Button variant="ghost" className="mt-10" onClick={async()=>{await qc.cancelQueries();qc.clear();await supabase.auth.signOut();navigate({to:"/auth",replace:true});}}><LogOut/>Cerrar sesión</Button></div>;}
 
 function ProfilePage() {
   const { user } = useAuth();
