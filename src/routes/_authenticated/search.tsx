@@ -294,6 +294,19 @@ function SearchPage() {
                 </div>
               </section>
             )}
+            {(["book","music"] as const).filter(m=>filter==="all"||filter===m).map(m=>{
+              const norm=(x:string)=>x.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+              const words=norm(q).replace(/\b(18|19|20)\d{2}\b/g,"").split(/\s+/).filter(Boolean);
+              const names=[...new Set(data[m].flatMap(r=>(r.creator??"").split(" · ")).map(n=>n.trim()).filter(n=>n&&words.length&&words.every(w=>norm(n).includes(w))))].slice(0,4);
+              if(!names.length) return null;
+              return <section key={`c-${m}`}>
+                <h2 className="mb-3 font-display text-2xl">{m==="book"?"Autores":"Artistas"}</h2>
+                <div className="flex flex-wrap gap-2">{names.map(n=><Link key={n} to="/creator/$type/$name" params={{type:m,name:n}} className="inline-flex min-h-11 items-center gap-3 rounded-sm border border-border px-3 transition-colors hover:border-primary">
+                  <span className="flex size-8 items-center justify-center rounded-full bg-secondary font-display text-base">{n.charAt(0)}</span>
+                  <span className="text-left"><span className="block text-sm font-semibold leading-tight">{n}</span><span className="cinema-meta text-[10px] text-primary">{m==="book"?"Ver todos sus libros":"Ver toda su obra"}</span></span>
+                </Link>)}</div>
+              </section>;
+            })}
             {sections.map((m) => {
               const items = data[m];
               if (!items.length) return null;
