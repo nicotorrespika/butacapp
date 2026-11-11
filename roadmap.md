@@ -1,6 +1,12 @@
 # Roadmap
 
 ## Latest requests
+- [x] Onboarding de gustos también para login con Google (taste_settings.onboarding_done, sin parpadeo) y gustos iniciales sin recorte de 6
+- [x] confirm()/prompt() nativos reemplazados por diálogos propios (ShareButton, ItemDrawer, lista, reporte de evento y de canción)
+- [x] Ciudades normalizadas (tildes/mayúsculas/alias) con selector rápido en EventAgenda, EventForm y personalization; eventos community incluidos en "Para vos"
+- [x] Avisos: caché de notificaciones por usuario; Mensajes: último mensaje real por amigo, realtime acotado al usuario y links internos con navegación del router
+- [x] Saludo de Betty con tildes; recomendaciones de Betty usan solo críticas cacheadas (Parallel queda bajo demanda en MovieReviews)
+- [ ] Verificar en preview: login Google → onboarding, modales de reporte/borrado en móvil, bandeja de mensajes y link compartido dentro del chat
 - [x] Personalization foundation: private activity signals, weighted/decaying tastes, daily managed schedule and two-call creative budget
 - [x] Mis gustos, editable chips, feedback, pause/reset/export/delete and privacy/terms; add/remove chip and pause persistence verified with requesting account
 - [x] Cached Para vos on home/category tabs, varied ordering and exclusions; real cached music/movie/event recommendations and persistent rejection verified
