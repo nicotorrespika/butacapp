@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
   }),
   component: Home,
 });
-function Home(){return <div className="mx-auto max-w-5xl pb-nav"><HomeExperience/><BottomNav/></div>;}
+function Home(){return <div className="mx-auto w-full max-w-5xl overflow-x-hidden pb-nav"><HomeExperience/><BottomNav/></div>;}
 
 /** Public landing. Signed-in visitors (incl. OAuth returns) go straight to their lists. */
 function Landing() {

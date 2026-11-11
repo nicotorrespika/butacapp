@@ -39,6 +39,7 @@ export function Poster({ src, alt, media, className, aspect }: PosterProps) {
           src={src}
           alt={alt}
           loading="lazy"
+          decoding="async"
           onError={() => setFailed(true)}
           className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-cine"
         />

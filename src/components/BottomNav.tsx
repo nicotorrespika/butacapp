@@ -23,7 +23,7 @@ export function BottomNav() {
             <Link
               to={to}
               activeOptions={{exact:true}}
-              className="group flex h-full min-h-11 flex-col items-center justify-center gap-1.5 text-[11px] font-medium text-muted-foreground transition-colors data-[status=active]:text-foreground"
+              className="group flex h-full min-h-11 flex-col items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors data-[status=active]:text-foreground"
             >
               <Icon strokeWidth={1.5} className="size-5 transition-colors group-data-[status=active]:text-primary" />
               <span className="relative">{label}{to==="/avisos"&&!!count.data&&<span className="absolute -right-4 -top-1 text-[10px] text-primary">{count.data}</span>}</span>
