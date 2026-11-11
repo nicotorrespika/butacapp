@@ -293,6 +293,7 @@
   font-size: 11cqi;
   line-height: 1.12;
   overflow-wrap: anywhere;
+  white-space: normal;
 }
 .book-cover-title-long { font-size: 7cqi; }
 .book-cover-rule { width: 30%; border-top: 2px solid var(--seat); flex-shrink: 0; }
