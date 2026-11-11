@@ -9,9 +9,13 @@ import { movieRouteId, type SearchResult } from '@/lib/media';
 import { chooseShelfAnchor, shelfTitle, uniqueShelfItems, type ShelfCategory, type ShelfAnchor } from '@/lib/home-shelves';
 import { tasteKey } from '@/lib/tastes';
 import { RecommendationShelf } from './RecommendationShelf';
+import { useState } from 'react';
+import { Button } from './ui/button';
+import { Glasses } from 'lucide-react';
 
 export function PersonalShelves({ category }: { category: ShelfCategory }) {
   const { user } = useAuth(); const similar = useServerFn(getSimilar); const search = useServerFn(searchMedia);
+  const [generate, setGenerate] = useState(false);
   const anchors = useQuery({ queryKey: ['tastes', 'home-anchors', user?.id, category], enabled: !!user, queryFn: async () => {
     const uid = user?.id ?? '';
     const [entries, top, signals, recommendations] = await Promise.all([
@@ -31,10 +35,10 @@ export function PersonalShelves({ category }: { category: ShelfCategory }) {
     return { anchor: chooseShelfAnchor([...topAnchors, ...personal]), excluded, recommendations: recommendations.data ?? [] };
   } });
   const anchor = anchors.data?.anchor;
-  const picks = useQuery({ queryKey: ['tastes', 'home-shelves', user?.id, category, anchor?.source, anchor?.externalId, anchors.data?.recommendations.map(r => r.id)], enabled: !!anchor, staleTime: 5 * 60_000, queryFn: async () => {
+  const picks = useQuery({ queryKey: ['tastes', 'home-shelves', user?.id, category, anchor?.source, anchor?.externalId, anchors.data?.recommendations.map(r => r.id), generate], enabled: !!anchor, staleTime: 5 * 60_000, queryFn: async () => {
     if (!anchor || !anchors.data) return { similar: [], latin: [] };
     const id = category === 'movie' ? movieRouteId(anchor.externalId) : cultureRouteId(anchor.source, anchor.externalId);
-    const response = await similar({ data: { kind: category === 'movie' ? 'movie' : 'culture', id, generate: false, page: 1 } });
+    const response = await similar({ data: { kind: category === 'movie' ? 'movie' : 'culture', id, generate, page: 1 } });
     const cached = anchors.data.recommendations.filter(r => tasteKey(r.anchor_source, r.anchor_id) === tasteKey(anchor.source, anchor.externalId)).map(r => ({ source: r.source, externalId: r.external_id, mediaType: category, title: r.title, creator: r.creator, year: r.year, imageUrl: r.image_url, kindLabel: category === 'book' ? 'Libro' : category === 'music' ? 'Disco' : 'Película', externalUrl: r.external_url } as SearchResult));
     let regular = response.ok ? response.data.similar.map(i => i.result) : cached;
     if (!regular.length && category !== 'movie') {
@@ -47,5 +51,6 @@ export function PersonalShelves({ category }: { category: ShelfCategory }) {
   return <>
     {(picks.isLoading || !!picks.data?.similar.length) && <RecommendationShelf title={shelfTitle(category, anchor)} subtitle={category !== 'movie' && !picks.data?.latin.length ? 'Más para explorar desde tus favoritos.' : undefined} items={picks.data?.similar ?? []} loading={picks.isLoading} />}
     {!!picks.data?.latin.length && <RecommendationShelf title={`¿Y si ${category === 'movie' ? 'vemos' : category === 'book' ? 'leemos' : 'escuchamos'} algo latino?`} subtitle={`En la misma onda que ${anchor.title}`} items={picks.data.latin} />}
+    {!picks.isLoading && !picks.data?.latin.length && <section className="px-4 py-5"><h2 className="cinema-heading text-2xl">¿Y si {category === 'movie' ? 'vemos' : category === 'book' ? 'leemos' : 'escuchamos'} algo latino?</h2><p className="mt-1 text-xs text-muted-foreground">En la misma onda que {anchor.title}</p><Button variant="ghost" className="mt-2" disabled={picks.isFetching} onClick={()=>generate?picks.refetch():setGenerate(true)}><Glasses/>{picks.isFetching?'Buscando…':generate?'Probar de nuevo':'Buscar opciones con Betty'}</Button></section>}
   </>;
 }
