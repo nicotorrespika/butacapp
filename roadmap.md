@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Agregar acción de pendientes junto a vista/favorita en la ficha, con tres iconos alineados como la captura; comprobar selector y guardado en lista.
 - [x] Director debajo del título y ficha técnica con todos los créditos disponibles de TMDB, con fuente identificada.
 - [x] Ficha más compacta: estrellas sin título, promedios reales por fuente y reseña pequeña tras el tráiler; sin Comentarios de tu gente.
 - [x] Ficha de película: soundtrack como disco navegable sin canciones desplegadas; tráiler después de sinopsis y nota personal más arriba.
