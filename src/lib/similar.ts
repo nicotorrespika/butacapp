@@ -7,3 +7,14 @@ export function isLatin(country:string|null){return !!country&&LATIN_COUNTRIES.i
 export function regionalOrder(items:SimilarItem[],original:string|null){
   const seen=new Set<string>();return items.filter(i=>isLatin(i.country)&&i.country!==original&&!seen.has(`${i.result.source}:${i.result.externalId}`)&&(seen.add(`${i.result.source}:${i.result.externalId}`),true)).sort((a,b)=>(a.country==="AR"?0:1)-(b.country==="AR"?0:1));
 }
+export type MovieSignals={genres?:{id:number;name:string}[];keywords?:{keywords?:{id:number;name:string}[];results?:{id:number;name:string}[]}};
+export function movieKeywords(movie:MovieSignals){return movie.keywords?.keywords ?? movie.keywords?.results ?? [];}
+/** Format is a hard constraint for animation; location alone never establishes similarity. */
+export function movieAffinity(anchor:MovieSignals,candidate:MovieSignals){
+  const sharedGenres=(candidate.genres ?? []).filter(g=>anchor.genres?.some(a=>a.id===g.id));
+  const sharedThemes=movieKeywords(candidate).filter(k=>movieKeywords(anchor).some(a=>a.id===k.id));
+  if(anchor.genres?.some(g=>g.id===16)&&!candidate.genres?.some(g=>g.id===16))return null;
+  if(!sharedGenres.length&&!sharedThemes.length)return null;
+  const distinctive=sharedGenres.filter(g=>![16,18,10751].includes(g.id));
+  return {score:sharedThemes.length*5+distinctive.length*3+sharedGenres.length,genres:sharedGenres.map(g=>g.name.toLowerCase()),themes:sharedThemes.map(k=>k.name)};
+}
