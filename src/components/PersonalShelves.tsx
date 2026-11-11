@@ -16,7 +16,7 @@ export function PersonalShelves({ category }: { category: ShelfCategory }) {
     const uid = user?.id ?? '';
     const [entries, top, signals, recommendations] = await Promise.all([
       category === 'movie' ? supabase.from('movie_entries').select('*').eq('user_id', uid).order('updated_at', { ascending: false }).limit(100) : supabase.from('cultural_entries').select('*').eq('user_id', uid).eq('media_type', category).order('updated_at', { ascending: false }).limit(100),
-      supabase.from('top_five_entries').select('*').eq('user_id', uid).in('kind', category === 'movie' ? ['movies'] : category === 'book' ? ['authors', 'books'] : ['artists', 'albums', 'songs']).order('position'),
+      supabase.from('top_five_entries').select('*').eq('user_id', uid).in('kind', category === 'movie' ? ['movie'] : category === 'book' ? ['author', 'book'] : ['artist', 'album', 'song']).order('position'),
       supabase.from('taste_signals').select('source,external_id,excluded').eq('user_id', uid).eq('category', category),
       supabase.from('taste_recommendations').select('*').eq('user_id', uid).eq('category', category).order('score', { ascending: false }).limit(100),
     ]);

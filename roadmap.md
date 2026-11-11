@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Betty en Inicio: encabezado PELI/DISCO/LIBRO y descripción breve debajo según categoría.
 - [ ] Inicio estilo filas laterales: última búsqueda, favoritos/consumo y opciones latinas por categoría, más actividad compacta de amigos al final.
 - [x] Random junto a Betty con textos/descripción por categoría; cine usa similares de última búsqueda, libros/música la consulta reciente; tres sugerencias verificadas en móvil.
 - [x] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos; Cine verificado a 390px sin desborde.
