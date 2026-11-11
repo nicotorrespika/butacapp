@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
 import { useTastes } from '@/hooks/use-tastes';
-import { tasteKey,tasteScore } from '@/lib/tastes';
+import { tasteKey,tasteScore,diverseOrder } from '@/lib/tastes';
 import { cultureRouteId,type HomeCategory } from '@/lib/culture';
 import { refreshPersonalization } from '@/lib/personalization.functions';
 import type { Tables } from '@/integrations/supabase/types';
@@ -19,7 +19,8 @@ export function TasteRecommendations({category='all',anchor}:{category?:HomeCate
   const signals=useQuery({queryKey:['tastes','signals',user?.id],enabled:!!user,queryFn:async()=>{const r=await supabase.from('taste_signals').select('source,external_id,excluded,weight,tags').eq('user_id',user?.id ?? '');if(r.error)throw r.error;return r.data;}});
   const excluded=new Set(signals.data?.filter(s=>s.excluded).map(s=>tasteKey(s.source,s.external_id)));
   const enabledAnchor=!anchor||signals.data?.some(s=>tasteKey(s.source,s.external_id)===tasteKey(anchor.source,anchor.id)&&(s.excluded||s.weight>=6));
-  const rows=(q.data ?? []).filter(r=>!excluded.has(tasteKey(r.source,r.external_id))&&tasteScore(r.tags,chips.data ?? [],paused)>=0).sort((a,b)=>paused?new Date(b.created_at).getTime()-new Date(a.created_at).getTime():Number(b.score)+tasteScore(b.tags,chips.data ?? [])-Number(a.score)-tasteScore(a.tags,chips.data ?? []));
+  const eligible=(q.data ?? []).filter(r=>!excluded.has(tasteKey(r.source,r.external_id))&&tasteScore(r.tags,chips.data ?? [],paused)>=0);
+  const rows=paused?eligible:diverseOrder(eligible.map(r=>({...r,score:Number(r.score)+tasteScore(r.tags,chips.data ?? [])})),10);
   if(!user||!enabledAnchor)return null;
   return <section className="px-4 py-7"><div className="flex flex-wrap items-center justify-between gap-2"><h2 className="cinema-heading max-w-full break-words text-3xl">{anchor?`Porque ${anchor.verb} ${anchor.title}…`:'Para vos'}</h2>{!paused&&settings.data?.recording_enabled!==false&&<Button variant="ghost" disabled={busy} onClick={async()=>{setBusy(true);try{const r=await call();toast(r.message);await qc.invalidateQueries({queryKey:['tastes']});}catch{toast.error('No pudimos actualizar tus recomendaciones.');}finally{setBusy(false);}}}><RefreshCw className={busy?'animate-spin':''}/>{busy?'Betty está conectando…':'Actualizar'}</Button>}</div>{paused&&<p className="mt-2 text-sm text-muted-foreground">Personalización pausada · tus gustos no están cambiando.</p>}{q.isError?<p className="py-5 text-sm text-muted-foreground">No pudimos cargar tus recomendaciones.</p>:!rows.length?<div className="py-5"><p className="text-sm text-muted-foreground">Todavía no hay conexiones guardadas, che.</p><Button asChild variant="link"><Link to="/gustos">Elegir mis gustos</Link></Button></div>:<div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4">{rows.slice(0,anchor?8:8).map(r=><TasteCard row={r} key={r.id}/>)}</div>}</section>;
 }
