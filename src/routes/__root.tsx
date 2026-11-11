@@ -85,7 +85,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "BUTACAPP — listas colaborativas" },
       { property: "og:description", content: "Listas compartidas para ver, escuchar y visitar en grupo." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://butacapp.lovable.app/og-image.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://butacapp.lovable.app/og-image.jpg" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
