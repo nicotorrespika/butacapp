@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Agregar acción de pendientes junto a vista/favorita en la ficha, con tres iconos alineados como la captura; comprobar selector y guardado en lista.
+- [x] Acción de pendientes junto a vista/favorita, tres iconos alineados como la captura; selector de listas verificado con sesión real en móvil y pruebas del guardado existentes pasan, sin agregar obras de prueba a las listas del usuario.
 - [x] Director debajo del título y ficha técnica con todos los créditos disponibles de TMDB, con fuente identificada.
 - [x] Ficha más compacta: estrellas sin título, promedios reales por fuente y reseña pequeña tras el tráiler; sin Comentarios de tu gente.
 - [x] Ficha de película: soundtrack como disco navegable sin canciones desplegadas; tráiler después de sinopsis y nota personal más arriba.
