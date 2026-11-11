@@ -57,8 +57,8 @@ export function SearchPicks({ category }: { category: Cat }) {
     <section className="px-4 py-6">
       <h2 className="cinema-heading text-3xl">{q.data.personal ? `Porque ${VERB[category]} ${q.data.queries[0]}` : "Para arrancar"}</h2>
       <p className="mt-1 text-sm text-muted-foreground">{q.data.personal ? "Se va afinando con cada búsqueda." : "Buscá algo y esto se arma a tu medida."}</p>
-      <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-4">
-        {q.data.items.map(r => <ResultCard key={tasteKey(r.source, r.externalId)} result={r} onAdd={add.add} busy={add.isBusy(r)} added={add.isAdded(r)} onOpen={open} />)}
+      <div className="mt-4 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain pb-3" role="region" aria-label="Recomendaciones según tus búsquedas" tabIndex={0}>
+        {q.data.items.map(r => <ResultCard className="w-40 shrink-0 snap-start sm:w-48" key={tasteKey(r.source, r.externalId)} result={r} onAdd={add.add} busy={add.isBusy(r)} added={add.isAdded(r)} onOpen={open} />)}
       </div>
     </section>
   );
