@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!state.user) return;
     const likes=state.user.user_metadata?.["initial_tastes"];
-    if(Array.isArray(likes))void supabase.from("taste_chips").upsert(likes.filter((t):t is string=>typeof t==="string").slice(0,6).map(t=>({user_id:state.user?.id ?? "",label:t.toLowerCase(),weight:8,manual:true})),{ignoreDuplicates:true}).then(({error})=>{if(!error)queryClient.invalidateQueries({queryKey:["tastes"]});});
+    if(Array.isArray(likes)){const uid=state.user.id;void supabase.from("taste_settings").select("reset_at,recording_enabled").eq("user_id",uid).maybeSingle().then(async({data})=>{if(data&&(data.recording_enabled===false||new Date(data.reset_at).getTime()>0))return;const {error}=await supabase.from("taste_chips").upsert(likes.filter((t):t is string=>typeof t==="string").slice(0,6).map(t=>({user_id:uid,label:t.toLowerCase(),weight:8,manual:true})),{ignoreDuplicates:true});if(!error)queryClient.invalidateQueries({queryKey:["tastes"]});});}
     const invitedBy = sessionStorage.getItem("butacapp:invited-by");
     if (!invitedBy || invitedBy === state.user.id || !/^[0-9a-f-]{36}$/i.test(invitedBy)) return;
     void supabase.from("share_referrals").insert({user_id:state.user.id,invited_by:invitedBy}).then(({error})=>{
