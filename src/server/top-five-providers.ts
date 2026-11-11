@@ -3,13 +3,11 @@ import type { TopKind } from "@/lib/copy";
 import { getJson, searchMusic, tmdbFetcher, mapTmdb, type TmdbItem } from "./search-providers";
 import { parseQuery } from "@/lib/search-query";
 import { searchBooks } from "./culture-providers";
+import { musicBrainz } from "./music-providers";
 
 /** Artistas verificados en MusicBrainz. */
 async function searchArtists(query: string): Promise<SearchResult[]> {
-  const data = await getJson<{ artists: { id: string; name: string; disambiguation?: string; country?: string }[] }>(
-    `https://musicbrainz.org/ws/2/artist?query=${encodeURIComponent(query)}&fmt=json&limit=12`,
-    { headers: { "User-Agent": "BUTACAPP/1.0 (https://butacapp.lovable.app)" } },
-  );
+  const data = await musicBrainz<{ artists: { id: string; name: string; disambiguation?: string; country?: string }[] }>(`artist?query=${encodeURIComponent(query)}&fmt=json&limit=12`);
   return (data.artists ?? []).map((a) => ({
     source: "musicbrainz",
     externalId: `artist:${a.id}`,
