@@ -14,7 +14,7 @@ function Avisos(){
   const qc=useQueryClient();
   const navigate=useNavigate();
   const [tab,setTab]=useScreenState("avisos:section","Avisos");
-  const notices=useQuery({queryKey:["avisos","notices"],queryFn:async()=>{const r=await supabase.from("user_notifications").select("*,actor:profiles!user_notifications_actor_id_fkey(display_name,avatar_url)").eq("user_id",user.id).order("created_at",{ascending:false});return r.data;}});
+  const notices=useQuery({queryKey:["avisos","notices",user.id],queryFn:async()=>{const r=await supabase.from("user_notifications").select("*,actor:profiles!user_notifications_actor_id_fkey(display_name,avatar_url)").eq("user_id",user.id).order("created_at",{ascending:false});return r.data;}});
   function openTarget(targetUrl:string|null|undefined){
     const raw=targetUrl?.trim();
     if(!raw)return;
