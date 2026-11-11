@@ -1,5 +1,6 @@
 import {ShareButton} from "./ShareButton";
 import {EventImage} from "./EventImage";
+import {EventSchedule} from "./EventSchedule";
 import {shareResult} from "@/lib/sharing";
 import { useState } from "react";
 import { useQuery,useQueryClient } from "@tanstack/react-query";

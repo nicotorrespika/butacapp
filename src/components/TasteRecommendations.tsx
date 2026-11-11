@@ -14,6 +14,7 @@ import type { Tables } from '@/integrations/supabase/types';
 import { Button } from './ui/button';
 import { Poster } from './Poster';
 import { EventImage } from './EventImage';
+import { EventSchedule } from './EventSchedule';
 export function TasteRecommendations({category='all',anchor}:{category?:HomeCategory;anchor?:{source:string;id:string;title:string;verb:string}}) {
   const {user}=useAuth();const {settings,chips,paused}=useTastes();const call=useServerFn(refreshPersonalization);const qc=useQueryClient();const [busy,setBusy]=useState(false);
   const q=useQuery({queryKey:['tastes','recommendations',user?.id,category,anchor?.id],enabled:!!user,queryFn:async()=>{let query=supabase.from('taste_recommendations').select('*').eq('user_id',user?.id ?? '').order('score',{ascending:false}).limit(100);if(category!=='all')query=query.eq('category',category);if(anchor)query=query.eq('anchor_source',anchor.source).eq('anchor_id',anchor.id);const r=await query;if(r.error)throw r.error;return r.data;}});
