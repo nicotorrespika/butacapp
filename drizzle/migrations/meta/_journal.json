@@ -162,6 +162,13 @@
       "when": 1794380723926,
       "tag": "0022_category_top_fives",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1794430768489,
+      "tag": "0023_migration",
+      "breakpoints": true
     }
   ]
 }
