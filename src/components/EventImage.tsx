@@ -34,7 +34,7 @@ const FALLBACK_COVERS: Record<string, string> = {
   art: cultureCover,
 };
 
-export function EventImage({ title, interest, url }: { title: string; interest: string; url: string | null }) {
+export function EventImage({ title, interest, url, compact = false }: { title: string; interest: string; url: string | null; compact?: boolean }) {
   const [failed, setFailed] = useState<string[]>([]);
   const signed = useQuery({
     queryKey: ["event-photo", url],
@@ -56,7 +56,7 @@ export function EventImage({ title, interest, url }: { title: string; interest: 
   const label = labels[interest] ?? "Evento cultural";
 
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-sm border border-border bg-card" title={customSrc === related?.url ? related?.credit : undefined}>
+    <div className={compact ? "relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-sm border border-border bg-card sm:w-24" : "relative aspect-video w-full overflow-hidden rounded-sm border border-border bg-card"} title={customSrc === related?.url ? related?.credit : undefined}>
       {!imageFailed && <img
         src={imageSrc}
         width={1536}
@@ -65,18 +65,18 @@ export function EventImage({ title, interest, url }: { title: string; interest: 
         loading="lazy"
         decoding="async"
         onError={() => setFailed(previous => previous.includes(imageSrc) ? previous : [...previous, imageSrc])}
-        className="h-full w-full object-cover transition-transform duration-700 ease-cine group-hover:scale-105"
+        className={compact ? "h-full w-full object-contain" : "h-full w-full object-cover transition-transform duration-700 ease-cine group-hover:scale-105"}
       />}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-      {isFallback && <div className="absolute inset-x-4 bottom-4">
-        <p className="line-clamp-3 break-words font-display text-xl leading-tight text-foreground sm:text-3xl">{title}</p>
-        <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">Portada ilustrada</p>
+      {!compact && <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />}
+      {isFallback && <div className={compact ? "absolute inset-x-1 bottom-2" : "absolute inset-x-4 bottom-4"}>
+        <p className={compact ? "line-clamp-3 break-words font-display text-xs leading-tight text-foreground" : "line-clamp-3 break-words font-display text-xl leading-tight text-foreground sm:text-3xl"}>{title}</p>
+        {!compact && <p className="mt-2 font-mono text-[10px] uppercase text-muted-foreground">Portada ilustrada</p>}
       </div>}
-      {!isFallback && customSrc === related?.url && <p className="absolute inset-x-3 bottom-2 text-[10px] text-foreground">{related?.credit}</p>}
-      <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] font-medium text-foreground backdrop-blur-md">
+      {!compact && !isFallback && customSrc === related?.url && <p className="absolute inset-x-3 bottom-2 text-[10px] text-foreground">{related?.credit}</p>}
+      {!compact && <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] font-medium text-foreground backdrop-blur-md">
         <Icon className="size-3.5 text-primary" />
         <span>{label}</span>
-      </div>
+      </div>}
     </div>
   );
 }
