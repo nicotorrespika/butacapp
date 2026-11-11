@@ -117,13 +117,13 @@ function MoviePage() {
       </div>
 
       {m.trailerKey && <div className="mt-8"><MovieTrailer key={m.trailerKey} videoKey={m.trailerKey} title={m.title} posterUrl={m.backdropUrl ?? m.posterUrl} /></div>}
-      <section className="mt-5 px-4"><MovieActions key={`review-${m.routeId}`} section="review" result={m.result} genres={m.genres} extra={m.countries}/></section>
-      <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
-      <Accordion key={m.routeId} type="multiple" className="mt-6 px-4">
-        {m.cast.length > 0 && <AccordionItem value="cast"><AccordionTrigger className="min-h-14 font-display text-2xl">Reparto</AccordionTrigger><AccordionContent><CastRow cast={m.cast} listId={list} /></AccordionContent></AccordionItem>}
-        {!!m.crew?.length && <AccordionItem value="crew"><AccordionTrigger className="min-h-14 font-display text-2xl">Ficha técnica</AccordionTrigger><AccordionContent><TechnicalCredits crew={m.crew} listId={list} /></AccordionContent></AccordionItem>}
+      <Accordion key={m.routeId} type="multiple" className="mt-3 px-4">
+        {m.cast.length > 0 && <AccordionItem value="cast"><AccordionTrigger className="min-h-11 py-3 font-display text-xl">Reparto</AccordionTrigger><AccordionContent><CastRow cast={m.cast} listId={list} /></AccordionContent></AccordionItem>}
+        {!!m.crew?.length && <AccordionItem value="crew"><AccordionTrigger className="min-h-11 py-3 font-display text-xl">Ficha técnica</AccordionTrigger><AccordionContent><TechnicalCredits crew={m.crew} listId={list} /></AccordionContent></AccordionItem>}
+        <AccordionItem value="soundtrack"><AccordionTrigger className="min-h-11 py-3 font-display text-xl">Soundtrack</AccordionTrigger><AccordionContent><Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/></AccordionContent></AccordionItem>
       </Accordion>
-      <Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/>
+      <section className="mt-4 px-4"><MovieActions key={`review-${m.routeId}`} section="review" result={m.result} genres={m.genres} extra={m.countries}/></section>
+      <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
       <div className="mt-10 space-y-10">
         <MovieListActivity key={m.routeId} movie={m} listId={list} />
         <TasteRecommendations anchor={{source:m.result.source,id:m.result.externalId,title:m.title,verb:'viste'}}/>
