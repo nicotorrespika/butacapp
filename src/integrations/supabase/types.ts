@@ -1139,6 +1139,47 @@ export type Database = {
         }
         Relationships: []
       }
+      personalization_jobs: {
+        Row: {
+          ai_calls: number
+          ai_day: string
+          lease_until: string
+          paused_reason: string | null
+          pending: boolean
+          terminal_denial: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_calls?: number
+          ai_day?: string
+          lease_until?: string
+          paused_reason?: string | null
+          pending?: boolean
+          terminal_denial?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_calls?: number
+          ai_day?: string
+          lease_until?: string
+          paused_reason?: string | null
+          pending?: boolean
+          terminal_denial?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personalization_jobs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1397,6 +1438,200 @@ export type Database = {
         }
         Relationships: []
       }
+      taste_chips: {
+        Row: {
+          label: string
+          manual: boolean
+          suppressed: boolean
+          updated_at: string
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          label: string
+          manual?: boolean
+          suppressed?: boolean
+          updated_at?: string
+          user_id: string
+          weight?: number
+        }
+        Update: {
+          label?: string
+          manual?: boolean
+          suppressed?: boolean
+          updated_at?: string
+          user_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "taste_chips_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      taste_recommendations: {
+        Row: {
+          anchor_id: string
+          anchor_source: string
+          anchor_title: string | null
+          category: string
+          created_at: string
+          creator: string | null
+          evidence_url: string | null
+          exploration: boolean
+          external_id: string
+          external_url: string | null
+          id: string
+          image_url: string | null
+          reason: string
+          score: number
+          source: string
+          tags: string[]
+          title: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          anchor_id?: string
+          anchor_source?: string
+          anchor_title?: string | null
+          category: string
+          created_at?: string
+          creator?: string | null
+          evidence_url?: string | null
+          exploration?: boolean
+          external_id: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          reason: string
+          score?: number
+          source: string
+          tags?: string[]
+          title: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          anchor_id?: string
+          anchor_source?: string
+          anchor_title?: string | null
+          category?: string
+          created_at?: string
+          creator?: string | null
+          evidence_url?: string | null
+          exploration?: boolean
+          external_id?: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          reason?: string
+          score?: number
+          source?: string
+          tags?: string[]
+          title?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "taste_recommendations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      taste_settings: {
+        Row: {
+          onboarding_done: boolean
+          paused: boolean
+          recording_enabled: boolean
+          reset_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          onboarding_done?: boolean
+          paused?: boolean
+          recording_enabled?: boolean
+          reset_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          onboarding_done?: boolean
+          paused?: boolean
+          recording_enabled?: boolean
+          reset_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "taste_settings_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      taste_signals: {
+        Row: {
+          category: string
+          excluded: boolean
+          external_id: string
+          occurred_at: string
+          reason: string | null
+          signal_key: string
+          source: string
+          tags: string[]
+          title: string
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          category: string
+          excluded?: boolean
+          external_id?: string
+          occurred_at?: string
+          reason?: string | null
+          signal_key: string
+          source?: string
+          tags?: string[]
+          title?: string
+          user_id: string
+          weight?: number
+        }
+        Update: {
+          category?: string
+          excluded?: boolean
+          external_id?: string
+          occurred_at?: string
+          reason?: string | null
+          signal_key?: string
+          source?: string
+          tags?: string[]
+          title?: string
+          user_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "taste_signals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notifications: {
         Row: {
           actor_id: string
@@ -1503,6 +1738,11 @@ export type Database = {
       are_friends: { Args: { a: string; b: string }; Returns: boolean }
       can_read_list: { Args: { lid: string; uid: string }; Returns: boolean }
       claim_email_invites: { Args: never; Returns: number }
+      claim_personalization: { Args: { uid: string }; Returns: boolean }
+      clear_my_tastes: {
+        Args: { disable_recording?: boolean }
+        Returns: undefined
+      }
       get_invite: {
         Args: { _token: string }
         Returns: {
@@ -1527,6 +1767,23 @@ export type Database = {
         Returns: boolean
       }
       public_share_summary: { Args: { cid: string; k: string }; Returns: Json }
+      rebuild_tastes: { Args: { uid: string }; Returns: undefined }
+      record_taste_signal: {
+        Args: {
+          cat: string
+          eid: string
+          is_excluded?: boolean
+          k: string
+          points: number
+          src: string
+          why?: string
+          work_tags: string[]
+          work_title: string
+        }
+        Returns: undefined
+      }
+      reserve_taste_ai: { Args: { uid: string }; Returns: boolean }
+      resume_taste_job: { Args: never; Returns: boolean }
       search_people: {
         Args: { term: string }
         Returns: {

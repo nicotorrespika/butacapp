@@ -18,7 +18,8 @@ const inputSchema = z.object({
 export const searchMedia = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => inputSchema.parse(input))
-  .handler(async ({ data }): Promise<SearchResponse> => {
+  .handler(async ({ data,context }): Promise<SearchResponse> => {
+    await context.supabase.rpc('record_taste_signal',{k:`search:${data.filter}:${data.q.toLowerCase()}`,cat:data.filter==='art'?'event':data.filter,src:'search',eid:'',work_title:data.q,work_tags:[data.q],points:0.5});
     const parsed = parseQuery(data.q);
     const want = (t: "movie" | "music" | "book" | "art") => data.filter === "all" || data.filter === t;
     const tmdbKey = process.env["TMDB_API_KEY"];
