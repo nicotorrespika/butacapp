@@ -98,3 +98,5 @@
 - [x] Explain the native iOS/App Store path and its requirements (not just home-screen installation)
 - [x] Direct IMDb access, including when internal detail fetching fails
 - [ ] External IMDb/Rotten Tomatoes/Metacritic scores blocked by rejected OMDb key; TMDB key now works
+- [ ] Autor/artista en ficha de libro/música abre su perfil con obra (como directores)
+- [ ] Similares visibles automáticamente en libros y música

@@ -15,8 +15,8 @@ export const getSimilar=createServerFn({method:"POST"}).middleware([requireSupab
   const cacheKey=`cross:${data.kind}:${data.id}`;const cached=await context.supabase.from("similar_recommendations").select("payload,updated_at").eq("cache_key",cacheKey).maybeSingle();
   if(cached.data&&Date.now()-new Date(cached.data.updated_at).getTime()<7*86400000)return {ok:true as const,data:cached.data.payload as unknown as Cross};
   try{
-    const ai=process.env.LOVABLE_API_KEY;if(!ai)throw new Error("Unavailable");
-    const {crossUniverse}=await import("@/server/similar-providers");const result=await crossUniverse(data.kind,data.id,ai,process.env.TMDB_API_KEY);
+    const ai=process.env["LOVABLE_API_KEY"];if(!ai)throw new Error("Unavailable");
+    const {crossUniverse}=await import("@/server/similar-providers");const result=await crossUniverse(data.kind,data.id,ai,process.env["TMDB_API_KEY"]);
     const {supabaseAdmin}=await import("@/integrations/supabase/client.server");await supabaseAdmin.from("similar_recommendations").upsert({cache_key:cacheKey,payload:JSON.parse(JSON.stringify(result)),updated_at:new Date().toISOString()});return {ok:true as const,data:result};
   }catch{return cached.data?{ok:true as const,data:cached.data.payload as unknown as Cross}:{ok:false as const};}
 });
