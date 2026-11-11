@@ -31,8 +31,8 @@ function MyLists() {
     <div className="px-5 pt-[max(env(safe-area-inset-top),2rem)] sm:px-8 sm:pt-12">
       <header className="mb-8 flex items-end justify-between gap-3 pb-4">
         <div>
-          <p className="mb-3 text-[11px] font-medium text-muted-foreground">2BOLUDOS</p>
-          <h1 className="font-display text-4xl leading-tight">mis listas!!!!</h1>
+          <p className="mb-3 text-[11px] font-medium text-muted-foreground">TU COLECCIÓN</p>
+          <h1 className="font-display text-4xl leading-tight">Mis listas</h1>
         </div>
         <Button variant="outline" size="sm" onClick={() => setCreating(true)}>
           <Plus /> Nueva

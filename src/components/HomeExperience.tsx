@@ -19,7 +19,7 @@ import { EventBetty } from "./EventBetty";
 import { TasteRecommendations } from "./TasteRecommendations";
 import { TasteEditor } from "./TasteEditor";
 import { useTastes } from "@/hooks/use-tastes";
-const headlines={all:"¿QUÉ VAMOS A BUSCAR HOY?",movie:"¿QUÉ PELI VAMOS A VER?",music:"¿QUÉ TENÉS GANAS DE ESCUCHAR, NEGRI?",book:"¿ALGÚN LIBRO NUEVO QUE TE PUEDA INTERESAR?",event:"VEAMOS QUÉ PLANES HAY EN TU CIUDAD"};
+const headlines={all:"¿QUÉ VAMOS A BUSCAR HOY?",movie:"¿QUÉ PELI VAMOS A VER?",music:"¿QUÉ TENÉS GANAS DE ESCUCHAR?",book:"¿ALGÚN LIBRO NUEVO QUE TE PUEDA INTERESAR?",event:"VEAMOS QUÉ PLANES HAY EN TU CIUDAD"};
 const placeholders={all:"Título, artista, libro o plan…",movie:"Título, director, actor o año",music:"Artista, disco, canción o género",book:"Título, autor o tema",event:"Evento, lugar, artista o ciclo"};
 const labels={all:"Inicio",movie:"Cine",music:"Música",book:"Libros",event:"Eventos"};
 export function HomeExperience(){const {user}=useAuth();const navigate=useNavigate();const tastes=useTastes();const [category,setCategory]=useScreenState<HomeCategory>("home:category","all");const [text,setText]=useState("");const [betty,setBetty]=useScreenState("home:betty",false);const [eventQuery,setEventQuery]=useState("");const lists=useQuery({...myListsQuery,enabled:!!user});

@@ -20,7 +20,7 @@ export async function askBetty(apiKey:string,tmdbKey:string,prompt:string,contex
   }
   return verifiedUnique(movies,excluded);
  }
- const enrich=async(movies:BettyMovie[])=>{if(!research)return movies;return Promise.all(movies.slice(0,4).map(async movie=>{try{const sources=await research(movie);const source=sources.find(s=>!/^IMDb|Rotten Tomatoes|Metacritic/i.test(s.source)) ?? sources[0];return source?{...movie,reason:`${movie.reason} Chisme cinéfilo: ${source.source} cuenta que ${source.summary}`,sources}:movie;}catch{return movie;}}));};
+ const enrich=async(movies:BettyMovie[])=>{if(!research)return movies;const enriched=await Promise.all(movies.slice(0,4).map(async movie=>{try{const sources=await research(movie);const source=sources.find(s=>!/^IMDb|Rotten Tomatoes|Metacritic/i.test(s.source)) ?? sources[0];return source?{...movie,reason:`${movie.reason} Chisme cinéfilo: ${source.source} cuenta que ${source.summary}`,sources}:movie;}catch{return movie;}}));return [...enriched,...movies.slice(4)];};
  const first=await generate("");if(first.length>=3)return enrich(first);
  const extra=await generate(`Necesito otras opciones distintas; ya verifiqué: ${first.map(m=>m.result.title).join(", ")}.`);
  return enrich(verifiedUnique([...first,...extra],excluded));

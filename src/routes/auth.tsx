@@ -71,6 +71,10 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else if (mode === "signup") {
+        if (!name.trim()) {
+          toast.error("Ingresá tu nombre.");
+          return;
+        }
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -198,8 +202,8 @@ function AuthPage() {
                     required
                   />
                 )}
-                {mode==="signup"&&<fieldset className="space-y-3"><legend className="text-sm">Elegí cinco o seis gustos</legend><div className="flex flex-wrap gap-1">{initialTastes.map(t=><Button type="button" size="sm" variant={initialLikes.includes(t)?"secondary":"ghost"} aria-pressed={initialLikes.includes(t)} key={t} onClick={()=>setInitialLikes(old=>old.includes(t)?old.filter(v=>v!==t):old.length<6?[...old,t]:old)}>{t}</Button>)}</div><p className="text-xs text-muted-foreground">Tu Top 5 te espera al entrar. {initialLikes.length}/6 gustos elegidos.</p></fieldset>}
-                <Button type="submit" size="lg" className="w-full" disabled={busy||(mode==="signup"&&initialLikes.length<5)}>
+                {mode==="signup"&&<fieldset className="space-y-3"><legend className="text-sm">Elegí tus gustos iniciales (opcional)</legend><div className="flex flex-wrap gap-1">{initialTastes.map(t=><Button type="button" size="sm" variant={initialLikes.includes(t)?"secondary":"ghost"} aria-pressed={initialLikes.includes(t)} key={t} onClick={()=>setInitialLikes(old=>old.includes(t)?old.filter(v=>v!==t):[...old,t])}>{t}</Button>)}</div><p className="text-xs text-muted-foreground">{initialLikes.length ? `${initialLikes.length} gustos elegidos. Podés sumar más al entrar.` : "Opcional: podés elegirlos ahora o al entrar."}</p></fieldset>}
+                <Button type="submit" size="lg" className="w-full" disabled={busy}>
                   {busy && <Loader2 className="animate-spin" />}
                   {mode === "signin" && "Entrar"}
                   {mode === "signup" && "Crear cuenta"}
