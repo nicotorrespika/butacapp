@@ -8,6 +8,7 @@ import { searchBooks } from "./culture-providers";
 async function searchArtists(query: string): Promise<SearchResult[]> {
   const data = await getJson<{ artists: { id: string; name: string; disambiguation?: string; country?: string }[] }>(
     `https://musicbrainz.org/ws/2/artist?query=${encodeURIComponent(query)}&fmt=json&limit=12`,
+    { headers: { "User-Agent": "BUTACAPP/1.0 (https://butacapp.lovable.app)" } },
   );
   return (data.artists ?? []).map((a) => ({
     source: "musicbrainz",
