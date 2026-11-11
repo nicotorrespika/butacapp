@@ -9,6 +9,7 @@ import type { PersonResult, SearchResponse, SearchResult } from "@/lib/media";
 import { parseQuery } from "@/lib/search-query";
 import { searchArt, searchImdbFallback, searchMusic, searchTmdb } from "@/server/search-providers";
 import { searchBooks } from "@/server/culture-providers";
+import { cachedCatalog } from "@/server/catalog-cache";
 
 const inputSchema = z.object({
   q: z.string().trim().min(1).max(120),
@@ -55,7 +56,7 @@ export const searchMedia = createServerFn({ method: "POST" })
 
     const [movie, music, book, art] = await Promise.all([
       want("movie") ? run("Películas", movies) : Promise.resolve([]),
-      want("music") ? run("Música", () => searchMusic(parsed)) : Promise.resolve([]),
+      want("music") ? run("Música", () => cachedCatalog(context.supabase,`music-search:v3:${data.q.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}`,async()=>{const items=await searchMusic(parsed);if(!items.length)throw new Error("Music providers unavailable");return items;},3)) : Promise.resolve([]),
       want("book") ? run("Libros", () => searchBooks(data.q)) : Promise.resolve([]),
       data.filter === "art" ? run("Arte", () => searchArt(parsed)) : Promise.resolve([]),
     ]);
