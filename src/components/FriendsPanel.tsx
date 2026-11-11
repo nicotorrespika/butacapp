@@ -12,7 +12,7 @@ import { UserAvatar } from "./UserAvatar";
 
 export function FriendsPanel(){
  const {user}=useAuth();const id=user?.id ?? "";const qc=useQueryClient();const q=useQuery({...friendsQuery(id),enabled:!!id});const [text,setText]=useState("");const term=useDebouncedValue(text,300);
- const search=useQuery({queryKey:["social","people-search",term],enabled:term.trim().length>=2,queryFn:async()=>{const clean=term.replace(/[^\p{L}\p{N}_ ]/gu,"");const r=await supabase.from("profiles").select("*").or(`username.ilike.%${clean}%,display_name.ilike.%${clean}%`).neq("id",id).limit(20);if(r.error)throw r.error;return r.data;}});
+ const search=useQuery({queryKey:["social","people-search",term],enabled:term.trim().length>=2,queryFn:async()=>{const clean=term.replace(/[^\p{L}\p{N}_ ]/gu,"");const r=await supabase.rpc("search_people",{term:clean});if(r.error)throw r.error;return r.data;}});
  const refresh=()=>qc.invalidateQueries({queryKey:["social"]});
  async function request(to:string){if(!user)return;const r=await supabase.from("friendships").insert({sender_id:id,receiver_id:to}).select("id").single();if(r.error)return void toast.error("No se pudo enviar. Revisá si ya existe una solicitud.");refresh();toast.success("Solicitud enviada",{action:{label:"Deshacer",onClick:async()=>{await supabase.from("friendships").delete().eq("id",r.data.id);refresh();}}});}
  return <div className="space-y-6"><label className="block text-sm text-muted-foreground">Buscar amigos<input aria-label="Buscar amigos" value={text} onChange={e=>setText(e.target.value)} placeholder="Buscá amigos por nombre o usuario" className="mt-2 h-12 w-full rounded-sm border border-input bg-card px-4 text-base"/></label>

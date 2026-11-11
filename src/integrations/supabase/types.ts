@@ -1527,6 +1527,15 @@ export type Database = {
         Returns: boolean
       }
       public_share_summary: { Args: { cid: string; k: string }; Returns: Json }
+      search_people: {
+        Args: { term: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          id: string
+          username: string
+        }[]
+      }
       share_access: {
         Args: { cid: string; k: string; viewer: string }
         Returns: boolean
