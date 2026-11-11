@@ -1,9 +1,9 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Celular: mover navegación Inicio / Buscar / Avisos / Perfil arriba, fija y sin tapar el contenido; conservar computadora.
-- [ ] Todas las películas: conexiones automáticas con libros y música, normalización de IDs de búsqueda/listas/links y verificación con otras películas.
-- [ ] Cruces recíprocos: discos recomiendan películas y libros; libros recomiendan películas y música, con ambos destinos verificados.
+- [x] Celular: navegación Inicio / Buscar / Avisos / Perfil arriba, fija y sin tapar contenido; a 390px permanece en y=0 al desplazar, computadora conserva barra inferior.
+- [x] Todas las películas: conexiones automáticas con libros y música y IDs normalizados; En la boca del miedo muestra discos y libros relacionados, ocho pruebas pasan.
+- [x] Cruces recíprocos: Lost Themes muestra películas y libros; Ficciones muestra películas y música, verificados con sesión real sin errores JS.
 - [x] Ficha Medianoche en París: cruces automáticos al llegar a la sección, IDs IMDb normalizados y cachés vacías rechazadas; sesión real muestra cuatro libros y cuatro discos, sin errores.
 - [x] Novedades: cinco iniciales, Ver más hasta cinco adicionales; amigos antes. Cine 5→10, música/libros 5→9 (restantes), probado.
 - [x] Fotos Top: Deezer para artistas, Open Library/enciclopedia para autores y resolver TMDB para directores; tres artistas y Paul Auster probados. No existe Top de directores en el perfil actual; sin inventar retratos cuando no hay fuente.
