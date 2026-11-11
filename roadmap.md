@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Inicio estilo filas laterales: última búsqueda, favoritos/consumo y opciones latinas por categoría, más actividad compacta de amigos al final.
 - [x] Random junto a Betty con textos/descripción por categoría; cine usa similares de última búsqueda, libros/música la consulta reciente; tres sugerencias verificadas en móvil.
 - [x] Collage tenue detrás del encabezado de Inicio por categoría: películas, discos, portadas de libros y eventos; Cine verificado a 390px sin desborde.
 - [x] Mis gustos: collage visual, listado opcional cerrado y datos preservados; abrir/cerrar verificado.
