@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Diagnosticar Bryan Adams / Summer of 69 y reconstruir búsqueda musical compartida con Deezer, respaldo MusicBrainz, filtros artistas/discos/canciones y caché.
+- [ ] Verificar recomendaciones de búsquedas en una sola fila horizontal en computadora y celular.
 - [x] Cambiar «Preguntale a Betty» por invitaciones por categoría: ver, leer y escuchar.
 - [x] Acomodar libros y música como películas: portada compacta, acciones leído/escuchado, favorito y pendientes arriba, reseña pequeña, datos/canciones desplegables y recomendaciones por obra.
 - [x] Recomendaciones latinas por género/temática, animación conservada y relevancia antes que país; caché renovada, 9 pruebas pasan y Coraline verificada con sesión real: Soy Frankelda, La casa lobo y otras animaciones.
