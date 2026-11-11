@@ -48,6 +48,7 @@ export interface MovieDetail {
   trailerKey: string | null;
   directors: CreditPerson[];
   cast: CreditPerson[];
+  crew?: CreditPerson[];
   scores: CriticScore[];
   links: { tmdb: string; imdb: string | null; letterboxd: string | null };
   /** Ready to add to a list. */

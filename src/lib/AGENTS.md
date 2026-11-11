@@ -1,1 +1,2 @@
 - Event cover overrides match named artists/productions to inspected CDN assets with source credits; unknown titles keep illustrated fallbacks. Why: avoid unrelated portraits and repeated generic covers.
+- Movie details expose complete TMDB crew credits from the existing appended request; personal controls and review reuse the same entry query in separate views. Why: avoid extra requests and inconsistent edits.
