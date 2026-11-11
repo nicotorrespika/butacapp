@@ -116,6 +116,6 @@
 - [x] Cruce de universos "Porque viste/escuchaste/leíste…" en fichas
 - [x] Autores similares, latinos en libros, descripciones en español
 - [x] Libros: leer primeras páginas (Google Books/Open Library legal) y puntaje del público
-- [ ] Compartir como ícono sutil en miniaturas
-- [ ] Vista rápida al tocar portada: portada grande, sinopsis, Favorito/Guardar/Visto-Leído-Escuchado
-- [ ] Hover en portadas: oscurece + corazón/reloj/ojo (oreja en música)
+- [x] Compartir como ícono sutil en miniaturas
+- [x] Vista rápida al tocar portada: portada grande, sinopsis, Favorito/Guardar/Visto-Leído-Escuchado
+- [x] Hover en portadas: oscurece + corazón/reloj/ojo (oreja en música)
