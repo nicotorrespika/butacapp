@@ -23,3 +23,26 @@ export async function cultureDetail(source: string, id: string): Promise<Culture
   }
   throw new Error("Ficha no disponible");
 }
+export type CreatorData = { name: string; type: CultureType; bio: string | null; photo: string | null; years: string | null; works: SearchResult[] };
+/** Body of work for an author (Open Library) or artist (iTunes albums), filtered to exact creator matches. */
+export async function creatorWorks(type: CultureType, name: string): Promise<CreatorData> {
+  const norm = (v: string) => v.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const target = norm(name);
+  if (type === "book") {
+    const [books, authors] = await Promise.all([
+      getJson<{ docs: BookHit[] }>(`https://openlibrary.org/search.json?author=${encodeURIComponent(name)}&sort=editions&limit=40&fields=key,title,author_name,first_publish_year,cover_i`),
+      getJson<{ docs: { key: string; name: string; birth_date?: string; death_date?: string }[] }>(`https://openlibrary.org/search/authors.json?q=${encodeURIComponent(name)}&limit=5`).catch(() => ({ docs: [] })),
+    ]);
+    const a = authors.docs.find(x => norm(x.name) === target) ?? authors.docs[0];
+    let bio: string | null = null;
+    if (a) { try { const d = await getJson<{ bio?: string | { value: string } }>(`https://openlibrary.org/authors/${a.key}.json`); bio = typeof d.bio === "string" ? d.bio : d.bio?.value ?? null; } catch { /* bio optional */ } }
+    const seen = new Set<string>();
+    const works = books.docs.filter(b => b.author_name?.some(n => norm(n) === target || norm(n).includes(target)) && !seen.has(norm(b.title)) && (seen.add(norm(b.title)), true)).map(b => ({ source: "openlibrary", externalId: b.key, mediaType: "book" as const, title: b.title, creator: b.author_name?.join(" · ") ?? null, year: b.first_publish_year ?? null, imageUrl: b.cover_i ? `https://covers.openlibrary.org/b/id/${b.cover_i}-M.jpg` : null, kindLabel: "Libro", externalUrl: `https://openlibrary.org${b.key}` })).sort((x, y) => (x.year ?? 9999) - (y.year ?? 9999));
+    return { name: a?.name ?? name, type, bio: bio?.slice(0, 1200) ?? null, photo: a ? `https://covers.openlibrary.org/a/olid/${a.key}-M.jpg?default=false` : null, years: a?.birth_date ? `${a.birth_date}${a.death_date ? ` – ${a.death_date}` : ""}` : null, works };
+  }
+  const url = `https://itunes.apple.com/search?country=US&media=music&entity=album&attribute=artistTerm&limit=60&term=${encodeURIComponent(name)}`;
+  const r = await getJson<{ results: { collectionId?: number; collectionName?: string; artistName?: string; releaseDate?: string; artworkUrl100?: string; collectionViewUrl?: string }[] }>(url);
+  const seen = new Set<string>();
+  const works = r.results.filter(x => norm(x.artistName ?? "") === target && x.collectionName && !seen.has(norm(x.collectionName.replace(/\(.*?\)|- single|- ep/gi, ""))) && (seen.add(norm(x.collectionName.replace(/\(.*?\)|- single|- ep/gi, ""))), true)).map(x => ({ source: "itunes", externalId: `album:${x.collectionId}`, mediaType: "music" as const, title: x.collectionName ?? "Sin título", creator: x.artistName ?? null, year: x.releaseDate ? Number(x.releaseDate.slice(0, 4)) : null, imageUrl: x.artworkUrl100?.replace(/\/\d+x\d+bb\./, "/600x600bb.") ?? null, kindLabel: "Álbum", externalUrl: x.collectionViewUrl ?? null })).sort((x, y) => (x.year ?? 9999) - (y.year ?? 9999));
+  return { name: works[0]?.creator ?? name, type, bio: null, photo: works[works.length - 1]?.imageUrl ?? null, years: null, works };
+}

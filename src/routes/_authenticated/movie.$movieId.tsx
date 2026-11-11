@@ -2,6 +2,7 @@ import {ShareButton} from "@/components/ShareButton";
 import {shareResult} from "@/lib/sharing";
 import {Soundtrack} from "@/components/Soundtrack";
 import {SimilarRecommendations} from "@/components/SimilarRecommendations";
+import {CrossUniverse} from "@/components/CrossUniverse";
 import {TasteRecommendations} from "@/components/TasteRecommendations";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -113,7 +114,7 @@ function MoviePage() {
         )}
       </div>
 
-      <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/></section>
+      <section className="px-4"><SimilarRecommendations kind="movie" id={m.routeId} type="movie"/><CrossUniverse kind="movie" id={m.routeId} type="movie" title={m.title}/></section>
       {m.cast.length > 0 && <CastRow cast={m.cast} listId={list} />}
       <Soundtrack id={m.routeId} title={m.title} poster={m.posterUrl}/>
       <div className="mt-10 space-y-10">

@@ -43,3 +43,4 @@ export const askEventBetty=createServerFn({method:"POST"}).middleware([requireSu
  const output=await response.output;return {ok:true as const,events:candidates.data.filter(e=>output.ids.slice(0,5).includes(e.id))};
  }catch{return {ok:false as const,message:"Uy, fue una bettiada. No pude consultar los planes."};}
 });
+export const getCreator=createServerFn({method:"POST"}).middleware([requireSupabaseAuth]).inputValidator((input:unknown)=>z.object({type:z.enum(["music","book"]),name:z.string().trim().min(1).max(200)}).parse(input)).handler(async({data})=>{try{const {creatorWorks}=await import("@/server/culture-providers");return {ok:true as const,creator:await creatorWorks(data.type,data.name)};}catch{return {ok:false as const};}});
