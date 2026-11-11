@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [x] Compactar encabezado, acciones, estrellas y promedios de película; títulos de cruces con la película y Reparto/Ficha técnica/Soundtrack desplegables debajo del tráiler. Rocky verificado con sesión real a 390 y 834 px, sin desborde; los tres despliegan y cierran.
 - [x] Barra compacta Fecha / Tipo de evento / Ciudad con menús y calendario; sin filtro de precio/barrio visible, gratuitos en verde debajo de portada. Menús probados en móvil y 7 pruebas pasan.
 - [x] Fotos pequeñas de eventos en novedades y recomendaciones; días, horario y lugar desde datos guardados. Die Walküre verificado en computadora y celular: 29/11, 17:00, Teatro Colón; sin desborde.
 - [x] Acción de pendientes junto a vista/favorita, tres iconos alineados como la captura; selector de listas verificado con sesión real en móvil y pruebas del guardado existentes pasan, sin agregar obras de prueba a las listas del usuario.
