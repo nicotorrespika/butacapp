@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Mis gustos: collage visual en vez de listado largo; listado opcional cerrado, conservando información para recomendaciones.
 - [ ] Géneros y categorías tocables en cine/libros/música con páginas de exploración, incluyendo autores y novelas argentinos.
 - [ ] Medir fichas de cine/música/libros/eventos en 4G lento; informar cinco cuellos de botella antes de optimizar caché, apertura y cargas diferidas. Dispositivo real requiere al usuario.
 - [ ] Betty: botón visible para enviar y Enter en computadora.
