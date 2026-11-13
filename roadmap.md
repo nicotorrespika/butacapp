@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
 - [ ] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
 - [ ] Inicio: eliminar Tu elección y usar tarjetas con acciones rápidas Visto/Leído/Escuchado, Watchlist y Favorito.
 - [ ] Actividad de Inicio: «Chusmeá qué hacen tus amigues».
