@@ -1,13 +1,13 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
-- [ ] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
-- [ ] Inicio: eliminar Tu elección y usar tarjetas con acciones rápidas Visto/Leído/Escuchado, Watchlist y Favorito.
-- [ ] Actividad de Inicio: «Chusmeá qué hacen tus amigues».
-- [ ] Mensajes en navegación fija junto a Inicio/Avisos/Perfil, quitar acceso propio del perfil.
-- [ ] Inicio: «Cositas que te pueden gustar 👀» en lugar de Para vos.
-- [ ] Cine/Música/Libros: «Podrían ir en tu lista…», fila horizontal por lista propia/compartida, afinidad con títulos de todos los miembros y guardado directo.
+- [x] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
+- [x] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
+- [x] Inicio: Tu elección reemplazado por ResultCard con atajos compartidos, hover de corazón/reloj/visto y vista rápida móvil; controles observados.
+- [x] Actividad de Inicio: «Chusmeá qué hacen tus amigues», verificado.
+- [x] Mensajes en navegación fija abre /mensajes; eliminado acceso propio del perfil, probado.
+- [x] Inicio: «Cositas que te pueden gustar 👀», comprobado a 390/1280px.
+- [x] Cine/Música/Libros: hasta tres filas por listas propias/compartidas, anclas de distintos colaboradores, exclusiones y guardado dirigido. Cine y libros muestran títulos reales en fila horizontal; siete pruebas pasan. Música usa el mismo flujo; cuenta de prueba sin lista musical.
 - [x] Perfil: eliminado bloque de estadísticas Vistas/Promedio, comprobado en pantalla.
 - [x] Inicio: descripción bajo Mis listas «Armá listas solo, con amigues o tu chicx ❤️», visible en ambas medidas.
 - [x] Perfil: cuatro pestañas, sin Amigos/Mi agenda, contadores arriba y acceso a chats; probado a 390/1280px.
