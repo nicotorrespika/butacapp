@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Inicio: quitar Betty/Random, Mis listas primero, Para vos y noticias horizontales, actividad de amigos vertical.
+- [x] Nombres de autores/artistas/directores tocables en tarjetas y vistas rápidas; autor probado con sesión real.
 - [x] Celular: navegación Inicio / Buscar / Avisos / Perfil arriba, fija y sin tapar contenido; a 390px permanece en y=0 al desplazar, computadora conserva barra inferior.
 - [x] Todas las películas: conexiones automáticas con libros y música y IDs normalizados; En la boca del miedo muestra discos y libros relacionados, ocho pruebas pasan.
 - [x] Cruces recíprocos: Lost Themes muestra películas y libros; Ficciones muestra películas y música, verificados con sesión real sin errores JS.
