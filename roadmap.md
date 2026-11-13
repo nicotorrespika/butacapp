@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Perfil: quitar bloque de estadísticas Vistas/Promedio.
 - [ ] Inicio: descripción bajo Mis listas «Armá listas solo, con amigues o tu chicx ❤️».
 - [ ] Perfil: pestañas Listas/Vistas/Favoritas/Watchlist, sin Amigos/Mi agenda, contadores arriba y acceso rápido a chats.
 - [ ] Seguidores/seguidos inmediatos sin solicitudes, migrar conexiones existentes y preservar permisos privados; probar seguir/dejar de seguir.
