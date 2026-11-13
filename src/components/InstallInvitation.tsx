@@ -30,7 +30,7 @@ export function InstallInvitation() {
     return () => { window.removeEventListener("beforeinstallprompt", capture); window.removeEventListener("appinstalled", done); standalone.removeEventListener("change", changed); };
   }, []);
   if (hidden || (!ios && !prompt)) return null;
-  return <aside aria-label="Instalar MOMENTO BUTACA" className="fixed inset-x-3 bottom-3 z-50 rounded-sm border border-border bg-card px-3 py-2 md:bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom)+0.75rem)]">
+  return <aside aria-label="Instalar MOMENTO BUTACA" className="fixed inset-x-3 z-50 rounded-sm border border-border bg-card px-3 py-2 bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom)+0.75rem)]">
     <div className="mx-auto grid max-w-3xl grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
       <Button variant="ghost" className="h-auto min-h-11 min-w-0 justify-start whitespace-normal px-0 text-left text-sm" onClick={async () => { if (ios) { setGuide(!guide); return; } if (!prompt) return; await prompt.prompt(); const choice = await prompt.userChoice; setPrompt(null); if (choice.outcome === "accepted") setHidden(true); }}><Download className="shrink-0 size-4"/>Instalá MOMENTO BUTACA en tu celular</Button>
       <Button variant="ghost" size="icon" aria-label="Cerrar invitación a instalar" onClick={() => { localStorage.setItem(dismissalKey, String(Date.now())); setHidden(true); }}><X className="size-4"/></Button>
