@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Latest requests
+- [x] Perfil: sin Subir/Quitar ni botón grande; + discreto después del último título abre búsqueda del Top, probado a 390/1280px.
+- [x] Listas: nombres en una línea con tipografía recta condensada; navegación sin Buscar. Listas, Inicio y apertura verificados a 390/1280px.
 - [x] Restaurar Betty/Random solo en Cine, Música y Libros; Inicio sin esos botones, probado con sesión real.
 - [x] PWA: manifiesto/íconos y metadatos, invitación cerrable por 30 días, caché estática y aviso sin conexión configurados; cuatro tests pasan, guía iOS/cierre y cero workers en dev comprobados. Lighthouse 13.6 local: accesibilidad 99, buenas prácticas 100, SEO 100; ya no incluye auditoría PWA.
 - [ ] PWA publicada: verificar worker generado, instalación y fallback offline; requiere publicar los cambios.

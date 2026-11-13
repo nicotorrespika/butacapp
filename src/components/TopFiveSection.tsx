@@ -1,7 +1,6 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { ArrowUp, Plus, X } from "lucide-react";
-import { toast } from "sonner";
+import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { TOP_KIND_COPY, type TopKind } from "@/lib/copy";
 import { movieRouteId } from "@/lib/media";
@@ -32,7 +31,6 @@ function entryLink(e: TopEntry): { to: string; params?: Record<string, string> |
 
 /** Top 5 de una categoría/tipo (películas, artistas, discos, canciones, autores, libros). */
 export function TopFiveSection({ userId, kind, own }: { userId: string; kind: TopKind; own: boolean }) {
-  const qc = useQueryClient();
   const copy = TOP_KIND_COPY[kind];
   const q = useQuery({
     queryKey: ["top-five", userId, kind],
@@ -46,18 +44,6 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
   const portraitCall = useServerFn(getTopPortraits);
   const portraits = useQuery({ queryKey: ['top-five', 'portraits', userId, kind, entries.map(e => e.id)], enabled: (kind === 'artist' || kind === 'author') && entries.length > 0, staleTime: 30 * 86400000, queryFn: () => portraitCall({ data: { userId, kind: kind === 'author' ? 'author' : 'artist' } }) });
 
-  async function save(next: TopEntry[]) {
-    const rows = next.map((e, i) => ({ id: e.id, position: i + 1 }));
-    // Delete removed, then re-position the rest.
-    const keep = new Set(next.map((e) => e.id));
-    const removed = entries.filter((e) => !keep.has(e.id));
-    for (const e of removed) await supabase.from("top_five_entries").delete().eq("id", e.id);
-    for (const r of rows) await supabase.from("top_five_entries").update({ position: r.position }).eq("id", r.id);
-    void qc.invalidateQueries({ queryKey: ["top-five", userId, kind] });
-    void qc.invalidateQueries({ queryKey: ['tastes'] });
-    toast.success("Top 5 actualizado");
-  }
-
   const media = kind === "movie" ? "movie" : kind === "author" || kind === "book" ? "book" : "music";
   const round = kind === "artist" || kind === "author";
 
@@ -66,9 +52,9 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
       <h2 className="mb-6 cinema-heading text-3xl">{copy.title}</h2>
       {q.isLoading ? (
         <p className="text-sm text-muted-foreground">Cargando…</p>
-      ) : !entries.length ? (
-        <p className="text-sm text-muted-foreground">{copy.empty}</p>
       ) : (
+        <>
+        {!entries.length && <p className="mb-3 text-sm text-muted-foreground">{copy.empty}</p>}
         <div className="grid grid-cols-5 gap-2">
           {entries.map((e, i) => {
             const link = entryLink(e);
@@ -86,25 +72,18 @@ export function TopFiveSection({ userId, kind, own }: { userId: string; kind: To
                   <Link to={link.to} params={link.params ?? {}}>{figure}</Link>
                 )}
                 <p className="mt-2 line-clamp-2 text-xs font-semibold leading-tight">{e.title}</p>
-                {own && (
-                  <div className="mt-1 flex flex-col">
-                    <Button variant="ghost" className="px-0 text-[10px]" disabled={i === 0} onClick={() => { const next = [...entries]; const cur = next[i]; const prev = next[i - 1]; if (!cur || !prev) return; next[i - 1] = cur; next[i] = prev; void save(next); }}>
-                      <ArrowUp />Subir
-                    </Button>
-                    <Button variant="ghost" className="px-0 text-[10px]" onClick={() => void save(entries.filter((x) => x.id !== e.id))}>
-                      <X />Quitar
-                    </Button>
-                  </div>
-                )}
               </div>
             );
           })}
+          {own && entries.length < 5 && (
+            <div className="flex items-center justify-center pt-8">
+              <Button asChild variant="ghost" size="icon" className="size-11 text-muted-foreground opacity-60 transition-opacity hover:opacity-100 focus-visible:opacity-100">
+                <Link to="/search" search={{ top: kind }} aria-label={entries.length ? copy.addCta : copy.pickCta} title={entries.length ? copy.addCta : copy.pickCta}><Plus className="size-6" /></Link>
+              </Button>
+            </div>
+          )}
         </div>
-      )}
-      {own && entries.length < 5 && (
-        <Button asChild variant="outline" className="mt-4">
-          <Link to="/search" search={{ top: kind }}><Plus />{entries.length ? copy.addCta : copy.pickCta}</Link>
-        </Button>
+        </>
       )}
     </section>
   );

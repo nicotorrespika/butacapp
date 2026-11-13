@@ -1,10 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Search, User, Bell } from "lucide-react";
+import { Home, User, Bell } from "lucide-react";
 import {useAvisos} from "@/hooks/use-avisos";
 
 const TABS = [
   { to: "/", label: "Inicio", icon: Home },
-  { to: "/search", label: "Buscar", icon: Search },
   { to: "/avisos", label: "Avisos", icon: Bell },
   { to: "/profile", label: "Perfil", icon: User },
 ] as const;
