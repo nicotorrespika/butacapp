@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Actividad de Inicio: «Chusmeá qué hacen tus amigues».
 - [ ] Mensajes en navegación fija junto a Inicio/Avisos/Perfil, quitar acceso propio del perfil.
 - [ ] Inicio: «Cositas que te pueden gustar 👀» en lugar de Para vos.
 - [ ] Cine/Música/Libros: «Podrían ir en tu lista…», fila horizontal por lista propia/compartida, afinidad con títulos de todos los miembros y guardado directo.
