@@ -1,3 +1,5 @@
 - Event cover overrides match named artists/productions to inspected CDN assets with source credits; unknown titles keep illustrated fallbacks. Why: avoid unrelated portraits and repeated generic covers.
 - Movie details expose complete TMDB crew credits from the existing appended request; personal controls and review reuse the same entry query in separate views. Why: avoid extra requests and inconsistent edits.
 - Cross-universe sections run for every movie, album and book, validate both other categories and normalize movie IDs before weekly cache lookup. Why: reciprocal connections must not depend on one title or entry point.
+- Directional connections use user_follows and follow_people summaries; are_friends requires reciprocal follows for private sharing while chat accepts either direction. Why: following alone must not unlock private collections.
+- Profile collections share the consumed/favorite/queued predicate. Why: consumed views and watchlists must exclude unrelated entries.
