@@ -1,6 +1,10 @@
 # Roadmap
 
 ## Latest requests
+- [x] Perfil: eliminado bloque de estadísticas Vistas/Promedio, comprobado en pantalla.
+- [x] Inicio: descripción bajo Mis listas «Armá listas solo, con amigues o tu chicx ❤️», visible en ambas medidas.
+- [x] Perfil: cuatro pestañas, sin Amigos/Mi agenda, contadores arriba y acceso a chats; probado a 390/1280px.
+- [x] Seguidores/seguidos inmediatos, amistades aceptadas migradas como mutuas; solicitudes pendientes no convertidas. Seguir/dejar de seguir persiste, conexión probada restaurada; privacidad exige reciprocidad, chat acepta una dirección. Tres pruebas de colecciones pasan.
 - [x] Perfil: sin Subir/Quitar ni botón grande; + discreto después del último título abre búsqueda del Top, probado a 390/1280px.
 - [x] Listas: nombres en una línea con tipografía recta condensada; navegación sin Buscar. Listas, Inicio y apertura verificados a 390/1280px.
 - [x] Restaurar Betty/Random solo en Cine, Música y Libros; Inicio sin esos botones, probado con sesión real.

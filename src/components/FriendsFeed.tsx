@@ -18,8 +18,8 @@ import {cultureRouteId} from "@/lib/culture";
 import {StarRating} from "./StarRating";
 
 export function FriendsFeed({category="all"}:{category?:"all"|"movie"|"music"|"book"|"event"}){
- const {user}=useAuth();const qc=useQueryClient();const id=user?.id ?? "";const friends=useQuery({...friendsQuery(id),enabled:!!id});const ids=friends.data?.filter(f=>f.status==="accepted").map(f=>f.sender_id===id?f.receiver_id:f.sender_id) ?? [];
- useEffect(()=>{if(!id)return;const channel=supabase.channel(`friends-feed-${id}-${Math.random().toString(36).slice(2)}`);for(const table of ["activity","ratings","list_items","friendships","lists"])channel.on("postgres_changes",{event:"*",schema:"public",table},()=>{qc.invalidateQueries({queryKey:["social"]});qc.invalidateQueries({queryKey:["lists","mine"]});});channel.subscribe();return()=>{void supabase.removeChannel(channel);};},[id,qc]);
+ const {user}=useAuth();const qc=useQueryClient();const id=user?.id ?? "";const friends=useQuery({...friendsQuery(id),enabled:!!id});const ids=friends.data?.filter(f=>f.following).map(f=>f.sender_id===id?f.receiver_id:f.sender_id) ?? [];
+ useEffect(()=>{if(!id)return;const channel=supabase.channel(`friends-feed-${id}-${Math.random().toString(36).slice(2)}`);for(const table of ["activity","ratings","list_items","user_follows","lists"])channel.on("postgres_changes",{event:"*",schema:"public",table},()=>{qc.invalidateQueries({queryKey:["social"]});qc.invalidateQueries({queryKey:["lists","mine"]});});channel.subscribe();return()=>{void supabase.removeChannel(channel);};},[id,qc]);
  const [filter,setFilter]=useState(false);const end=useRef<HTMLDivElement>(null);const start=useRef(0);
  const feed=useInfiniteQuery({queryKey:["social","feed",id,ids,filter,category],enabled:ids.length>0,initialPageParam:null as {date:string;id:string}|null,queryFn:async({pageParam})=>{
   let q=supabase.from("activity").select("*").in("user_id",ids).order("created_at",{ascending:false}).order("id",{ascending:false}).limit(20);
