@@ -18,6 +18,7 @@ import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as AuthenticatedAvisosRouteImport } from './routes/_authenticated/avisos'
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedGustosRouteImport } from './routes/_authenticated/gustos'
+import { Route as AuthenticatedMensajesRouteImport } from './routes/_authenticated/mensajes'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedBettySearchIdRouteImport } from './routes/_authenticated/betty.$searchId'
@@ -81,6 +82,11 @@ const AuthenticatedFriendsRoute = AuthenticatedFriendsRouteImport.update({
 const AuthenticatedGustosRoute = AuthenticatedGustosRouteImport.update({
   id: '/gustos',
   path: '/gustos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMensajesRoute = AuthenticatedMensajesRouteImport.update({
+  id: '/mensajes',
+  path: '/mensajes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/avisos': typeof AuthenticatedAvisosRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/gustos': typeof AuthenticatedGustosRoute
+  '/mensajes': typeof AuthenticatedMensajesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/avisos': typeof AuthenticatedAvisosRoute
   '/friends': typeof AuthenticatedFriendsRoute
   '/gustos': typeof AuthenticatedGustosRoute
+  '/mensajes': typeof AuthenticatedMensajesRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/_authenticated/avisos': typeof AuthenticatedAvisosRoute
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/gustos': typeof AuthenticatedGustosRoute
+  '/_authenticated/mensajes': typeof AuthenticatedMensajesRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/avisos'
     | '/friends'
     | '/gustos'
+    | '/mensajes'
     | '/profile'
     | '/search'
     | '/betty/$searchId'
@@ -331,6 +341,7 @@ export interface FileRouteTypes {
     | '/avisos'
     | '/friends'
     | '/gustos'
+    | '/mensajes'
     | '/profile'
     | '/search'
     | '/betty/$searchId'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/_authenticated/avisos'
     | '/_authenticated/friends'
     | '/_authenticated/gustos'
+    | '/_authenticated/mensajes'
     | '/_authenticated/profile'
     | '/_authenticated/search'
     | '/_authenticated/betty/$searchId'
@@ -461,6 +473,13 @@ declare module '@tanstack/react-router' {
       path: '/gustos'
       fullPath: '/gustos'
       preLoaderRoute: typeof AuthenticatedGustosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mensajes': {
+      id: '/_authenticated/mensajes'
+      path: '/mensajes'
+      fullPath: '/mensajes'
+      preLoaderRoute: typeof AuthenticatedMensajesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -610,6 +629,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAvisosRoute: typeof AuthenticatedAvisosRoute
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedGustosRoute: typeof AuthenticatedGustosRoute
+  AuthenticatedMensajesRoute: typeof AuthenticatedMensajesRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedBettySearchIdRoute: typeof AuthenticatedBettySearchIdRoute
@@ -631,6 +651,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAvisosRoute: AuthenticatedAvisosRoute,
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedGustosRoute: AuthenticatedGustosRoute,
+  AuthenticatedMensajesRoute: AuthenticatedMensajesRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedBettySearchIdRoute: AuthenticatedBettySearchIdRoute,
