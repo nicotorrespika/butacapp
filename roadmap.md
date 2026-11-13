@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Inicio: descripción bajo Mis listas «Armá listas solo, con amigues o tu chicx ❤️».
 - [ ] Perfil: pestañas Listas/Vistas/Favoritas/Watchlist, sin Amigos/Mi agenda, contadores arriba y acceso rápido a chats.
 - [ ] Seguidores/seguidos inmediatos sin solicitudes, migrar conexiones existentes y preservar permisos privados; probar seguir/dejar de seguir.
 - [x] Perfil: sin Subir/Quitar ni botón grande; + discreto después del último título abre búsqueda del Top, probado a 390/1280px.
