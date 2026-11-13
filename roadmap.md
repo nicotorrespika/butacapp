@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Perfil: pestañas Listas/Vistas/Favoritas/Watchlist, sin Amigos/Mi agenda, contadores arriba y acceso rápido a chats.
+- [ ] Seguidores/seguidos inmediatos sin solicitudes, migrar conexiones existentes y preservar permisos privados; probar seguir/dejar de seguir.
 - [x] Perfil: sin Subir/Quitar ni botón grande; + discreto después del último título abre búsqueda del Top, probado a 390/1280px.
 - [x] Listas: nombres en una línea con tipografía recta condensada; navegación sin Buscar. Listas, Inicio y apertura verificados a 390/1280px.
 - [x] Restaurar Betty/Random solo en Cine, Música y Libros; Inicio sin esos botones, probado con sesión real.
