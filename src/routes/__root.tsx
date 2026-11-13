@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
+import { InstallInvitation } from "@/components/InstallInvitation";
+import { registerAppWorker } from "@/lib/register-app-worker";
 
 function NotFoundComponent() {
   return (
@@ -76,6 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#14181c" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "BUTACAPP" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { title: "BUTACAPP — listas compartidas de cine, música, libros y eventos" },
       {
@@ -85,9 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "BUTACAPP — listas colaborativas" },
       { property: "og:description", content: "Listas compartidas para ver, escuchar y visitar en grupo." },
       { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://butacapp.lovable.app/og-image.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://butacapp.lovable.app/og-image.jpg" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -99,6 +100,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "manifest", href: "/manifest.json" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "icon", href: "/icon-192.png", sizes: "192x192", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
@@ -123,10 +126,12 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => { void registerAppWorker().catch(() => {}); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <InstallInvitation />
         {/* Required: nested routes render here. */}
         <Outlet />
         <Toaster position="top-center" theme="dark" />

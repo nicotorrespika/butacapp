@@ -1,6 +1,10 @@
 # Roadmap
 
 ## Latest requests
+- [x] Restaurar Betty/Random solo en Cine, Música y Libros; Inicio sin esos botones, probado con sesión real.
+- [x] PWA: manifiesto/íconos y metadatos, invitación cerrable por 30 días, caché estática y aviso sin conexión configurados; cuatro tests pasan, guía iOS/cierre y cero workers en dev comprobados. Lighthouse 13.6 local: accesibilidad 99, buenas prácticas 100, SEO 100; ya no incluye auditoría PWA.
+- [ ] PWA publicada: verificar worker generado, instalación y fallback offline; requiere publicar los cambios.
+- [ ] Instalación real Android/iPhone tras publicación: requiere celulares reales y publicación autorizada.
 - [x] Inicio: sin Betty/Random, Mis listas primero, Para vos y cinco noticias en filas laterales; actividad de amigos vertical al final. Probado con sesión real a 390/843px, sin errores ni desborde; cinco pruebas pasan.
 - [x] Nombres de autores/artistas/directores tocables en tarjetas y vistas rápidas; autor probado con sesión real.
 - [x] Celular: navegación Inicio / Buscar / Avisos / Perfil arriba, fija y sin tapar contenido; a 390px permanece en y=0 al desplazar, computadora conserva barra inferior.
