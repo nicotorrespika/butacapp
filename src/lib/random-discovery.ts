@@ -12,7 +12,11 @@ export function randomMix<T extends { source: string; externalId: string }>(
     const result = unique(items);
     for (let i = result.length - 1; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
+      const current = result[i];
+      const other = result[j];
+      if (current === undefined || other === undefined) continue;
+      result[i] = other;
+      result[j] = current;
     }
     return result;
   };
