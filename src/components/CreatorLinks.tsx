@@ -12,8 +12,8 @@ export function CreatorLinks({ creator, media, externalId, directors = [], listI
   creator: string | null;
   media: MediaType;
   externalId: string;
-  directors?: { id: number; name: string }[];
-  listId?: string;
+  directors?: { id: number; name: string }[] | undefined;
+  listId?: string | undefined;
   onOpen?: () => void;
 }) {
   const navigate = useNavigate();
