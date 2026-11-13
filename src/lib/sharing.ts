@@ -11,7 +11,7 @@ export function sharePath(ref: ShareRef) { return `/compartir/${ref.kind}/${enco
 export function shareUrl(ref: ShareRef, inviter?: string) { return `${APP_ORIGIN}${sharePath(ref)}${inviter ? `?de=${encodeURIComponent(inviter)}` : ""}`; }
 export function whatsappUrl(content: ShareContent, inviter?: string) {
   const noun = content.kind === "movie" ? "esta peli" : content.kind === "event" ? "este plan" : "esto";
-  return `https://wa.me/?text=${encodeURIComponent(`Mirá ${noun} en BUTACAPP: ${content.title} ${shareUrl(content, inviter)}`)}`;
+  return `https://wa.me/?text=${encodeURIComponent(`Mirá ${noun} en MOMENTO BUTACA: ${content.title} ${shareUrl(content, inviter)}`)}`;
 }
 export function shareResult(r: SearchResult): ShareContent {
   return { kind: r.mediaType === "movie" ? "movie" : "culture", id: r.mediaType === "movie" ? movieRouteId(r.externalId) : cultureRouteId(r.source, r.externalId), title: r.title, image: r.imageUrl, year: r.year, category: r.kindLabel };

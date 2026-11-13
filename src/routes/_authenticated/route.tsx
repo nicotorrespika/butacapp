@@ -33,7 +33,7 @@ function AppShell() {
 
   return (
     <div className="relative min-h-dvh pt-nav">
-      <div className="mx-auto flex min-h-14 max-w-5xl items-center px-4"><Link to="/" className="py-3 cinema-heading text-2xl">BUTACAPP</Link></div>
+      <div className="mx-auto flex min-h-14 max-w-5xl items-center px-4"><Link to="/" className="py-3 cinema-heading text-2xl">MOMENTO BUTACA</Link></div>
       <main className="mx-auto w-full max-w-5xl pb-nav">
         <Outlet />
       </main>

@@ -14,10 +14,10 @@ export const Route = createFileRoute("/_authenticated/invite/$token")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Te invitaron a una lista — BUTACAPP" },
+      { title: "Te invitaron a una lista — MOMENTO BUTACA" },
       { name: "description", content: "Sumate a una lista compartida de cine, música y arte." },
-      { property: "og:title", content: "Te invitaron a una lista — BUTACAPP" },
-      { property: "og:description", content: "Sumate a una lista compartida en BUTACAPP." },
+      { property: "og:title", content: "Te invitaron a una lista — MOMENTO BUTACA" },
+      { property: "og:description", content: "Sumate a una lista compartida en MOMENTO BUTACA." },
     ],
   }),
   component: InvitePage,

@@ -10,12 +10,12 @@ import { BottomNav } from "@/components/BottomNav";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BUTACAPP — listas compartidas de cine, música, libros y eventos" },
+      { title: "MOMENTO BUTACA — listas compartidas de cine, música, libros y eventos" },
       {
         name: "description",
         content: "Armá watchlists colaborativas: buscá películas, discos y libros, marcalas, puntualas y comentalas en grupo.",
       },
-      { property: "og:title", content: "BUTACAPP — listas compartidas de cine, música, libros y eventos" },
+      { property: "og:title", content: "MOMENTO BUTACA — listas compartidas de cine, música, libros y eventos" },
       { property: "og:description", content: "Watchlists colaborativas para ver, escuchar, leer y salir en grupo." },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "https://butacapp.lovable.app/og-image.jpg" },

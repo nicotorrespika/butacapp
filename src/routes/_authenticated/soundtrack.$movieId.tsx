@@ -4,9 +4,9 @@ import { Soundtrack } from '@/components/Soundtrack';
 
 export const Route = createFileRoute('/_authenticated/soundtrack/$movieId')({
   head: () => ({ meta: [
-    { title: 'Soundtrack y canciones — BUTACAPP' },
+    { title: 'Soundtrack y canciones — MOMENTO BUTACA' },
     { name: 'description', content: 'Discos y canciones de la banda sonora de una película.' },
-    { property: 'og:title', content: 'Soundtrack y canciones — BUTACAPP' },
+    { property: 'og:title', content: 'Soundtrack y canciones — MOMENTO BUTACA' },
     { property: 'og:description', content: 'Explorá la banda sonora y sus canciones.' },
     { property: 'og:type', content: 'website' },
     { name: 'twitter:card', content: 'summary_large_image' },
