@@ -251,17 +251,11 @@
 }
 
 @utility pb-nav {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
-  @media (width >= 40rem) {
-    padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 1.5rem);
-  }
+  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 1.5rem);
 }
 
 @utility pt-nav {
-  padding-top: calc(var(--nav-height) + env(safe-area-inset-top));
-  @media (width >= 40rem) {
-    padding-top: 0;
-  }
+  padding-top: env(safe-area-inset-top);
 }
 
 @utility pb-safe {

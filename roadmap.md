@@ -157,4 +157,4 @@
 - [x] Compartir como ícono sutil en miniaturas
 - [x] Vista rápida al tocar portada: portada grande, sinopsis, Favorito/Guardar/Visto-Leído-Escuchado
 - [x] Hover en portadas: oscurece + corazón/reloj/ojo (oreja en música)
-- [ ] Menú fijo abajo también en celular
+- [x] Menú fijo abajo también en celular

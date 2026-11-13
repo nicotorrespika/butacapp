@@ -7,12 +7,12 @@ const TABS = [
   { to: "/profile", label: "Perfil", icon: User },
 ] as const;
 
-/** Fixed top navigation on phones, bottom navigation on larger screens. */
+/** Fixed bottom navigation on every screen size. */
 export function BottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed inset-x-0 top-0 z-40 border-b border-border bg-background pt-[env(safe-area-inset-top)] sm:top-auto sm:bottom-0 sm:border-b-0 sm:border-t sm:pt-0 sm:pb-safe"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-safe"
     >
       <ul className="mx-auto flex h-[var(--nav-height)] max-w-xl items-stretch">
         {TABS.map(({ to, label, icon: Icon }) => (
