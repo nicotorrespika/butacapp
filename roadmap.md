@@ -1,6 +1,8 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Mensajes en navegación fija junto a Inicio/Avisos/Perfil, quitar acceso propio del perfil.
+- [ ] Inicio: «Cositas que te pueden gustar 👀» en lugar de Para vos.
 - [ ] Cine/Música/Libros: «Podrían ir en tu lista…», fila horizontal por lista propia/compartida, afinidad con títulos de todos los miembros y guardado directo.
 - [x] Perfil: eliminado bloque de estadísticas Vistas/Promedio, comprobado en pantalla.
 - [x] Inicio: descripción bajo Mis listas «Armá listas solo, con amigues o tu chicx ❤️», visible en ambas medidas.
