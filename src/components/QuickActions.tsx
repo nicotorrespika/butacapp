@@ -13,6 +13,7 @@ import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "@/compone
 import { Button } from "@/components/ui/button";
 import { Poster } from "@/components/Poster";
 import { cn } from "@/lib/utils";
+import { CreatorLinks } from "@/components/CreatorLinks";
 
 type Entry = { favorite: boolean; done: boolean } | null;
 const isMovie = (r: SearchResult) => r.mediaType === "movie";
@@ -64,8 +65,8 @@ export function QuickView({ result, open, onOpenChange, onSave, onOpenFull }: { 
   const { entry, toggle } = useQuickEntry(result, open);
   const movieFn = useServerFn(getMovie); const cultureFn = useServerFn(getCultureDetail);
   const syn = useQuery({ queryKey: ["quick-synopsis", result.source, result.externalId], enabled: open, staleTime: 3600_000, queryFn: async () => {
-    if (isMovie(result)) { const r = await movieFn({ data: { id: movieRouteId(result.externalId) } }); return r.ok ? r.data.overview ?? null : null; }
-    const r = await cultureFn({ data: { id: cultureRouteId(result.source, result.externalId) } }); return r.ok ? r.detail.description : null;
+    if (isMovie(result)) { const r = await movieFn({ data: { id: movieRouteId(result.externalId) } }); return r.ok ? { description: r.data.overview, directors: r.data.directors } : null; }
+    const r = await cultureFn({ data: { id: cultureRouteId(result.source, result.externalId) } }); return r.ok ? { description: r.detail.description, directors: [] } : null;
   } });
   return <Drawer open={open} onOpenChange={onOpenChange}>
     <DrawerContent className="max-h-[90vh] px-4 pb-6">
@@ -74,8 +75,8 @@ export function QuickView({ result, open, onOpenChange, onSave, onOpenFull }: { 
           <div className="w-32 shrink-0"><Poster src={result.imageUrl} alt={result.title} media={result.mediaType} /></div>
           <div className="min-w-0">
             <DrawerTitle className="font-display text-2xl italic text-primary">{result.title}</DrawerTitle>
-            <p className="cinema-meta mt-1 text-muted-foreground">{[result.creator, result.year].filter(Boolean).join(" · ")}</p>
-            <DrawerDescription className="mt-3 line-clamp-6 text-sm leading-6 text-muted-foreground">{syn.isLoading ? "Buscando la sinopsis…" : syn.data ?? "Sin sinopsis por ahora."}</DrawerDescription>
+            <p className="cinema-meta mt-1 text-muted-foreground"><CreatorLinks creator={result.creator} media={result.mediaType} externalId={result.externalId} directors={syn.data?.directors} onOpen={() => onOpenChange(false)} />{(result.creator || syn.data?.directors.length) && result.year ? " · " : ""}{result.year}</p>
+            <DrawerDescription className="mt-3 line-clamp-6 text-sm leading-6 text-muted-foreground">{syn.isLoading ? "Buscando la sinopsis…" : syn.data?.description ?? "Sin sinopsis por ahora."}</DrawerDescription>
           </div>
         </div>
         <ActionIcons large result={result} entry={entry} toggle={toggle} onSave={() => { onOpenChange(false); onSave(); }} />

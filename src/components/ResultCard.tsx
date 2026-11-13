@@ -14,6 +14,7 @@ import { getMovie } from "@/lib/movies.functions";
 import { getCultureDetail } from "@/lib/culture.functions";
 import { movieRouteId } from "@/lib/media";
 import { cultureRouteId } from "@/lib/culture";
+import { CreatorLinks } from "@/components/CreatorLinks";
 
 const canHover = () => typeof window !== "undefined" && window.matchMedia("(hover: hover)").matches;
 
@@ -102,8 +103,9 @@ export function ResultCard({
             result.title
           )}
         </h3>
-        <p className="cinema-meta mt-0.5 truncate text-muted-foreground">
-          {[result.creator, result.year].filter(Boolean).join(" · ") || result.kindLabel}
+        <p className="cinema-meta mt-0.5 break-words text-muted-foreground">
+          <CreatorLinks creator={result.creator} media={result.mediaType} externalId={result.externalId} />
+          {result.creator && result.year ? " · " : ""}{result.year || (!result.creator ? result.kindLabel : "")}
         </p>
       </div>
       {quickable && onOpen && <QuickView result={result} open={quick} onOpenChange={setQuick} onSave={() => onAdd(result)} onOpenFull={open} />}
