@@ -32,7 +32,7 @@ function MyLists() {
       <header className="mb-8 flex items-end justify-between gap-3 pb-4">
         <div>
           <p className="mb-3 text-[11px] font-medium text-muted-foreground">TU COLECCIÓN</p>
-          <h1 className="font-display text-4xl leading-tight">Mis listas</h1>
+          <h1 className="font-heading text-4xl font-semibold not-italic leading-tight">Mis listas</h1>
         </div>
         <Button variant="outline" size="sm" onClick={() => setCreating(true)}>
           <Plus /> Nueva
@@ -110,7 +110,7 @@ function ListCard({ list }: { list: ListSummary }) {
         <span className="text-[10px] font-medium text-muted-foreground">
           {LIST_KIND_LABEL[list.kind]}
         </span>
-        <h2 className="mt-1 line-clamp-2 break-words font-display text-2xl leading-tight transition-colors group-hover:text-primary">{list.name}</h2>
+        <h2 title={list.name} className="mt-1 truncate font-heading text-2xl font-semibold not-italic leading-tight transition-colors group-hover:text-primary">{list.name}</h2>
         {list.description && <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{list.description}</p>}
         <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
           <span>{list.itemCount} ítems</span>
