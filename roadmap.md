@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Restaurar Betty/Random solo en Cine, Música y Libros; Inicio sin esos botones.
 - [ ] PWA: manifiesto/íconos, invitación cerrable por 30 días, caché solo estática y aviso sin conexión; verificación Lighthouse.
 - [ ] Instalación real Android/iPhone tras publicación: requiere celulares reales y publicación autorizada.
 - [x] Inicio: sin Betty/Random, Mis listas primero, Para vos y cinco noticias en filas laterales; actividad de amigos vertical al final. Probado con sesión real a 390/843px, sin errores ni desborde; cinco pruebas pasan.
