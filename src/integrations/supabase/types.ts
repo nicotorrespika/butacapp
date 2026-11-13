@@ -1685,6 +1685,39 @@ export type Database = {
           },
         ]
       }
+      user_follows: {
+        Row: {
+          created_at: string
+          followed_id: string
+          follower_id: string
+        }
+        Insert: {
+          created_at?: string
+          followed_id: string
+          follower_id: string
+        }
+        Update: {
+          created_at?: string
+          followed_id?: string
+          follower_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_follows_followed_id_fkey"
+            columns: ["followed_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_notifications: {
         Row: {
           actor_id: string
@@ -1795,6 +1828,17 @@ export type Database = {
       clear_my_tastes: {
         Args: { disable_recording?: boolean }
         Returns: undefined
+      }
+      follow_people: {
+        Args: { uid: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          follower: boolean
+          following: boolean
+          id: string
+          username: string
+        }[]
       }
       get_invite: {
         Args: { _token: string }
