@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Perfil: quitar controles visibles Subir/Quitar/Sumar película del Top y poner un + discreto después del último título.
 - [ ] Nombres de listas en una línea, tipografía recta con carácter y navegación sin Buscar; verificar en celular y computadora.
 - [x] Restaurar Betty/Random solo en Cine, Música y Libros; Inicio sin esos botones, probado con sesión real.
 - [x] PWA: manifiesto/íconos y metadatos, invitación cerrable por 30 días, caché estática y aviso sin conexión configurados; cuatro tests pasan, guía iOS/cierre y cero workers en dev comprobados. Lighthouse 13.6 local: accesibilidad 99, buenas prácticas 100, SEO 100; ya no incluye auditoría PWA.
