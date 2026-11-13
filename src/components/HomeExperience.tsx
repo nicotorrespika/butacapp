@@ -20,7 +20,7 @@ import { EventAgenda } from "./EventAgenda";
 import { TasteRecommendations } from "./TasteRecommendations";
 import { SearchPicks } from "./SearchPicks";
 import {ListPicks} from "./ListPicks";
-const headlines={all:"¿QUÉ VAMOS A BUSCAR HOY?",movie:"¿QUÉ PELI VAMOS A VER?",music:"¿QUÉ TENÉS GANAS DE ESCUCHAR?",book:"¿ALGÚN LIBRO NUEVO QUE TE PUEDA INTERESAR?",event:"VEAMOS QUÉ PLANES HAY EN TU CIUDAD"};
+const headlines={all:"¿QUÉ VAMOS A BUSCAR HOY?",movie:"¿QUÉ PELI VAMOS A VER? 🎬",music:"¿QUÉ TENÉS GANAS DE ESCUCHAR? 🎬",book:"¿ALGÚN LIBRO NUEVO QUE TE PUEDA INTERESAR? 📖",event:"VEAMOS QUÉ PLANES HAY EN TU CIUDAD"};
 const placeholders={all:"Título, artista, libro o plan…",movie:"Título, director, actor o año",music:"Artista, disco, canción o género",book:"Título, autor o tema",event:"Evento, lugar, artista o ciclo"};
 const labels={all:"Inicio",movie:"Cine",music:"Música",book:"Libros",event:"Eventos"};
 export function HomeExperience(){const {user}=useAuth();const navigate=useNavigate();const [category,setCategory]=useScreenState<HomeCategory>("home:category","all");const [text,setText]=useState("");const [betty,setBetty]=useState(false);const [eventQuery,setEventQuery]=useState("");const lists=useQuery({...myListsQuery,enabled:!!user});
