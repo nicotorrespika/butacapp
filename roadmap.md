@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Random: mayoría genérica con poco historial por categoría, conexiones graduales con gustos y variedad permanente; pruebas y comprobación con sesión.
 - [x] Encabezados Cine y Música con 🎬, Libros con 📖; tres títulos comprobados a 390px sin desborde.
 - [x] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
 - [x] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
