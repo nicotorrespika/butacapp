@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
 - [ ] Inicio: eliminar Tu elección y usar tarjetas con acciones rápidas Visto/Leído/Escuchado, Watchlist y Favorito.
 - [ ] Actividad de Inicio: «Chusmeá qué hacen tus amigues».
 - [ ] Mensajes en navegación fija junto a Inicio/Avisos/Perfil, quitar acceso propio del perfil.
