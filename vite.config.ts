@@ -15,12 +15,14 @@ export default defineConfig({
     plugins: [VitePWA({
       strategies: "generateSW",
       filename: "sw.js",
+      outDir: "dist/client",
       manifest: false,
       injectRegister: null,
       registerType: "autoUpdate",
       devOptions: { enabled: false },
       includeAssets: ["offline.html", "manifest.json", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "apple-touch-icon.png", "favicon.ico"],
       workbox: {
+        globDirectory: "dist/client",
         globPatterns: ["**/*.{js,css,woff,woff2}"],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
