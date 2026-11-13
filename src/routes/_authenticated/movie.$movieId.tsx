@@ -33,9 +33,9 @@ export const Route = createFileRoute("/_authenticated/movie/$movieId")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Película — BUTACAPP" },
+      { title: "Película — MOMENTO BUTACA" },
       { name: "description", content: "Sinopsis, puntajes de la crítica y películas parecidas para sumar a tu lista." },
-      { property: "og:title", content: "Película — BUTACAPP" },
+      { property: "og:title", content: "Película — MOMENTO BUTACA" },
       { property: "og:description", content: "Puntajes de la crítica y películas parecidas." },
     ],
   }),
@@ -163,7 +163,7 @@ function MoviePage() {
           />
         ))}
       </div>
-      <p className="cinema-meta px-4 pt-10 text-muted-foreground">UNA FUNCIÓN DE BUTACAPP</p>
+      <p className="cinema-meta px-4 pt-10 text-muted-foreground">UNA FUNCIÓN DE MOMENTO BUTACA</p>
       {adder.sheet}
     </div>
   );

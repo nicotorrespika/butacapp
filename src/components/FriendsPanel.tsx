@@ -14,7 +14,7 @@ import { UserAvatar } from "./UserAvatar";
 export function FriendsPanel(){
  const {user}=useAuth();const id=user?.id ?? "";const qc=useQueryClient();const q=useQuery({...friendsQuery(id),enabled:!!id});const me=useQuery({...profileQuery(id),enabled:!!id});const [text,setText]=useState("");const term=useDebouncedValue(text,300);
  const metadataName=typeof user?.user_metadata?.["display_name"]==="string"?user.user_metadata["display_name"].trim():"";
- const shareTitle=me.data?.display_name||metadataName||"Mi perfil en BUTACAPP";
+ const shareTitle=me.data?.display_name||metadataName||"Mi perfil en MOMENTO BUTACA";
  const search=useQuery({queryKey:["social","people-search",term],enabled:term.trim().length>=2,queryFn:async()=>{const clean=term.replace(/[^\p{L}\p{N}_ ]/gu,"");const r=await supabase.rpc("search_people",{term:clean});if(r.error)throw r.error;return r.data;}});
  const refresh=()=>qc.invalidateQueries({queryKey:["social"]});
  async function request(to:string){if(!user)return;const r=await supabase.from("friendships").insert({sender_id:id,receiver_id:to}).select("id").single();if(r.error)return void toast.error("No se pudo enviar. Revisá si ya existe una solicitud.");refresh();toast.success("Solicitud enviada",{action:{label:"Deshacer",onClick:async()=>{await supabase.from("friendships").delete().eq("id",r.data.id);refresh();}}});}

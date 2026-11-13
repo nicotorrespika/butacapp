@@ -17,9 +17,9 @@ export const Route = createFileRoute("/_authenticated/profile")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Perfil — BUTACAPP" },
-      { name: "description", content: "Tus favoritos, reseñas y agenda cultural en BUTACAPP." },
-      { property: "og:title", content: "Perfil — BUTACAPP" },
+      { title: "Perfil — MOMENTO BUTACA" },
+      { name: "description", content: "Tus favoritos, reseñas y agenda cultural en MOMENTO BUTACA." },
+      { property: "og:title", content: "Perfil — MOMENTO BUTACA" },
       { property: "og:description", content: "Tu mirada al cine, los discos y los libros." },
     ],
   }),

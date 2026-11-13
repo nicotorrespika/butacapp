@@ -54,7 +54,7 @@ export function ShareButton({ content, compact=false, label="Compartir", variant
     try{
       if(channel==="whatsapp")window.open(whatsappUrl(content,user?.id),"_blank","noopener,noreferrer");
       else if(channel==="copy"){await navigator.clipboard.writeText(shareUrl(content,user?.id));toast.success("Link copiado, joya");}
-      else if(navigator.share)await navigator.share({title:content.title,text:`Mirá esto en BUTACAPP: ${content.title}`,url:shareUrl(content,user?.id)});
+      else if(navigator.share)await navigator.share({title:content.title,text:`Mirá esto en MOMENTO BUTACA: ${content.title}`,url:shareUrl(content,user?.id)});
       await log(channel);
     }catch(e){if(!(e instanceof Error&&e.name==="AbortError"))toast.error("No se pudo compartir. Probá copiar el link.");}
   }

@@ -11,9 +11,9 @@ import { useAddToList } from "@/hooks/use-add-to-list";
 
 export const Route = createFileRoute("/_authenticated/creator/$type/$name")({
   head: ({ params }) => ({ meta: [
-    { title: `${params.name} — BUTACAPP` },
+    { title: `${params.name} — MOMENTO BUTACA` },
     { name: "description", content: `Obra completa de ${params.name}: discos o libros, con fichas y listas.` },
-    { property: "og:title", content: `${params.name} — BUTACAPP` },
+    { property: "og:title", content: `${params.name} — MOMENTO BUTACA` },
     { property: "og:description", content: `Toda la obra de ${params.name}.` },
     { property: "og:type", content: "profile" },
     { name: "twitter:card", content: "summary" },

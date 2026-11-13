@@ -48,9 +48,9 @@ export const Route = createFileRoute("/_authenticated/search")({
     meta: [
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { title: "Buscar — BUTACAPP" },
+      { title: "Buscar — MOMENTO BUTACA" },
       { name: "description", content: "Buscá películas, series, discos, canciones y libros en un solo lugar." },
-      { property: "og:title", content: "Buscar — BUTACAPP" },
+      { property: "og:title", content: "Buscar — MOMENTO BUTACA" },
       { property: "og:description", content: "Un buscador para películas, música y libros." },
     ],
   }),

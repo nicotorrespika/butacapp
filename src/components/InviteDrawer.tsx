@@ -62,7 +62,7 @@ export function InviteDrawer({
     })();
   }, [open, link, list.id, userId]);
 
-  const message = `Sumate a mi lista «${list.name}» en BUTACAPP`;
+  const message = `Sumate a mi lista «${list.name}» en MOMENTO BUTACA`;
 
   async function copy() {
     if (!link) return;
