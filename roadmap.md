@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [x] Random: mezcla general con conexiones a gustos, aumenta gradualmente con señales distintas por categoría; nueve pruebas pasan y Cine/Música/Libros con Otra comprobados con sesión real.
 - [x] Encabezados Cine y Música con 🎬, Libros con 📖; tres títulos comprobados a 390px sin desborde.
 - [x] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
 - [x] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
