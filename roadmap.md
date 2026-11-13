@@ -1,6 +1,14 @@
 # Roadmap
 
 ## Latest requests
+- [x] Encabezados Cine y Música con 🎬, Libros con 📖; tres títulos comprobados a 390px sin desborde.
+- [x] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
+- [x] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
+- [x] Inicio: Tu elección reemplazado por ResultCard con atajos compartidos, hover de corazón/reloj/visto y vista rápida móvil; controles observados.
+- [x] Actividad de Inicio: «Chusmeá qué hacen tus amigues», verificado.
+- [x] Mensajes en navegación fija abre /mensajes; eliminado acceso propio del perfil, probado.
+- [x] Inicio: «Cositas que te pueden gustar 👀», comprobado a 390/1280px.
+- [x] Cine/Música/Libros: hasta tres filas por listas propias/compartidas, anclas de distintos colaboradores, exclusiones y guardado dirigido. Cine y libros muestran títulos reales en fila horizontal; siete pruebas pasan. Música usa el mismo flujo; cuenta de prueba sin lista musical.
 - [x] Perfil: eliminado bloque de estadísticas Vistas/Promedio, comprobado en pantalla.
 - [x] Inicio: descripción bajo Mis listas «Armá listas solo, con amigues o tu chicx ❤️», visible en ambas medidas.
 - [x] Perfil: cuatro pestañas, sin Amigos/Mi agenda, contadores arriba y acceso a chats; probado a 390/1280px.

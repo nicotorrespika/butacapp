@@ -3,3 +3,4 @@
 - Cross-universe sections run for every movie, album and book, validate both other categories and normalize movie IDs before weekly cache lookup. Why: reciprocal connections must not depend on one title or entry point.
 - Directional connections use user_follows and follow_people summaries; are_friends requires reciprocal follows for private sharing while chat accepts either direction. Why: following alone must not unlock private collections.
 - Profile collections share the consumed/favorite/queued predicate. Why: consumed views and watchlists must exclude unrelated entries.
+- Home list suggestions mix catalog similarities from up to three contributors' additions, exclude existing IDs and target the shared add hook. Why: personal and collaborative lists need relevant, directly saveable picks without exposing private context.
