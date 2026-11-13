@@ -20,6 +20,7 @@ import { keys, type CommentRow, type ItemRow, type ProfileRow, type RatingRow } 
 import { MovieActions } from "./MovieActions";
 import { CultureActions } from "./CultureActions";
 import { cultureRouteId, isCulture } from "@/lib/culture";
+import { CreatorLinks } from "@/components/CreatorLinks";
 
 const ago = (iso: string) => formatDistanceToNow(new Date(iso), { addSuffix: true, locale: es });
 
@@ -147,7 +148,8 @@ export function ItemDrawer({ item, onOpenChange, ratings, comments, profiles, us
                 ) : isCulture(media) ? <Link to="/culture/$cultureId" params={{cultureId:cultureRouteId(item.source,item.external_id)}} search={{list:item.list_id}} className="underline decoration-primary/50 underline-offset-4">{item.title}<ArrowUpRight className="ml-1 inline size-4"/></Link> : item.title}
               </DrawerTitle>
               <DrawerDescription className="mt-1.5 text-sm">
-                {[metadata.data?.ok?metadata.data.data.directors.map(d=>d.name).join(" · ")||item.creator:item.creator, item.year].filter(Boolean).join(" · ") || "—"}
+                <CreatorLinks creator={item.creator} media={media} externalId={item.external_id} directors={metadata.data?.ok ? metadata.data.data.directors : []} listId={item.list_id} onOpen={() => onOpenChange(false)} />
+                {(item.creator || (metadata.data?.ok && metadata.data.data.directors.length)) && item.year ? " · " : ""}{item.year}
               </DrawerDescription>
               <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
                 <UserAvatar name={name(item.added_by)} url={profiles[item.added_by]?.avatar_url} className="size-6 text-xs" />
