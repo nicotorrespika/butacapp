@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Encabezados Cine y Música con 🎬, Libros con 📖.
+- [x] Encabezados Cine y Música con 🎬, Libros con 📖; tres títulos comprobados a 390px sin desborde.
 - [x] Actividad: emoji 🕵️ junto a Chusmeá qué hacen tus amigues.
 - [x] Inicio: emojis ❤️ 📋 ✏️ en Mis listas y 🤔 en Lo que anda pasando.
 - [x] Inicio: Tu elección reemplazado por ResultCard con atajos compartidos, hover de corazón/reloj/visto y vista rápida móvil; controles observados.
