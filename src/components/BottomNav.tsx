@@ -1,17 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { Home, User, Bell, MessageCircle } from "lucide-react";
-import {useAvisos} from "@/hooks/use-avisos";
+import { Home, User, MessageCircle } from "lucide-react";
 
 const TABS = [
   { to: "/", label: "Inicio", icon: Home },
-  { to: "/avisos", label: "Avisos", icon: Bell },
   { to: "/mensajes", label: "Mensajes", icon: MessageCircle },
   { to: "/profile", label: "Perfil", icon: User },
 ] as const;
 
 /** Fixed top navigation on phones, bottom navigation on larger screens. */
 export function BottomNav() {
-  const count=useAvisos();
   return (
     <nav
       aria-label="Navegación principal"
@@ -26,7 +23,7 @@ export function BottomNav() {
               className="group flex h-full min-h-11 flex-col items-center justify-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors data-[status=active]:text-foreground"
             >
               <Icon strokeWidth={1.5} className="size-5 transition-colors group-data-[status=active]:text-primary" />
-              <span className="relative">{label}{to==="/avisos"&&!!count.data&&<span className="absolute -right-4 -top-1 text-[10px] text-primary">{count.data}</span>}</span>
+              <span>{label}</span>
             </Link>
           </li>
         ))}
