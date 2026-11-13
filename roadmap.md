@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Inicio: quitar Betty/Random, Mis listas primero, Para vos y noticias horizontales, actividad de amigos vertical.
+- [x] Inicio: sin Betty/Random, Mis listas primero, Para vos y cinco noticias en filas laterales; actividad de amigos vertical al final. Probado con sesión real a 390/843px, sin errores ni desborde; cinco pruebas pasan.
 - [x] Nombres de autores/artistas/directores tocables en tarjetas y vistas rápidas; autor probado con sesión real.
 - [x] Celular: navegación Inicio / Buscar / Avisos / Perfil arriba, fija y sin tapar contenido; a 390px permanece en y=0 al desplazar, computadora conserva barra inferior.
 - [x] Todas las películas: conexiones automáticas con libros y música y IDs normalizados; En la boca del miedo muestra discos y libros relacionados, ocho pruebas pasan.
