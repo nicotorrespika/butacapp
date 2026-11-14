@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Películas: Agregar a mis pendientes guarda directamente en Watchlist sin selector de listas.
 - [ ] Betty: cruz para cerrar e historial plegado; comprobar con sesión.
 - [ ] Mover Podrían ir en tu lista de Inicio al interior de cada lista correspondiente.
 - [x] Eventos: sumar Time Out y Vuenos Airez junto a Agenda Cultural oficial a las dos vías de investigación, sin consultas nuevas al abrir la pantalla; pruebas de solicitudes con proveedor simulado.
