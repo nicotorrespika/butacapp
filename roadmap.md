@@ -1,6 +1,12 @@
 # Roadmap
 
 ## Latest requests
+- [x] Solicitar publicación con sitemap en momentobutaca.com (dominio primario comprobado); momentoobutaca.com no está conectado. Publicación y llegada de Google no se consideran verificadas.
+- [x] Artistas: Spotify verificado por relaciones MusicBrainz, Top 5 Deezer y discografía/álbumes por año o popularidad; Charly García comprobado con sesión. Años corresponden a las ediciones del proveedor.
+- [x] Perfil: Mis listas incluye listas propias y todas las compartidas de las que soy miembro.
+- [x] Películas: Agregar a mis pendientes guarda directamente en Watchlist sin selector de listas.
+- [x] Betty: cruz para cerrar e historial plegado; comprobar con sesión.
+- [x] Mover Podrían ir en tu lista de Inicio al interior de cada lista correspondiente.
 - [x] Eventos: sumar Time Out y Vuenos Airez junto a Agenda Cultural oficial a las dos vías de investigación, sin consultas nuevas al abrir la pantalla; pruebas de solicitudes con proveedor simulado.
 - [x] Random: mezcla general con conexiones a gustos, aumenta gradualmente con señales distintas por categoría; nueve pruebas pasan y Cine/Música/Libros con Otra comprobados con sesión real.
 - [x] Encabezados Cine y Música con 🎬, Libros con 📖; tres títulos comprobados a 390px sin desborde.

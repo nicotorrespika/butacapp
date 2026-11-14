@@ -13,6 +13,7 @@ import { InviteDrawer } from "@/components/InviteDrawer";
 import { ItemDrawer } from "@/components/ItemDrawer";
 import { SocialComments } from "@/components/SocialComments";
 import { CultureBetty } from "@/components/CultureBetty";
+import { ListPicks } from "@/components/ListPicks";
 import { ListRecommendations } from "@/components/ListRecommendations";
 import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
@@ -205,6 +206,7 @@ function ListPage() {
           )}
         </div>
       </header>
+      {d && isMember && <ListPicks list={d.list} />}
       {d && (d.list.kind === "movies" || d.list.kind === "mixed") && <ListRecommendations listId={listId} />}
 
       {d&&(d.list.kind==="books"||d.list.kind==="music")&&<CultureBetty type={d.list.kind==="books"?"book":"music"} listId={listId}/>}

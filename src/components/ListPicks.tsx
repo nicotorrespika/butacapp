@@ -2,7 +2,7 @@ import {useQuery} from '@tanstack/react-query';
 import {useServerFn} from '@tanstack/react-start';
 import {useState} from 'react';
 import {RefreshCw} from 'lucide-react';
-import {myListsQuery,itemsQuery,type ListSummary} from '@/lib/queries';
+import {itemsQuery} from '@/lib/queries';
 import {getSimilar} from '@/lib/similar.functions';
 import {searchMedia} from '@/lib/search.functions';
 import {movieRouteId} from '@/lib/media';
@@ -11,13 +11,11 @@ import {listAnchors,listPicks} from '@/lib/list-picks';
 import type {ShelfCategory} from '@/lib/home-shelves';
 import {RecommendationShelf} from './RecommendationShelf';
 import {Button} from './ui/button';
-export function ListPicks({category}:{category:ShelfCategory}){
- const lists=useQuery(myListsQuery);
- const kind=category==='movie'?'movies':category==='book'?'books':'music';
- const relevant=lists.data?.filter(l=>l.kind===kind||l.kind==='mixed').slice(0,3) ?? [];
- return <>{relevant.map(list=><ListShelf key={`${list.id}:${category}`} list={list} category={category}/>)}</>;
+export function ListPicks({list}:{list:{id:string;name:string;kind:string}}){
+ const categories:ShelfCategory[]=list.kind==='mixed'?['movie','music','book']:list.kind==='movies'?['movie']:list.kind==='music'?['music']:list.kind==='books'?['book']:[];
+ return <>{categories.map(category=><ListShelf key={`${list.id}:${category}`} list={list} category={category}/>)}</>;
 }
-function ListShelf({list,category}:{list:ListSummary;category:ShelfCategory}){
+function ListShelf({list,category}:{list:{id:string;name:string};category:ShelfCategory}){
  const items=useQuery(itemsQuery(list.id));const similar=useServerFn(getSimilar);const search=useServerFn(searchMedia);const [generate,setGenerate]=useState(false);
  const anchors=listAnchors(items.data ?? [],category);
  const picks=useQuery({queryKey:['list-picks',list.id,category,items.data?.map(i=>i.id),generate],enabled:anchors.length>0,staleTime:30*60_000,queryFn:async()=>{

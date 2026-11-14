@@ -39,9 +39,7 @@ function unwrap<T>(res: { data: T | null; error: { message: string } | null }): 
 
 /* ---------- My lists ---------- */
 
-export const myListsQuery = queryOptions({
-  queryKey: keys.myLists,
-  queryFn: async (): Promise<ListSummary[]> => {
+export async function getMyLists(): Promise<ListSummary[]> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return [];
     const memberships = unwrap(await supabase.from("list_members").select("list_id").eq("user_id",user.id));
@@ -80,8 +78,8 @@ export const myListsQuery = queryOptions({
       itemCount: r.items[0]?.count ?? 0,
       covers: covers[r.id] ?? [],
     }));
-  },
-});
+}
+export const myListsQuery = queryOptions({queryKey:keys.myLists,queryFn:getMyLists});
 
 /* ---------- One list + members ---------- */
 
