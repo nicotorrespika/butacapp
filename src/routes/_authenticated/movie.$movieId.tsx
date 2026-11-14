@@ -100,7 +100,7 @@ function MoviePage() {
         </div>
       </header>
 
-      <section className="mt-4 px-4"><MovieActions key={m.routeId} section="controls" result={m.result} genres={m.genres} extra={m.countries} onAddPending={()=>void adder.add(m.result)}/><div className="mt-2"><Scores scores={m.scores}/></div></section>
+      <section className="mt-4 px-4"><MovieActions key={m.routeId} section="controls" result={m.result} genres={m.genres} extra={m.countries} showPending/><div className="mt-2"><Scores scores={m.scores}/></div></section>
       <div className="mt-6 space-y-8 px-4">
 
         {(m.overview || m.genres.length > 0) && (
