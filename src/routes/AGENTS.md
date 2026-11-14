@@ -1,0 +1,1 @@
+- Every route declares staticData.sitemap; /sitemap.xml includes only public pages. Why: private screens stay out of search.
