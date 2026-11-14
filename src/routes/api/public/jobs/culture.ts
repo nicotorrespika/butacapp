@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
 import { z } from "zod";
-export const Route=createFileRoute("/api/public/jobs/culture")({server:{handlers:{POST:async({request})=>{
+export const Route=createFileRoute("/api/public/jobs/culture")({staticData:{sitemap:false},server:{handlers:{POST:async({request})=>{
  const failure=await authenticateCronRequest(request);if(failure)return failure;
  const body=z.object({kind:z.enum(["daily","events","cleanup"])}).safeParse(await request.json());if(!body.success)return Response.json({error:"Invalid request"},{status:400});
  const {supabaseAdmin}=await import("@/integrations/supabase/client.server");

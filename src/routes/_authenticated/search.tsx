@@ -34,7 +34,7 @@ import { cultureRouteId, isCulture } from "@/lib/culture";
 import { recordSearchTaste, recordSearchOpenTaste } from "@/lib/tastes-client";
 import { musicKind, type MusicKind } from "@/lib/music-search";
 
-export const Route = createFileRoute("/_authenticated/search")({
+export const Route = createFileRoute("/_authenticated/search")({staticData:{sitemap:false},
   validateSearch: z.object({
     q: z.string().optional(),
     f: z.enum(["all", "movie", "music", "book", "art"]).optional(),

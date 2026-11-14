@@ -8,7 +8,7 @@ import { ErrorState, PosterGridSkeleton } from "@/components/States";
 import { useAddToList } from "@/hooks/use-add-to-list";
 import { cultureRouteId } from "@/lib/culture";
 import { movieRouteId } from "@/lib/media";
-export const Route=createFileRoute("/_authenticated/explore/$type/$genre")({
+export const Route=createFileRoute("/_authenticated/explore/$type/$genre")({staticData:{sitemap:false},
   head:({params})=>({meta:[{title:`${params.genre} — Explorar en MOMENTO BUTACA`},{name:"description",content:`Explorá ${params.genre} y guardá tus próximos descubrimientos en MOMENTO BUTACA.`},{property:"og:title",content:`${params.genre} — MOMENTO BUTACA`},{property:"og:description",content:`Descubrí más títulos de ${params.genre}.`},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:ExplorePage,
 });
 function ExplorePage(){

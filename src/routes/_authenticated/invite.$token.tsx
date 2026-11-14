@@ -9,7 +9,7 @@ import { EmptyState, Skeleton } from "@/components/States";
 import { LIST_KIND_LABEL, type ListKind } from "@/lib/media";
 import { keys } from "@/lib/queries";
 
-export const Route = createFileRoute("/_authenticated/invite/$token")({
+export const Route = createFileRoute("/_authenticated/invite/$token")({staticData:{sitemap:false},
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },

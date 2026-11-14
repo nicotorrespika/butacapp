@@ -7,7 +7,7 @@ import hero from "@/assets/hero-theater.jpg";
 import { HomeExperience } from "@/components/HomeExperience";
 import { BottomNav } from "@/components/BottomNav";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")({staticData:{sitemap:true},
   head: () => ({
     meta: [
       { title: "MOMENTO BUTACA — listas compartidas de cine, música, libros y eventos" },

@@ -8,7 +8,7 @@ import {Messages} from "@/components/Messages";
 import {UserAvatar} from "@/components/UserAvatar";
 import {BackButton} from "@/components/BackButton";
 import {CheckCheck} from "lucide-react";
-export const Route=createFileRoute("/_authenticated/avisos")({head:()=>({meta:[{title:"Avisos y mensajes — MOMENTO BUTACA"},{name:"description",content:"Tus amigos, mensajes privados y novedades compartidas."},{property:"og:title",content:"Avisos — MOMENTO BUTACA"},{property:"og:description",content:"Lo que pasa con tu gente, en un solo lugar."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Avisos});
+export const Route=createFileRoute("/_authenticated/avisos")({staticData:{sitemap:false},head:()=>({meta:[{title:"Avisos y mensajes — MOMENTO BUTACA"},{name:"description",content:"Tus amigos, mensajes privados y novedades compartidas."},{property:"og:title",content:"Avisos — MOMENTO BUTACA"},{property:"og:description",content:"Lo que pasa con tu gente, en un solo lugar."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Avisos});
 function Avisos(){
   const {user}=Route.useRouteContext();
   const qc=useQueryClient();

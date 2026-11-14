@@ -27,7 +27,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { useDetailPreview } from "@/lib/detail-preview";
 import { DetailPreview } from "@/components/DetailPreview";
 
-export const Route = createFileRoute("/_authenticated/movie/$movieId")({
+export const Route = createFileRoute("/_authenticated/movie/$movieId")({staticData:{sitemap:false},
   validateSearch: z.object({ list: z.string().uuid().optional() }),
   head: () => ({
     meta: [

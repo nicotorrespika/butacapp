@@ -6,9 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export const Route = createFileRoute("/reset-password")({
+export const Route = createFileRoute("/reset-password")({staticData:{sitemap:false},
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { title: "Nueva contraseña — MOMENTO BUTACA" },

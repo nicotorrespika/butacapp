@@ -32,7 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import { z } from "zod";
 
-export const Route = createFileRoute("/_authenticated/lists/$listId")({
+export const Route = createFileRoute("/_authenticated/lists/$listId")({staticData:{sitemap:false},
   validateSearch:z.object({item:z.string().optional()}),
   head: () => ({
     meta: [

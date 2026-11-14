@@ -9,7 +9,7 @@ import { ErrorState } from "@/components/States";
 import { ResultCard } from "@/components/ResultCard";
 import { useAddToList } from "@/hooks/use-add-to-list";
 
-export const Route = createFileRoute("/_authenticated/creator/$type/$name")({
+export const Route = createFileRoute("/_authenticated/creator/$type/$name")({staticData:{sitemap:false},
   head: ({ params }) => ({ meta: [
     { title: `${params.name} — MOMENTO BUTACA` },
     { name: "description", content: `Obra completa de ${params.name}: discos o libros, con fichas y listas.` },
