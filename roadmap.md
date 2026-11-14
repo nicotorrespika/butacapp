@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Perfil: Mis listas incluye listas propias y todas las compartidas de las que soy miembro.
 - [ ] Películas: Agregar a mis pendientes guarda directamente en Watchlist sin selector de listas.
 - [ ] Betty: cruz para cerrar e historial plegado; comprobar con sesión.
 - [ ] Mover Podrían ir en tu lista de Inicio al interior de cada lista correspondiente.
