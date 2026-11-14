@@ -1,7 +1,8 @@
 import type { SearchResult } from "@/lib/media";
 import type { CultureDetail } from "@/lib/culture";
 import { rankMusic, musicText } from "@/lib/music-search";
-type DeezerItem = {id:number;name?:string;title?:string;link?:string;picture_medium?:string;cover_medium?:string;cover_big?:string;release_date?:string;duration?:number;preview?:string;artist?:{id:number;name:string;picture_medium?:string};album?:{id:number;title:string;cover_medium?:string};genres?:{data:{name:string}[]};label?:string;tracks?:{data:DeezerItem[]}};
+import {verifiedSpotifyArtist,type ArtistAlbum} from '@/lib/artist-discography';
+type DeezerItem = {id:number;name?:string;title?:string;link?:string;picture_medium?:string;cover_medium?:string;cover_big?:string;release_date?:string;duration?:number;preview?:string;fans?:number;rank?:number;record_type?:string;artist?:{id:number;name:string;picture_medium?:string};album?:{id:number;title:string;cover_medium?:string};genres?:{data:{name:string}[]};label?:string;tracks?:{data:DeezerItem[]}};
 async function deezer<T>(path: string): Promise<T> {
   const r = await fetch(`https://api.deezer.com/${path}`,{signal:AbortSignal.timeout(6500)});
   if(!r.ok) throw new Error(`Deezer ${r.status}`);
@@ -27,6 +28,28 @@ export async function musicGenre(genre:string):Promise<SearchResult[]> {
   if(!match)return [];
   const chart=await deezer<{albums?:{data:DeezerItem[]};tracks?:{data:DeezerItem[]};artists?:{data:DeezerItem[]}}>(`chart/${match.id}`);
   return [...(chart.albums?.data??[]).map(d=>map(d,"album")),...(chart.tracks?.data??[]).map(d=>map(d,"song"))];
+}
+export async function artistCatalog(name:string){
+ const search=await deezer<{data:DeezerItem[]}>(`search/artist?q=${encodeURIComponent(name)}&limit=10`);
+ const exact=search.data.filter(a=>musicText(a.name ?? '')===musicText(name)).sort((a,b)=>(b.fans ?? 0)-(a.fans ?? 0))[0];
+ if(!exact)return null;
+ const albums:ArtistAlbum[]=[];let hasMore=true;
+ for(let page=0;page<5&&hasMore;page++){
+  const response=await deezer<{data:DeezerItem[];next?:string}>(`artist/${exact.id}/albums?limit=100&index=${page*100}`);
+  for(const a of response.data)albums.push({...map({...a,artist:{id:exact.id,name:exact.name ?? name}},'album'),popularity:a.fans ?? 0,kindLabel:a.record_type==='single'?'Single':a.record_type==='ep'?'EP':'Álbum'});
+  hasMore=!!response.next;
+ }
+ const top=await deezer<{data:DeezerItem[]}>(`artist/${exact.id}/top?limit=5`).catch(()=>({data:[]}));
+ return {name:exact.name ?? name,photo:exact.picture_medium ?? null,works:albums,topTracks:top.data.slice(0,5).map(t=>({...map(t,'song'),duration:t.duration ?? null,preview:t.preview ?? null}))};
+}
+export async function artistSpotify(name:string){
+ try{
+  const matches=await musicBrainz<{artists:{id:string;name:string}[]}>(`artist?query=${encodeURIComponent(`artist:"${name.replaceAll('"','')}"`)}&fmt=json&limit=5`);
+  const artist=matches.artists.find(a=>musicText(a.name)===musicText(name));if(!artist)return null;
+  const detail=await musicBrainz<{relations?:{url?:{resource?:string}}[]}>(`artist/${artist.id}?inc=url-rels&fmt=json`);
+  for(const relation of detail.relations ?? []){const url=verifiedSpotifyArtist(relation.url?.resource ?? '');if(url)return url;}
+ }catch{/* A missing link must not prevent the artist page from loading. */}
+ return null;
 }
 // Serialize MusicBrainz requests within each Worker; no parallel requests to this provider.
 let mbQueue:Promise<unknown>=Promise.resolve(); let mbLast=0;
