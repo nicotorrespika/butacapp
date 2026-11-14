@@ -14,7 +14,7 @@ import { initialTastes } from "@/lib/tastes";
 
 const searchSchema = z.object({ redirect: z.string().optional(), mode: z.enum(["signup","signin"]).optional() });
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/auth")({staticData:{sitemap:false},
   validateSearch: searchSchema,
   head: () => ({
     meta: [

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { BackButton } from '@/components/BackButton';
 import { Soundtrack } from '@/components/Soundtrack';
 
-export const Route = createFileRoute('/_authenticated/soundtrack/$movieId')({
+export const Route = createFileRoute('/_authenticated/soundtrack/$movieId')({staticData:{sitemap:false},
   head: () => ({ meta: [
     { title: 'Soundtrack y canciones — MOMENTO BUTACA' },
     { name: 'description', content: 'Discos y canciones de la banda sonora de una película.' },

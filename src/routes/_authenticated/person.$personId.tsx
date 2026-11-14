@@ -14,7 +14,7 @@ import { getPerson } from "@/lib/movies.functions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/_authenticated/person/$personId")({
+export const Route = createFileRoute("/_authenticated/person/$personId")({staticData:{sitemap:false},
   validateSearch: z.object({ list: z.string().uuid().optional() }),
   head: () => ({
     meta: [

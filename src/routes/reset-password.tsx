@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export const Route = createFileRoute("/reset-password")({
+export const Route = createFileRoute("/reset-password")({staticData:{sitemap:false},
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },

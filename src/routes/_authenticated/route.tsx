@@ -9,7 +9,7 @@ import { keys } from "@/lib/queries";
  * Gate for every signed-in page. Client-only because the session lives in
  * the browser; unauthenticated visitors go to /auth and come back afterwards.
  */
-export const Route = createFileRoute("/_authenticated")({
+export const Route = createFileRoute("/_authenticated")({staticData:{sitemap:"exclude-subtree"},
   ssr: false,
   beforeLoad: async ({ location }) => {
     const { data } = await supabase.auth.getUser();

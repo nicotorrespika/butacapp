@@ -8,7 +8,7 @@ import { EmptyState, ErrorState, Skeleton } from "@/components/States";
 import { LIST_KIND_LABEL } from "@/lib/media";
 import { myListsQuery, type ListSummary } from "@/lib/queries";
 
-export const Route = createFileRoute("/_authenticated/lists/")({
+export const Route = createFileRoute("/_authenticated/lists/")({staticData:{sitemap:false},
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },

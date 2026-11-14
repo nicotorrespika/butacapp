@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { authenticateCronRequest } from '@/integrations/supabase/cron-auth';
-export const Route=createFileRoute('/api/public/jobs/personalization')({server:{handlers:{POST:async({request})=>{
+export const Route=createFileRoute('/api/public/jobs/personalization')({staticData:{sitemap:false},server:{handlers:{POST:async({request})=>{
   const failure=await authenticateCronRequest(request);if(failure)return failure;
   const {supabaseAdmin}=await import('@/integrations/supabase/client.server');
   const {buildPersonalization}=await import('@/server/personalization');

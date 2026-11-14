@@ -1,6 +1,6 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {authenticateCronRequest} from "@/integrations/supabase/cron-auth";
-export const Route=createFileRoute("/api/public/jobs/soundtracks")({server:{handlers:{POST:async({request})=>{
+export const Route=createFileRoute("/api/public/jobs/soundtracks")({staticData:{sitemap:false},server:{handlers:{POST:async({request})=>{
   const failure=await authenticateCronRequest(request);if(failure)return failure;
   const key=process.env["TMDB_API_KEY"];if(!key)return Response.json({ok:false},{status:503});
   const {supabaseAdmin}=await import("@/integrations/supabase/client.server");const rows=await supabaseAdmin.from("movie_entries").select("external_id").eq("watched",true).eq("source","tmdb").limit(100);

@@ -12,7 +12,7 @@ import { keys, myListsQuery, useMyProfile } from "@/lib/queries";
 import { ProfileView } from "@/components/ProfileView";
 import { BackButton } from "@/components/BackButton";
 
-export const Route = createFileRoute("/_authenticated/profile")({
+export const Route = createFileRoute("/_authenticated/profile")({staticData:{sitemap:false},
   head: () => ({
     meta: [
       { property: "og:type", content: "website" },
