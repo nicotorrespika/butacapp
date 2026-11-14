@@ -1,4 +1,5 @@
 import {expect,it,vi} from 'vitest';
+import {QueryClient} from '@tanstack/react-query';
 const mocks=vi.hoisted(()=>({getMyLists:vi.fn(),getUser:vi.fn()}));
 vi.mock('./queries',()=>({getMyLists:mocks.getMyLists}));
 vi.mock('@/integrations/supabase/client',()=>({supabase:{auth:{getUser:mocks.getUser}}}));
@@ -8,6 +9,6 @@ it('own profile includes joined lists even when someone else owns them',async()=
  mocks.getMyLists.mockResolvedValue([{id:'own',owner_id:'me'},{id:'shared',owner_id:'friend'}]);
  const options=profileListsQuery('me');
  if(typeof options.queryFn!=='function')throw new Error('Missing query');
- const rows=await options.queryFn({queryKey:options.queryKey,signal:new AbortController().signal,meta:undefined,client:undefined} as Parameters<typeof options.queryFn>[0]);
+ const rows=await options.queryFn({queryKey:options.queryKey,signal:new AbortController().signal,meta:undefined,client:new QueryClient()});
  expect(rows.map(row=>row.id)).toEqual(['own','shared']);
 });
