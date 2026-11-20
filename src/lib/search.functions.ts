@@ -10,6 +10,32 @@ import { parseQuery } from "@/lib/search-query";
 import { searchArt, searchImdbFallback, searchMusic, searchTmdb } from "@/server/search-providers";
 import { searchBooks } from "@/server/culture-providers";
 import { cachedCatalog } from "@/server/catalog-cache";
+import { guestSearchSchema } from './guest-catalog';
+
+/** Guest catalog search: no database, user context, AI calls or private records. */
+export const searchGuestCatalog = createServerFn({ method: 'POST' })
+  .inputValidator((input: unknown) => guestSearchSchema.parse(input))
+  .handler(async ({ data }): Promise<SearchResponse> => {
+    const parsed = parseQuery(data.q);
+    const key = process.env['TMDB_API_KEY'];
+    const warnings: string[] = [];
+    const want = (category: string) => data.filter === 'all' || data.filter === category;
+    let people: PersonResult[] = [];
+    const run = async (label: string, fn: () => Promise<SearchResult[]>) => {
+      try { return (await fn()).slice(0, 24); }
+      catch { warnings.push(`${label} no respondió. Probá de nuevo.`); return []; }
+    };
+    const [movie, music, book] = await Promise.all([
+      want('movie') ? run('Cine', async () => {
+        if (!key) return searchImdbFallback(parsed);
+        try { const r = await searchTmdb(parsed, key); people = r.people; return r.results; }
+        catch { return searchImdbFallback(parsed); }
+      }) : Promise.resolve([]),
+      want('music') ? run('Música', () => searchMusic(parsed)) : Promise.resolve([]),
+      want('book') ? run('Libros', () => searchBooks(data.q)) : Promise.resolve([]),
+    ]);
+    return { movie, music, book, people, art: [], movieProvider: key ? 'tmdb' : 'basic', warnings };
+  });
 
 const inputSchema = z.object({
   q: z.string().trim().min(1).max(120),

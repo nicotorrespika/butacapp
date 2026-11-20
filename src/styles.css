@@ -132,6 +132,7 @@
   --shadow-poster: none;
   --shadow-glow: none;
   --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+  --gradient-welcome: linear-gradient(to bottom, color-mix(in oklch, var(--background) 18%, transparent) 0%, color-mix(in oklch, var(--background) 12%, transparent) 27%, color-mix(in oklch, var(--background) 82%, transparent) 54%, var(--background) 73%);
   --nav-height: 4.25rem;
 }
 
@@ -304,3 +305,15 @@
 .book-cover-title-long { font-size: 7cqi; }
 .book-cover-rule { width: 30%; border-top: 2px solid var(--seat); flex-shrink: 0; }
 @media (prefers-reduced-motion: reduce) { .poster-mosaic { animation: none; } }
+.first-welcome { min-height: 100dvh; }
+.first-welcome-image { height: min(100dvh, 1000px); opacity: .85; }
+.first-welcome-fade { height: min(100dvh, 1000px); background: var(--gradient-welcome); }
+.first-welcome-content { padding-top: clamp(115px, 19dvh, 190px); }
+.welcome-wordmark { font-family: var(--font-display); font-style: italic; font-size: 68px; font-weight: 400; line-height: .9; }
+.welcome-wordmark > span:last-child { font-family: var(--font-heading); font-size: 80px; font-style: normal; font-weight: 700; line-height: 1; }
+@media (min-width: 640px) {
+  .welcome-wordmark { font-size: 94px; }
+  .welcome-wordmark > span:last-child { font-size: 116px; }
+  .first-welcome-image img { object-position: center 35%; }
+  .first-welcome-content { padding-top: min(29dvh, 310px); }
+}

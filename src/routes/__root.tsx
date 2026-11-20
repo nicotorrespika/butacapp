@@ -16,6 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/hooks/use-auth";
 import { InstallInvitation } from "@/components/InstallInvitation";
 import { registerAppWorker } from "@/lib/register-app-worker";
+import { FirstStepsGate } from '@/components/FirstStepsGate';
 
 function NotFoundComponent() {
   return (
@@ -131,9 +132,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <InstallInvitation />
-        {/* Required: nested routes render here. */}
-        <Outlet />
+        <FirstStepsGate>
+          <InstallInvitation />
+          {/* Required: nested routes render here. */}
+          <Outlet />
+        </FirstStepsGate>
         <Toaster position="top-center" theme="dark" />
       </AuthProvider>
     </QueryClientProvider>

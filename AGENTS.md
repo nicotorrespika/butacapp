@@ -31,6 +31,10 @@ use the editor.
 
 ## Project rules
 
+- Guest catalog uses separate public search/detail functions with validated provider IDs and no database, AI or user reads; guest cards open read-only summaries and account CTAs. Why: browsing needs no login while all personal and collaborative actions retain their existing security boundaries.
+
+- Initial tastes use a three-category client wizard with existing authenticated catalog searches; save idempotent Top entries and private signals before marking completion, and gate signed-in app screens in the root wrapper. Why: both email and OAuth arrivals share the same resumable first-run flow without changing the managed auth layout or existing Tops.
+
 - Data reads/writes go from the browser client straight to the database; access control lives in RLS via `is_list_member`/`is_list_owner` security-definer helpers. Why: keeps the MVP simple while every list stays private to its members.
 - External media search runs only in `src/lib/search.functions.ts` (auth-required server fn) with providers in `src/server/search-providers.ts`; each provider fails independently. Why: keeps API keys server-side and one slow API never breaks search.
 - Movie and person details use authenticated functions with server-only provider helpers; list additions share one hook. Why: preserves secret boundaries and consistent add behavior.

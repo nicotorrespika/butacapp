@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BuscarRouteImport } from './routes/buscar'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -20,6 +21,7 @@ import { Route as AuthenticatedAvisosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedFriendsRouteImport } from './routes/_authenticated/friends'
 import { Route as AuthenticatedGustosRouteImport } from './routes/_authenticated/gustos'
 import { Route as AuthenticatedMensajesRouteImport } from './routes/_authenticated/mensajes'
+import { Route as AuthenticatedPrimerosPasosRouteImport } from './routes/_authenticated/primeros-pasos'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSearchRouteImport } from './routes/_authenticated/search'
 import { Route as AuthenticatedBettySearchIdRouteImport } from './routes/_authenticated/betty.$searchId'
@@ -53,6 +55,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuscarRoute = BuscarRouteImport.update({
+  id: '/buscar',
+  path: '/buscar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacidadRoute = PrivacidadRouteImport.update({
@@ -95,6 +102,12 @@ const AuthenticatedMensajesRoute = AuthenticatedMensajesRouteImport.update({
   path: '/mensajes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPrimerosPasosRoute =
+  AuthenticatedPrimerosPasosRouteImport.update({
+    id: '/primeros-pasos',
+    path: '/primeros-pasos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -213,6 +226,7 @@ const ApiPublicPortadaKindIdRoute = ApiPublicPortadaKindIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/buscar': typeof BuscarRoute
   '/privacidad': typeof PrivacidadRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -221,6 +235,7 @@ export interface FileRoutesByFullPath {
   '/friends': typeof AuthenticatedFriendsRoute
   '/gustos': typeof AuthenticatedGustosRoute
   '/mensajes': typeof AuthenticatedMensajesRoute
+  '/primeros-pasos': typeof AuthenticatedPrimerosPasosRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
@@ -245,6 +260,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/buscar': typeof BuscarRoute
   '/privacidad': typeof PrivacidadRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -253,6 +269,7 @@ export interface FileRoutesByTo {
   '/friends': typeof AuthenticatedFriendsRoute
   '/gustos': typeof AuthenticatedGustosRoute
   '/mensajes': typeof AuthenticatedMensajesRoute
+  '/primeros-pasos': typeof AuthenticatedPrimerosPasosRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/search': typeof AuthenticatedSearchRoute
   '/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
@@ -279,6 +296,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/buscar': typeof BuscarRoute
   '/privacidad': typeof PrivacidadRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -287,6 +305,7 @@ export interface FileRoutesById {
   '/_authenticated/friends': typeof AuthenticatedFriendsRoute
   '/_authenticated/gustos': typeof AuthenticatedGustosRoute
   '/_authenticated/mensajes': typeof AuthenticatedMensajesRoute
+  '/_authenticated/primeros-pasos': typeof AuthenticatedPrimerosPasosRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/search': typeof AuthenticatedSearchRoute
   '/_authenticated/betty/$searchId': typeof AuthenticatedBettySearchIdRoute
@@ -313,6 +332,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/buscar'
     | '/privacidad'
     | '/reset-password'
     | '/sitemap.xml'
@@ -321,6 +341,7 @@ export interface FileRouteTypes {
     | '/friends'
     | '/gustos'
     | '/mensajes'
+    | '/primeros-pasos'
     | '/profile'
     | '/search'
     | '/betty/$searchId'
@@ -345,6 +366,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/buscar'
     | '/privacidad'
     | '/reset-password'
     | '/sitemap.xml'
@@ -353,6 +375,7 @@ export interface FileRouteTypes {
     | '/friends'
     | '/gustos'
     | '/mensajes'
+    | '/primeros-pasos'
     | '/profile'
     | '/search'
     | '/betty/$searchId'
@@ -378,6 +401,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/buscar'
     | '/privacidad'
     | '/reset-password'
     | '/sitemap.xml'
@@ -386,6 +410,7 @@ export interface FileRouteTypes {
     | '/_authenticated/friends'
     | '/_authenticated/gustos'
     | '/_authenticated/mensajes'
+    | '/_authenticated/primeros-pasos'
     | '/_authenticated/profile'
     | '/_authenticated/search'
     | '/_authenticated/betty/$searchId'
@@ -412,6 +437,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  BuscarRoute: typeof BuscarRoute
   PrivacidadRoute: typeof PrivacidadRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -444,6 +470,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buscar': {
+      id: '/buscar'
+      path: '/buscar'
+      fullPath: '/buscar'
+      preLoaderRoute: typeof BuscarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacidad': {
@@ -500,6 +533,13 @@ declare module '@tanstack/react-router' {
       path: '/mensajes'
       fullPath: '/mensajes'
       preLoaderRoute: typeof AuthenticatedMensajesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/primeros-pasos': {
+      id: '/_authenticated/primeros-pasos'
+      path: '/primeros-pasos'
+      fullPath: '/primeros-pasos'
+      preLoaderRoute: typeof AuthenticatedPrimerosPasosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -650,6 +690,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFriendsRoute: typeof AuthenticatedFriendsRoute
   AuthenticatedGustosRoute: typeof AuthenticatedGustosRoute
   AuthenticatedMensajesRoute: typeof AuthenticatedMensajesRoute
+  AuthenticatedPrimerosPasosRoute: typeof AuthenticatedPrimerosPasosRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSearchRoute: typeof AuthenticatedSearchRoute
   AuthenticatedBettySearchIdRoute: typeof AuthenticatedBettySearchIdRoute
@@ -672,6 +713,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFriendsRoute: AuthenticatedFriendsRoute,
   AuthenticatedGustosRoute: AuthenticatedGustosRoute,
   AuthenticatedMensajesRoute: AuthenticatedMensajesRoute,
+  AuthenticatedPrimerosPasosRoute: AuthenticatedPrimerosPasosRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSearchRoute: AuthenticatedSearchRoute,
   AuthenticatedBettySearchIdRoute: AuthenticatedBettySearchIdRoute,
@@ -696,6 +738,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  BuscarRoute: BuscarRoute,
   PrivacidadRoute: PrivacidadRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

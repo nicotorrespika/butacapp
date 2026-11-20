@@ -1,7 +1,9 @@
 # Roadmap
 
 ## Latest requests
-- [ ] Crear bienvenida de tres pasos: tres películas, tres artistas/discos y tres escritores, guardado de gustos y llegada a Inicio; verificar con sesión.
+- [x] Bienvenida cinematográfica con foto original desvanecida y marca editorial; verificada a 390/1280px, imagen visible, sin desborde y Empezar abre elecciones.
+- [x] Catálogo invitado en Inicio y /buscar, búsquedas por categoría y fichas de solo lectura sin datos privados ni AI; Coraline con sinopsis/director, Paul Auster y Charly García comprobados sin sesión.
+- [x] Primeros pasos con tres películas, tres artistas/discos y tres escritores; nueve elecciones guardadas y leídas en Inicio/perfil con sesión, ocho pruebas pasan.
 - [x] Solicitar publicación con sitemap en momentobutaca.com (dominio primario comprobado); momentoobutaca.com no está conectado. Publicación y llegada de Google no se consideran verificadas.
 - [x] Artistas: Spotify verificado por relaciones MusicBrainz, Top 5 Deezer y discografía/álbumes por año o popularidad; Charly García comprobado con sesión. Años corresponden a las ediciones del proveedor.
 - [x] Perfil: Mis listas incluye listas propias y todas las compartidas de las que soy miembro.

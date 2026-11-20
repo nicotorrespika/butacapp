@@ -6,6 +6,7 @@ import { takePendingRedirect, useAuth } from "@/hooks/use-auth";
 import hero from "@/assets/hero-theater.jpg";
 import { HomeExperience } from "@/components/HomeExperience";
 import { BottomNav } from "@/components/BottomNav";
+import { GuestCatalog } from '@/components/GuestCatalog';
 
 export const Route = createFileRoute("/")({staticData:{sitemap:true},
   head: () => ({
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/")({staticData:{sitemap:true},
   }),
   component: Home,
 });
-function Home(){return <div className="mx-auto w-full max-w-5xl overflow-x-hidden pt-nav pb-nav"><HomeExperience/><BottomNav/></div>;}
+function Home(){const {user,loading}=useAuth();return <div className="mx-auto w-full max-w-5xl overflow-x-hidden pb-nav">{loading?<p className="px-4 py-12 text-muted-foreground">Preparando tu butaca…</p>:user?<><HomeExperience/><BottomNav/></>:<GuestCatalog home/>}</div>;}
 
 /** Public landing. Signed-in visitors (incl. OAuth returns) go straight to their lists. */
 function Landing() {

@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { savePendingRedirect, useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import hero from "@/assets/hero-theater.jpg";
-import { initialTastes } from "@/lib/tastes";
 
 const searchSchema = z.object({ redirect: z.string().optional(), mode: z.enum(["signup","signin"]).optional() });
 
@@ -52,7 +51,6 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [initialLikes,setInitialLikes]=useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
 
@@ -78,7 +76,7 @@ function AuthPage() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin, data: { display_name: name.trim(), initial_tastes: initialLikes } },
+          options: { emailRedirectTo: window.location.origin, data: { display_name: name.trim() } },
         });
         if (error) throw error;
         if (!data.session) setSent("Te mandamos un email para confirmar tu cuenta. Abrilo desde este dispositivo.");
@@ -202,7 +200,6 @@ function AuthPage() {
                     required
                   />
                 )}
-                {mode==="signup"&&<fieldset className="space-y-3"><legend className="text-sm">Elegí tus gustos iniciales (opcional)</legend><div className="flex flex-wrap gap-1">{initialTastes.map(t=><Button type="button" size="sm" variant={initialLikes.includes(t)?"secondary":"ghost"} aria-pressed={initialLikes.includes(t)} key={t} onClick={()=>setInitialLikes(old=>old.includes(t)?old.filter(v=>v!==t):[...old,t])}>{t}</Button>)}</div><p className="text-xs text-muted-foreground">{initialLikes.length ? `${initialLikes.length} gustos elegidos. Podés sumar más al entrar.` : "Opcional: podés elegirlos ahora o al entrar."}</p></fieldset>}
                 <Button type="submit" size="lg" className="w-full" disabled={busy}>
                   {busy && <Loader2 className="animate-spin" />}
                   {mode === "signin" && "Entrar"}
@@ -243,6 +240,7 @@ function AuthPage() {
           )}
         </div>
         <p className="mt-4 text-xs text-muted-foreground">Al crear tu cuenta aceptás los <Link to="/terminos" className="text-primary">términos</Link> y la <Link to="/privacidad" className="text-primary">política de privacidad</Link>.</p>
+        <Button asChild variant="ghost" className="mt-3"><Link to="/buscar">Seguir sin cuenta</Link></Button>
       </main>
     </div>
   );
