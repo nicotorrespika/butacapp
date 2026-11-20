@@ -871,6 +871,7 @@ export type Database = {
           kind_label: string | null
           list_id: string
           media_type: string
+          position: number | null
           source: string
           title: string
           year: number | null
@@ -890,6 +891,7 @@ export type Database = {
           kind_label?: string | null
           list_id: string
           media_type: string
+          position?: number | null
           source: string
           title: string
           year?: number | null
@@ -909,6 +911,7 @@ export type Database = {
           kind_label?: string | null
           list_id?: string
           media_type?: string
+          position?: number | null
           source?: string
           title?: string
           year?: number | null
