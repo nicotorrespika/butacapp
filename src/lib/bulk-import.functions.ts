@@ -54,7 +54,7 @@ export const bulkCandidates = createServerFn({ method: "POST" })
     } else if (data.mode === "title" && data.q) {
       const pages = await Promise.all([1, 2, 3].map((page) => tmdb<{ results: RawTmdbMovie[] }>("/search/movie", { query: data.q!, page }).catch(() => ({ results: [] }))));
       const needle = data.q.toLowerCase();
-      items = pages.flatMap((p) => p.results).filter((m) => (m.title ?? "").toLowerCase().includes(needle)).map((m) => toCandidate(m, null));
+      items = pages.flatMap((p) => p.results).filter((m) => [m.title, m.original_title].some((t) => (t ?? "").toLowerCase().includes(needle))).map((m) => toCandidate(m, null));
     } else if ((data.mode === "author" || data.mode === "artist") && data.q) {
       const { creatorWorks } = await import("@/server/culture-providers");
       const r = await creatorWorks(data.mode === "author" ? "book" : "music", data.q);

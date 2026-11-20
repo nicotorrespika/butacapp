@@ -3,7 +3,12 @@ import {useScreenState} from "@/hooks/use-screen-state";
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Check, MessageCircle, Plus, Search, Trash2, UserPlus } from "lucide-react";
+import { ArrowLeft, ChevronDown, Layers, LayoutGrid, List as ListIcon, ListChecks, Loader2, Plus, Rows3, Search, Sparkles, Trash2, UserPlus } from "lucide-react";
+import { BulkAddDrawer } from "@/components/BulkAddDrawer";
+import { ListItemsView, type ListView } from "@/components/ListItemsView";
+import { nextPendingId, sortItems, type ListSort } from "@/lib/bulk-import";
+import { bettyOrder } from "@/lib/bulk-import.functions";
+import { useEffect } from "react";
 import { filterForListKind } from "@/lib/add-item";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,11 +20,12 @@ import { SocialComments } from "@/components/SocialComments";
 import { CultureBetty } from "@/components/CultureBetty";
 import { ListPicks } from "@/components/ListPicks";
 import { ListRecommendations } from "@/components/ListRecommendations";
-import { Poster } from "@/components/Poster";
 import { EmptyState, ErrorState, PosterGridSkeleton, Skeleton } from "@/components/States";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { UserAvatar } from "@/components/UserAvatar";
 import { useAuth } from "@/hooks/use-auth";
-import { DONE_LABEL, LIST_KIND_LABEL, hasMoviePage, movieRouteId, type MediaType } from "@/lib/media";
+import { LIST_KIND_LABEL } from "@/lib/media";
 import { averageScore, ratingScore } from "@/lib/ratings";
 import {
   commentsQuery,
@@ -49,7 +55,6 @@ export const Route = createFileRoute("/_authenticated/lists/$listId")({staticDat
 });
 
 type StatusFilter = "all" | "todo" | "done";
-type SortKey = "recent" | "rating" | "title";
 
 function ListPage() {
   const { listId } = Route.useParams();
@@ -65,7 +70,20 @@ function ListPage() {
   useListRealtime(listId);
 
   const [status, setStatus] = useScreenState<StatusFilter>(`list:${listId}:status`,"all");
-  const [sort, setSort] = useScreenState<SortKey>(`list:${listId}:sort`,"recent");
+  const [sort, setSort] = useScreenState<ListSort>(`list:${listId}:sort2`,"custom");
+  const [view, setViewState] = useState<ListView>("list");
+  const [hideDone, setHideDone] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [selecting, setSelecting] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bettyOpen, setBettyOpen] = useState(false);
+  const [criterion, setCriterion] = useState("");
+  const [bettyBusy, setBettyBusy] = useState(false);
+  const [proposal, setProposal] = useState<{ order: string[]; explanation: string } | null>(null);
+  const [recsOpen, setRecsOpen] = useState(false);
+  useEffect(() => { if (!userId) return; const v = localStorage.getItem(`butaca:listview:${userId}`); if (v === "list" || v === "grid" || v === "posters") setViewState(v); }, [userId]);
+  const setView = (v: ListView) => { setViewState(v); if (userId) localStorage.setItem(`butaca:listview:${userId}`, v); };
   const [adder, setAdder] = useScreenState<string>(`list:${listId}:adder`,"all");
   const {item:openId}=Route.useSearch();
   const setOpenId=(item:string|null)=>navigate({to:"/lists/$listId",params:{listId},search:{item:item ?? undefined},replace:true});
@@ -90,11 +108,37 @@ function ListPage() {
   const visible = useMemo(() => {
     let list = [...(items.data ?? [])];
     if (status !== "all") list = list.filter((i) => (status === "done" ? i.done : !i.done));
+    if (hideDone) list = list.filter((i) => !i.done);
     if (adder !== "all") list = list.filter((i) => i.added_by === adder);
-    if (sort === "rating") list.sort((a, b) => (stats[b.id]?.avg ?? -1) - (stats[a.id]?.avg ?? -1));
-    if (sort === "title") list.sort((a, b) => a.title.localeCompare(b.title, "es"));
-    return list;
-  }, [items.data, status, adder, sort, stats]);
+    return sortItems(list, sort, (id) => stats[id]?.avg ?? null);
+  }, [items.data, status, adder, sort, stats, hideDone]);
+  const myScore = (id: string) => { const r = (ratings.data ?? []).find((x) => x.item_id === id && x.user_id === userId); return r ? ratingScore(r) : null; };
+
+  async function saveOrder(ids: string[]) {
+    qc.setQueryData<ItemRow[]>(keys.items(listId), (old) => old?.map((i) => ({ ...i, position: ids.indexOf(i.id) + 1 || i.position })));
+    const res = await Promise.all(ids.map((id, n) => supabase.from("list_items").update({ position: n + 1 }).eq("id", id)));
+    if (res.some((r) => r.error)) toast.error("No se pudo guardar el orden");
+  }
+  async function toggleDone(item: ItemRow) {
+    const next = !item.done;
+    qc.setQueryData<ItemRow[]>(keys.items(listId), (old) => old?.map((i) => (i.id === item.id ? { ...i, done: next } : i)));
+    const { error } = await supabase.from("list_items").update({ done: next, done_by: next ? userId : null, done_at: next ? new Date().toISOString() : null }).eq("id", item.id);
+    if (error) { toast.error("No se pudo marcar"); qc.invalidateQueries({ queryKey: keys.items(listId) }); }
+  }
+  async function removeSelected() {
+    const ids = [...selected];
+    const { error } = await supabase.from("list_items").delete().in("id", ids);
+    if (error) return void toast.error("No se pudieron quitar", { description: error.message });
+    toast(`Quitaste ${ids.length} ${ids.length === 1 ? "obra" : "obras"}`);
+    setSelected(new Set()); setSelecting(false);
+    qc.invalidateQueries({ queryKey: keys.items(listId) });
+  }
+  async function askBettyOrder() {
+    setBettyBusy(true); setProposal(null);
+    try { setProposal(await bettyOrder({ data: { listId, criterion } })); }
+    catch { toast.error("Bettiada: no pude ordenarlas. Probá de nuevo."); }
+    setBettyBusy(false);
+  }
 
   if (detail.isError) {
     return detail.error.message === "NOT_FOUND" ? (
@@ -154,8 +198,11 @@ function ListPage() {
             </Button>
             {d && isMember && (
               <div className="flex items-center gap-2">
-                <Button variant="glass" size="sm" onClick={() => setInviting(true)}>
-                  <UserPlus /> Invitar
+                <Button variant="glass" size="sm" onClick={() => setInviting(true)} aria-label="Invitar">
+                  <UserPlus /> <span className="hidden sm:inline">Invitar</span>
+                </Button>
+                <Button variant="glass" size="sm" onClick={() => setBulkOpen(true)}>
+                  <Layers /> <span className="hidden sm:inline">Agregar</span> Varias
                 </Button>
                 <Button asChild size="sm">
                   <Link to="/search" search={searchToAdd}>
@@ -191,7 +238,7 @@ function ListPage() {
                   ))}
                 </button>
                 <span className="text-xs text-muted-foreground">
-                  {doneCount}/{total} {total ? "completados" : ""}
+                  {total} {total === 1 ? "obra" : "obras"} · {doneCount} {d.list.kind === "books" ? "leídas" : d.list.kind === "music" ? "escuchadas" : "vistas"}
                 </span>
               </div>
               {total > 0 && (
@@ -206,10 +253,6 @@ function ListPage() {
           )}
         </div>
       </header>
-      {d && isMember && <ListPicks list={d.list} />}
-      {d && (d.list.kind === "movies" || d.list.kind === "mixed") && <ListRecommendations listId={listId} />}
-
-      {d&&(d.list.kind==="books"||d.list.kind==="music")&&<CultureBetty type={d.list.kind==="books"?"book":"music"} listId={listId}/>}
       {/* Filters + sort */}
       <div className="sticky top-0 z-20 mt-6 space-y-2 bg-background px-4 py-2">
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 scrollbar-none">
@@ -235,13 +278,15 @@ function ListPage() {
           ))}
           <select
             value={sort}
-            onChange={(e) => setSort(e.target.value as SortKey)}
-            aria-label="Ordenar"
+            onChange={(e) => { setSort(e.target.value as ListSort); setEditing(false); }}
+            aria-label="Ordenar por"
             className="h-11 shrink-0 rounded-sm border border-input bg-card px-3 text-sm font-medium text-muted-foreground outline-none"
           >
-            <option value="recent">Recientes</option>
-            <option value="rating">Mejor nota</option>
+            <option value="custom">Mi orden</option>
+            <option value="year">Año de estreno</option>
             <option value="title">A–Z</option>
+            <option value="rating">Nota</option>
+            <option value="added">Fecha de agregado</option>
           </select>
           {d && d.members.length > 1 && (
             <select
@@ -261,7 +306,29 @@ function ListPage() {
         </div>
       </div>
 
-      {/* Items grid */}
+      <div className="flex flex-wrap items-center gap-1 px-4 pt-1">
+        <div role="group" aria-label="Vista" className="flex rounded-sm border border-border">
+          {([["list", ListIcon, "Lista"], ["grid", LayoutGrid, "Grilla compacta"], ["posters", Rows3, "Pósters grandes"]] as const).map(([v, Icon, l]) => (
+            <button key={v} type="button" onClick={() => setView(v)} aria-pressed={view === v} aria-label={l} title={l} className={cn("flex size-11 items-center justify-center", view === v ? "text-primary" : "text-muted-foreground")}><Icon className="size-4" /></button>
+          ))}
+        </div>
+        <label className="ml-1 flex min-h-11 items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" checked={hideDone} onChange={(e) => setHideDone(e.target.checked)} className="size-4 accent-primary" />Ocultar vistas</label>
+        {isMember && total > 0 && (
+          <span className="ml-auto flex flex-wrap gap-1">
+            {sort === "custom" && <Button size="sm" variant={editing ? "default" : "ghost"} onClick={() => { setEditing((e) => !e); setSelecting(false); }}>{editing ? "Listo" : "Reordenar"}</Button>}
+            <Button size="sm" variant="ghost" onClick={() => setBettyOpen(true)}><Sparkles /> Que las ordene Betty</Button>
+            <Button size="sm" variant={selecting ? "default" : "ghost"} onClick={() => { setSelecting((x) => !x); setSelected(new Set()); setEditing(false); }}><ListChecks /> {selecting ? "Cancelar" : "Seleccionar"}</Button>
+          </span>
+        )}
+      </div>
+      {selecting && selected.size > 0 && (
+        <div className="sticky top-14 z-20 mx-4 mt-2 flex items-center justify-between rounded-sm border border-border bg-card px-3 py-2 text-sm">
+          <span>{selected.size} seleccionadas</span>
+          <Button size="sm" variant="ghost" className="text-destructive" onClick={() => void removeSelected()}><Trash2 /> Quitar seleccionadas</Button>
+        </div>
+      )}
+
+      {/* Items */}
       <div className="px-4 pt-3">
         {items.isLoading ? (
           <PosterGridSkeleton />
@@ -284,20 +351,38 @@ function ListPage() {
         ) : visible.length === 0 ? (
           <p className="py-12 text-center text-sm text-muted-foreground">Nada con estos filtros.</p>
         ) : (
-          <ul className="grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
-            {visible.map((i) => (
-              <li key={i.id} className="animate-rise">
-                <ItemTile
-                  item={i}
-                  stat={stats[i.id]}
-                  adderName={d?.profiles[i.added_by]?.display_name}
-                  onOpen={() => void setOpenId(i.id)}
-                />
-              </li>
-            ))}
-          </ul>
+          <ListItemsView
+            items={visible}
+            view={view}
+            stats={stats}
+            myScore={myScore}
+            nextId={sort === "custom" ? nextPendingId(visible) : null}
+            editing={editing && sort === "custom"}
+            selecting={selecting}
+            selected={selected}
+            onToggleSelect={(id) => setSelected((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; })}
+            onOpen={(id) => void setOpenId(id)}
+            onToggleDone={(i) => void toggleDone(i)}
+            onReorder={(ids) => void saveOrder(ids)}
+            mixed={d?.list.kind === "mixed"}
+          />
         )}
 
+        {d && (
+          <section className="mt-10 border-t border-border pt-2">
+            <button type="button" onClick={() => setRecsOpen((o) => !o)} aria-expanded={recsOpen} className="flex min-h-12 w-full items-center justify-between text-left">
+              <span className="font-display text-xl uppercase">Podrían ir en tu lista…</span>
+              <ChevronDown className={cn("size-5 transition-transform", recsOpen && "rotate-180")} />
+            </button>
+            {recsOpen && (
+              <div className="-mx-4">
+                {isMember && <ListPicks list={d.list} />}
+                {(d.list.kind === "movies" || d.list.kind === "mixed") && <ListRecommendations listId={listId} />}
+                {(d.list.kind === "books" || d.list.kind === "music") && <CultureBetty type={d.list.kind === "books" ? "book" : "music"} listId={listId} />}
+              </div>
+            )}
+          </section>
+        )}
         {d && (
           <div className="mt-12 flex justify-center">
             {isOwner ? (
@@ -326,56 +411,34 @@ function ListPage() {
             isOwner={isOwner}
           />
           {isMember && <InviteDrawer open={inviting} onOpenChange={setInviting} detail={d} userId={userId} />}
+          {isMember && <BulkAddDrawer open={bulkOpen} onOpenChange={setBulkOpen} listId={listId} kind={d.list.kind} userId={userId} existing={items.data ?? []} />}
+          <Dialog open={bettyOpen} onOpenChange={(o) => { setBettyOpen(o); if (!o) setProposal(null); }}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="font-display uppercase">Que las ordene Betty</DialogTitle>
+                <DialogDescription>Decile cómo: «en orden cronológico de la historia», «para ver la saga por primera vez». Es una sugerencia y puede equivocarse.</DialogDescription>
+              </DialogHeader>
+              <Textarea value={criterion} onChange={(e) => setCriterion(e.target.value)} placeholder="En orden cronológico de la historia" onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && criterion.trim().length >= 3) { e.preventDefault(); void askBettyOrder(); } }} />
+              <Button disabled={bettyBusy || criterion.trim().length < 3} onClick={() => void askBettyOrder()}>{bettyBusy ? <><Loader2 className="animate-spin" /> Betty está pensando…</> : "Pedir orden"}</Button>
+              {proposal && (
+                <div className="space-y-3">
+                  <p className="text-sm italic text-muted-foreground">{proposal.explanation}</p>
+                  <ol className="max-h-60 space-y-1 overflow-y-auto text-sm">
+                    {proposal.order.map((id, n) => <li key={id} className="flex gap-2"><span className="w-6 text-right font-mono text-muted-foreground">{n + 1}</span><span className="truncate font-heading italic text-primary">{items.data?.find((i) => i.id === id)?.title}</span></li>)}
+                  </ol>
+                  <div className="flex gap-2">
+                    <Button className="flex-1" onClick={async () => { await saveOrder(proposal.order); setSort("custom"); setBettyOpen(false); setProposal(null); toast("Orden de Betty aplicado. Si algo no va, tocá «Reordenar»."); }}>Aceptar</Button>
+                    <Button variant="outline" className="flex-1" onClick={async () => { await saveOrder(proposal.order); setSort("custom"); setEditing(true); setBettyOpen(false); setProposal(null); }}>Aceptar y corregir</Button>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
           <ConfirmDialog open={confirmDelete} onOpenChange={setConfirmDelete} title={`¿Borrar «${d.list.name}» para todos?`} description="No se puede deshacer." confirmLabel="Borrar lista" destructive onConfirm={deleteList} />
           <ConfirmDialog open={confirmLeave} onOpenChange={setConfirmLeave} title={`¿Salir de «${d.list.name}»?`} confirmLabel="Salir" onConfirm={leaveList} />
           <section className="mt-8 px-4"><h2 className="mb-4 font-display text-2xl">En esta lista</h2><SocialComments listId={listId} canComment={isMember}/></section>
         </>
       )}
     </div>
-  );
-}
-
-function ItemTile({
-  item,
-  stat,
-  adderName,
-  onOpen,
-}: {
-  item: ItemRow;
-  stat?: { avg: number | null; votes: number; comments: number } | undefined;
-  adderName?: string | undefined;
-  onOpen: () => void;
-}) {
-  const media = item.media_type as MediaType;
-  return (
-    <button type="button" onClick={onOpen} className="block w-full text-left active:scale-[0.98] transition-transform">
-      <div className="relative">
-        <Poster
-          src={item.image_url}
-          alt={item.title}
-          media={media}
-          aspect="aspect-[2/3]"
-          className={cn(item.done && "opacity-55 saturate-50")}
-        />
-        {item.done && (
-          <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-success px-2 py-1 text-[10px] font-bold uppercase text-background">
-            <Check className="size-3" strokeWidth={3} /> {DONE_LABEL[media].done}
-          </span>
-        )}
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between rounded-b-lg bg-poster-fade px-2 pb-2 pt-6 text-xs">
-          <span className="font-semibold text-primary">{stat?.avg ? `★ ${stat.avg}` : ""}</span>
-          {!!stat?.comments && (
-            <span className="flex items-center gap-1 text-foreground">
-              <MessageCircle className="size-3.5" /> {stat.comments}
-            </span>
-          )}
-        </div>
-      </div>
-      <h3 className="mt-2 line-clamp-2 font-sans text-sm font-semibold leading-snug">{item.title}</h3>
-      <p className="truncate text-xs text-muted-foreground">
-        {[item.creator, item.year].filter(Boolean).join(" · ")}
-      </p>
-      {adderName && <p className="mt-0.5 truncate text-[11px] text-muted-foreground/70">por {adderName}</p>}
-    </button>
   );
 }

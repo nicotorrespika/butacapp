@@ -78,21 +78,22 @@ export function ResultCard({
               : `Agregar ${result.title} a ${targetName ? `«${targetName}»` : "una lista"}`
           }
           className={cn(
-            "absolute bottom-2 right-2 rounded-sm border-border transition-colors duration-300",
+            "absolute bottom-1.5 right-1.5 size-8 rounded-full border-border/40 bg-background/45 opacity-80 backdrop-blur-sm transition-all duration-300 hover:opacity-100 after:absolute after:-inset-1.5 after:content-['']",
             added ? "text-primary" : "text-foreground",
           )}
         >
           {busy ? (
-            <Loader2 className="size-5 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           ) : added ? (
-            <Check className="size-5" strokeWidth={3} />
+            <Check className="size-4" strokeWidth={3} />
           ) : (
-            <Plus className="size-5" strokeWidth={2.5} />
+            <Plus className="size-4" strokeWidth={2.5} />
           )}
         </Button>
       </div>
-      <div className="mt-2 px-0.5">
-        <div className="float-right -mr-2"><ShareButton content={shareResult(result)} iconOnly/></div>
+      <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-1 px-0.5">
+        <div className="col-start-2 row-start-1 -mr-2"><ShareButton content={shareResult(result)} iconOnly/></div>
+        <div className="col-start-1 row-start-1 min-w-0">
         {result.kindLabel==="Cine argentino"&&<p className="mb-1 text-[10px] uppercase text-primary">Cine argentino</p>}
         <h3 className="line-clamp-2 font-display text-xl leading-snug text-primary">
           {onOpen ? (
@@ -107,6 +108,7 @@ export function ResultCard({
           <CreatorLinks creator={result.creator} media={result.mediaType} externalId={result.externalId} />
           {result.creator && result.year ? " · " : ""}{result.year || (!result.creator ? result.kindLabel : "")}
         </p>
+        </div>
       </div>
       {quickable && onOpen && <QuickView result={result} open={quick} onOpenChange={setQuick} onSave={() => onAdd(result)} onOpenFull={open} />}
     </article>
