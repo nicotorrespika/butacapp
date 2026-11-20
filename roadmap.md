@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Latest requests
+- [ ] Crear bienvenida de tres pasos: tres películas, tres artistas/discos y tres escritores, guardado de gustos y llegada a Inicio; verificar con sesión.
 - [x] Solicitar publicación con sitemap en momentobutaca.com (dominio primario comprobado); momentoobutaca.com no está conectado. Publicación y llegada de Google no se consideran verificadas.
 - [x] Artistas: Spotify verificado por relaciones MusicBrainz, Top 5 Deezer y discografía/álbumes por año o popularidad; Charly García comprobado con sesión. Años corresponden a las ediciones del proveedor.
 - [x] Perfil: Mis listas incluye listas propias y todas las compartidas de las que soy miembro.
