@@ -13,7 +13,7 @@ import { choiceKey, emptyChoices, initialTopKind, onboardingComplete, readOnboar
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Poster } from './Poster';
-import welcomeImage from '@/assets/butaca-welcome.png.asset.json';
+import welcomeImage from '@/assets/theater-curtain.jpg.asset.json';
 
 const steps = [
   { category: 'movie', icon: Film, label: 'Cine', title: '¿Qué películas te gustan?', subtitle: 'Elegí tres que volverías a ver. Sin dar explicaciones.', placeholder: 'Buscá una película…', suggestions: ['Nueve reinas', 'Medianoche en París', 'El padrino', 'Coraline'] },
@@ -116,7 +116,7 @@ export function FirstSteps() {
       <Button size="lg" className="mt-6 h-12 min-w-44" onClick={() => changeStage(0)}>Empezar<ArrowRight/></Button>
       <p className="mt-4 flex items-center gap-3 font-mono text-[10px] uppercase text-muted-foreground"><Film className="size-3"/>Cine<span className="text-primary">/</span><Disc3 className="size-3"/>Música<span className="text-primary">/</span><BookOpen className="size-3"/>Libros</p>
     </section>
-    <section className="mx-auto mt-9 w-full max-w-5xl border-t border-border px-6 pb-10 pt-5 sm:px-10"><div className="flex items-start gap-4"><span className="font-heading text-4xl text-primary">01</span><div><h2 className="font-heading text-2xl uppercase text-foreground">Primero, tus imprescindibles.</h2><p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">Tres películas, tres artistas o discos y tres escritores. Después, Betty se encarga de cruzar los caminos.</p><p className="mt-3 text-xs text-muted-foreground">Tus gustos son privados. Los podés cambiar después.</p></div></div></section>
+    <section className="mx-auto mt-9 w-full max-w-5xl border-t border-border px-6 pb-10 pt-5 sm:px-10"><div className="flex items-start gap-4"><span className="font-heading text-4xl text-primary">01</span><div><h2 className="font-heading text-2xl uppercase text-foreground">Primero, tus imprescindibles.</h2><p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">Tres películas, tres artistas o discos y tres escritores. Después, Betty se encarga de cruzar los caminos.</p><p className="mt-3 text-xs text-muted-foreground">Tus gustos son privados. Los podés cambiar después.</p></div></div><p className="mt-6 text-[10px] text-muted-foreground">Foto: <a href="https://unsplash.com/photos/red-theater-curtain-WW1jsInXgwM" target="_blank" rel="noreferrer" className="underline underline-offset-2">Rob Laughter / Unsplash</a></p></section>
   </div>;
 
   return <div className="mx-auto max-w-2xl px-5 py-6 sm:px-8">
